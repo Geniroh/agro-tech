@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Open_Sans } from "next/font/google";
-import "./globals.css";
-import { SessionProvider } from "next-auth/react";
+import { Navbar } from "@/components/general/navbar";
 
 const open_sans = Open_Sans({ subsets: ["latin"] });
 
@@ -18,9 +17,8 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${open_sans.className} bg-white`}>
-        <SessionProvider>
+            <Navbar />
           {children}
-        </SessionProvider>
       </body>
     </html>
   );

@@ -12,7 +12,7 @@ import {
 
 export function TagSelect({ name, options}: { name: string; options: {name: string, value:string}[]}) {
   return (
-    <div className="bg-slate-100 rounded-xl flex gap-x-1 items-center px-1 w-fit">
+    <div className="bg-[#fafafa] rounded-xl flex gap-x-1 items-center px-2 w-fit">
       <span className="text-[12px] lowercase text-muted-foreground">{name} :</span>
       <Select>
         <SelectTrigger className="w-fit shadow-none focus-visible:ring-0 border-none">
