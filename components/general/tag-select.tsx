@@ -22,8 +22,8 @@ export function TagSelect({ name, options}: { name: string; options: {name: stri
           <SelectGroup>
             <SelectLabel className="text-muted-foreground text-sm">{name}</SelectLabel>
             {
-              options.map(option => (
-                <SelectItem value={option.value}>{option.name}</SelectItem>
+              options.map((option, i) => (
+                <SelectItem value={option.value} key={i}>{option.name}</SelectItem>
               ))
             }
           </SelectGroup>
