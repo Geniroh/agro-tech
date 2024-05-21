@@ -28,10 +28,10 @@ export const Navbar = () => {
     const { data: session } = useSession();
     
     return (
-        <div className="border-b shadow-sm sticky top-0 bg-white">
-            <nav className="w-full h-[70px] grid grid-cols-3 items-center mycontainer">
+        <div className="border-b shadow-sm border-b-white sticky top-0 bg-white z-40">
+            <nav className="w-full h-[70px] grid grid-cols-3 items-center container">
                 <div>
-                    <div className="px-3 py-2 bg-mypurple text-white font-playfair w-fit rounded-lg font-bold tracking-wider">
+                    <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
                         STAVMiA
                     </div>
                 </div>
@@ -39,11 +39,11 @@ export const Navbar = () => {
                 <div>
                     <div className='flex gap-6 text-[16px] justify-center'>
                         {navLinks.map(link => {
-                            const isActive = pathname.startsWith(link.href);
+                            const isActive = link.href === "/" ? pathname === "/" : pathname.startsWith(link.href);
                             return (
                                 <Link 
                                     href={link.href} 
-                                    className={isActive ? "text-myblack font-semibold font-sans" : "text-mygray hover:text-myblack font-semibold font-sans"} 
+                                    className={isActive ? "text-mygreen font-open-sans font-semibold" : "text-mygray hover:text-myblack font-open-sans font-semibold"} 
                                     key={link.name}
                                 >
                                     {link.name}
@@ -66,7 +66,7 @@ export const Navbar = () => {
                                     <Button variant="outline" className="dark:text-white">Sign in</Button>
                                 </LoginButton>
                                 <RegisterButton>
-                                    <Button className="flex gap-x-2">
+                                    <Button className="flex gap-x-2 bg-mygreen" >
                                         Create an account <FaUser />
                                     </Button>
                                 </RegisterButton>

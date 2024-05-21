@@ -1,4 +1,7 @@
-@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap'); */
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,200..800;1,200..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Black+Ops+One&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&display=swap');
 @tailwind base;
   @tailwind components;
   @tailwind utilities;
@@ -76,40 +79,7 @@
     }
   }
 
-  .mycontainer {
-    max-width: 1200px;
-    margin-inline: auto;
+  html, body {
+    width: 100%;
+    overflow: hidden;
   }
-
-/* Apply custom scrollbar styles */
-.scrollbar {
-  scrollbar-width: thin;
-  scrollbar-color: #a0aec0 #edf2f7;
-}
-
-/* WebKit browsers (Chrome, Safari) */
-.scrollbar::-webkit-scrollbar {
-  width: 8px;
-  /* Width of the scrollbar */
-  height: 8px !important;
-  /* Height of the scrollbar (for horizontal scrollbars) */
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  background-color: #a0aec0;
-  /* Color of the scrollbar thumb */
-  border-radius: 30px;
-  /* Makes the thumb rounded (capsule shape) */
-}
-
-.scrollbar::-webkit-scrollbar-track {
-  background-color: #edf2f7;
-  /* Color of the scrollbar track */
-  border-radius: 9999px;
-  /* Makes the track rounded (capsule shape) */
-}
-
-.scrollbar::-webkit-scrollbar-thumb {
-  cursor: pointer;
-  height: 20px;
-}

@@ -83,6 +83,9 @@ export function CollectionsDataTable() {
   return (
     <div className="">
       <DataTable columns={columns} data={tableData} />
+
+
+      
       <div className="mt-10 flex justify-center w-full">
 
             <div className="flex items-center gap-3">

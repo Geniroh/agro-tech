@@ -11,6 +11,8 @@ import {
 import InnovationCard from "@/components/innovation-card";
 import { CollectionTable } from "@/components/collection-table";
 import { Navbar } from "@/components/general/navbar";
+import ImageCard from "@/components/general/image-card";
+import { ColorTag } from "@/components/general/color-tags";
 
 const innovationList: InnovationType[] = [
     {
@@ -41,26 +43,41 @@ export default function Home() {
     <div>
         <Navbar />
         <main className="container mx-auto">
-            <h1 className="text-3xl font-playfair font-bold mt-14">Sustainable Technologies for Agricultural Value-Chain Mechanization in Africa</h1>
+            <h1 className="text-3xl font-jakara font-bold  mt-14 leading-[52px] text-center">Sustainable Technologies for Agricultural Value-Chain Mechanization in Africa</h1>
+            <h2 className="text-xl text-mygray text-center">Expertly chosen agro-technologies provided by the Pan African Society for Agricultural Engineering (PASAE)</h2>
 
             <div className="mt-10">
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6">
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">
                     <div className="col-span-2">
-                        <InnovationCard innovation={innovationList[0]} />
+                        <ImageCard id={1} imageUrl="/images/farm-automation.jpeg" title="Farm Automation"
+                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                        
+                        />
                     </div>
                     <div>
-                        <InnovationCard innovation={innovationList[1]} />
+                        <ImageCard id={1} imageUrl="/images/green-house.jpeg" title="Green House"
+                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                        
+                        />
                     </div>
+
                     <div>
-                        <InnovationCard innovation={innovationList[2]} />
+                        <ImageCard id={2} imageUrl="/images/animal-farm.jpeg" title="Green House"
+                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                        
+                        />
                     </div>
+
                     <div className="col-span-2">
-                        <InnovationCard innovation={innovationList[4]} />
+                        <ImageCard id={3} imageUrl="/images/plantation.jpeg" title="Green House"
+                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                        
+                        />
                     </div>
                 </div>
             </div>
 
-            <div className="mt-10">
+            <div className="mt-[100px]">
                 <CollectionTable />
             </div>
         </main>

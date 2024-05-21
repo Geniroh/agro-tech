@@ -8,6 +8,7 @@ import {
   LayoutGrid, List
 } from "lucide-react"
 import { useState } from "react";
+import { CollectionDataTableP } from "./data/collections-table";
 
 
 const selectList: { name: string, value:string}[] = [
@@ -31,14 +32,19 @@ export const CollectionTable = () => {
   return (
     <div>
         <div className="w-full">
-            <h1 className='w-full font-playfair text-2xl font-bold text-center mb-5'>Collection</h1>
-            <div className="flex w-full items-center space-x-4 mb-5">
-                <Input type="text" placeholder="Search by title, value chain, use, e.t.c" suffixicon={<IoIosSearch />} className="w-full bg-[#fafafa] border border-[#f2f2f2] rounded-lg" />
+            <h1 className='w-full font-jakara text-3xl font-bold text-center mb-10 leading-[40px]'>Collections</h1>
+            <div className="flex w-full items-center space-x-4 mb-10">
+
+                <div className="w-full py-2 px-6 rounded-xl flex gap-x-3 items-center bg-[#fafafa]">
+                  <IoIosSearch />
+                  <input type="text" className="border-0 outline-none bg-transparent w-full placeholder:text-[#888888]" placeholder="Search by title, value chain, use, e.t.c" />
+
+                </div>
                 <Button type="submit" className="px-6">Click here to search</Button>
             </div>
 
             <div className="mb-5 flex justify-between items-center">
-              <div className="flex gap-x-4">
+              <div className="flex gap-x-7">
                 <TagSelect name="Value Chain" options={selectList} />
                 <TagSelect name="Implementation phase" options={selectList} />
                 <TagSelect name="Year created" options={selectList} />
@@ -53,7 +59,8 @@ export const CollectionTable = () => {
             <div className="mt-10 mb-[100px]">
 
               {
-                displayState === 1 && <CollectionsDataTable />
+                // displayState === 1 && <CollectionsDataTable />
+                displayState === 1 && <CollectionDataTableP />
               }
 
               {
