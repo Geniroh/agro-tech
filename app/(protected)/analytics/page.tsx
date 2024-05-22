@@ -1,5 +1,6 @@
 import { BarChartP } from "@/components/data/charts/BarChartP";
 import { PieChartP } from "@/components/data/charts/PieChartP";
+import { InnovationBar } from "@/components/data/innovation-bar";
 import { Navbar } from "@/components/general/navbar";
 import Link from "next/link";
 
@@ -23,8 +24,8 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="lg:w-[60%] flex flex-col gap-y-10">
-                <div className="min-h-[150px] rounded-lg bg-[#9a9a9a]">
-                    
+                <div className="">
+                    <InnovationBar />
                 </div>
                 <div className="flex gap-6">
                     <div className="lg:w-[40%] bg-[#fafafa] rounded-lg min-h-[350px] flex flex-col items-center justify-center">

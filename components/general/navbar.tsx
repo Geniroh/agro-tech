@@ -28,8 +28,8 @@ export const Navbar = () => {
     const { data: session } = useSession();
     
     return (
-        <div className="border-b shadow-sm border-b-white sticky top-0 bg-white z-40">
-            <nav className="w-full h-[70px] grid grid-cols-3 items-center container">
+        <div className="border-b shadow-sm border-b-white sticky top-0 bg-white z-40 px-5">
+            <nav className="w-full h-[70px] grid grid-cols-3 items-center max-w-[1200px] mx-auto">
                 <div>
                     <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
                         STAVMiA

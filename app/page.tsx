@@ -56,21 +56,21 @@ export default function Home() {
                     </div>
                     <div>
                         <ImageCard id={1} imageUrl="/images/green-house.jpeg" title="Green House"
-                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Pest control" />  <ColorTag type="purple" name="Disease control" /></div>}
                         
                         />
                     </div>
 
                     <div>
                         <ImageCard id={2} imageUrl="/images/animal-farm.jpeg" title="Green House"
-                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                            tags={<div className="flex gap-4"> <ColorTag type="purple" name="Economy" />  <ColorTag type="yellow" name="Dairy processor" /></div>}
                         
                         />
                     </div>
 
                     <div className="col-span-2">
                         <ImageCard id={3} imageUrl="/images/plantation.jpeg" title="Green House"
-                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Self driving tractors" />  <ColorTag type="yellow" name="Smart sprinklers" /></div>}
+                            tags={<div className="flex gap-4"> <ColorTag type="blue" name="Sustainable" />  <ColorTag type="yellow" name="Food security" /></div>}
                         
                         />
                     </div>

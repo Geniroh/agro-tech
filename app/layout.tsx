@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body className={`font-open-sans bg-white container`}>
+      <body className={`font-open-sans bg-white w-screen overflow-x-hidden`}>
         <SessionProvider>
           {children}
         </SessionProvider>

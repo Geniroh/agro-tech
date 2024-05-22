@@ -2,7 +2,6 @@
 
 import * as React from "react"
 import {
-  CaretDownIcon,
   CaretSortIcon,
   CheckIcon,
   ChevronDownIcon,
@@ -32,8 +31,8 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <CaretDownIcon className="h-4 w-4 opacity-50" />
-      {/* <CaretSortIcon className="h-4 w-4 opacity-50" /> */}
+      {/* <CaretSortIcon /> */}
+      <ChevronDownIcon  className="h-4 w-4 opacity-50"  />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))
@@ -51,7 +50,7 @@ const SelectScrollUpButton = React.forwardRef<
     )}
     {...props}
   >
-    <ChevronUpIcon className="px-2" />
+    <ChevronUpIcon />
   </SelectPrimitive.ScrollUpButton>
 ))
 SelectScrollUpButton.displayName = SelectPrimitive.ScrollUpButton.displayName
