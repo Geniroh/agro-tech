@@ -1,8 +1,12 @@
+"use client"
 import { BarChartP } from "@/components/data/charts/BarChartP";
 import { PieChartP } from "@/components/data/charts/PieChartP";
 import { InnovationBar } from "@/components/data/innovation-bar";
 import { Navbar } from "@/components/general/navbar";
 import Link from "next/link";
+import { RevenueMock } from "@/mocks/data"
+import BarChartCard from "@/components/data/charts/BarChartCard";
+import { DonutChartCard } from "@/components/data/charts/DonutChartCard";
 
 export default function AnalyticsPage() {
     return (
@@ -17,27 +21,24 @@ export default function AnalyticsPage() {
             </div>
 
           <div className="flex gap-x-6 container">
-            <div className="lg:w-[40%]">
+            <div className="xl:w-[40%]">
                 <div className="min-h-[500px] rounded-lg bg-[#9a9a9a]">
 
                 </div>
             </div>
 
-            <div className="lg:w-[60%] flex flex-col gap-y-10">
+            <div className="w-full Xl:w-[60%] flex flex-col gap-y-10">
                 <div className="">
                     <InnovationBar />
                 </div>
                 <div className="flex gap-6">
-                    <div className="lg:w-[40%] bg-[#fafafa] rounded-lg min-h-[350px] flex flex-col items-center justify-center">
-                        <div className="border border-red-600">
-
-                            <PieChartP />
+                    <div className="lg:w-[40%] ">
+                        <div className="">
+                            <DonutChartCard />
                         </div>
                     </div>
-                    <div className="lg:w-[60%] bg-[#9a9a9a] rounded-lg min-h-[350px] ">
-                    <div className="border border-red-600">
-                        <BarChartP />
-                    </div>
+                    <div className="lg:w-[60%] rounded-lg min-h-[350px] h-full">
+                         <BarChartCard title="Revenue Performance" subtitle="Keep track of revenue performance for the beach house for the last 12 month" data={RevenueMock} dataKey="value" height={400} cellFill="#9E77ED" XdataKey="name" fill="#475467" Ylabel="Revenue (N)" key={1} barWidth={32} className="h-full" />
                     </div>
                 </div>
             </div>

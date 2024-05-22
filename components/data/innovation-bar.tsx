@@ -3,10 +3,11 @@ import { StackedProgressBar } from '@/components/data/charts/StackedProgressBar'
 import { ProgressLineP } from '@/components/data/charts/ProgressLineP';
 
 const data = [
-    { title: 'Segment 1', value: 20, color: '#4caf50' },
-    { title: 'Segment 2', value: 30, color: '#2196f3' },
-    { title: 'Segment 3', value: 25, color: '#ffeb3b' },
-    { title: 'Segment 4', value: 25, color: '#f44336' },
+    { title: 'Proposed', value: 2000, color: '#9430e3' },
+    { title: 'In Production', value: 5000, color: '#d19ff9' },
+    { title: 'In Testing Phase', value: 20000, color: '#ecdafb' },
+    { title: 'In Wide Use', value: 2500, color: '#dbb3c2' },
+    { title: 'In Phased Out', value: 2500, color: '#f1f5a3' },
   ];
 
 export const InnovationBar = () => {
@@ -27,7 +28,7 @@ export const InnovationBar = () => {
             </div>
 
             <div className='w-full'>
-                <StackedProgressBar values={values} colors={colors} />
+                {/* <StackedProgressBar values={values} colors={colors} /> */}
                 <ProgressLineP data={data} />
             </div>
         </div>
