@@ -35,10 +35,11 @@
 // /auth/login/page.tsx
 import { Suspense } from "react";
 import LoginContent from "@/components/auth/login-content";
+import { ClimbingLoaderP } from "@/components/general/climbing-loader";
 
 const LoginPage = () => {
   return (
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense fallback={<ClimbingLoaderP />}>
       <LoginContent />
     </Suspense>
   );
