@@ -8,6 +8,7 @@ import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
 import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 const navLinks = [
     {
@@ -28,6 +29,8 @@ export const Navbar = () => {
     const pathname = usePathname();
     const router = useRouter()
     const { data: session } = useSession();
+
+    useEffect(() => {}, [session])
     
     return (
         <div className="border-b shadow-sm border-b-white sticky top-0 bg-white z-40 px-5">
