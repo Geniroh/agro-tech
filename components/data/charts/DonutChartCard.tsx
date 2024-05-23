@@ -48,7 +48,7 @@ export const DonutChartCard = () => {
             <div className='flex mt-5 flex-col gap-y-4 justify-center items-center'>
                 {
                     data.map((item, i) => (
-                        <div className='flex gap-x-4'>
+                        <div className='flex gap-x-4' key={i}>
                             <span className={`w-[18px] h-[18px] rounded-md `} style={{ background: COLORS[i % COLORS.length] }}></span>
                             <span className='text-[14px] font-semibold'>{item.name}</span>
                         </div>
