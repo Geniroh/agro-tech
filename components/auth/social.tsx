@@ -11,7 +11,6 @@ import { DEFAULT_LOGIN_REDIRECT } from '@/routes'
 import { useRouter } from 'next/navigation';
 
 
-
 export const Social = () => {
     const router = useRouter()
     const handleSocialLogin = (provider: SocialProvidersType) => {

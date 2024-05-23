@@ -38,13 +38,16 @@ export const {
         //     return true
         // },
         async signIn({ user , account }) {
-            console.log({ account })
             if(account?.provider !== 'credentials'){
                 return true
             }
 
+            if (!user?.id) {
+                return false
+            }
+
             // check type error
-            const existingUser = await getUserById(user.id || "1");
+            const existingUser = await getUserById(user.id);
 
             if(!existingUser?.emailVerified) return false
 
