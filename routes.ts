@@ -18,7 +18,8 @@ export const authRoutes = [
     "/auth/login/signin",
     "/auth/register",
     "/auth/error",
-   
+    "/auth/reset",
+    "/auth/new-password",
 ]
 
 export const protectedRoutes = [
