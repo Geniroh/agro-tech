@@ -1,11 +1,14 @@
 import { NewPasswordForm } from '@/components/auth/new-password-form'
-import React from 'react'
+import { ClimbingLoaderP } from '@/components/general/climbing-loader'
+import React, { Suspense } from 'react'
 
 const NewPasswordPage = () => {
   return (
-    <div className='w-screen h-screen bg-black/50 flex justify-center items-center'>
-        <NewPasswordForm />
-    </div>
+    <Suspense fallback={<ClimbingLoaderP />}>
+      <div className='w-screen h-screen bg-black/50 flex justify-center items-center'>
+          <NewPasswordForm />
+      </div>
+    </Suspense>
   )
 }
 
