@@ -7,6 +7,7 @@ import { LoginButton } from "@/components/auth/login-button";
 import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
+import { useRouter } from "next/navigation";
 
 const navLinks = [
     {
@@ -25,6 +26,7 @@ const navLinks = [
 
 export const Navbar = () => {
     const pathname = usePathname();
+    const router = useRouter()
     const { data: session } = useSession();
     
     return (
@@ -57,7 +59,7 @@ export const Navbar = () => {
                     <div className="flex gap-x-3">
                         {session ? (
                             <div className="flex items-center gap-x-3">
-                                <Button className="dark:text-white">Upload Innovation</Button>
+                                    <Button className="dark:text-white" onClick={() => router.push("/upload")}>Upload Innovation</Button>
                                 <UserDropdownMenu />
                             </div>
                         ) : (
