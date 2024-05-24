@@ -112,7 +112,7 @@ export default {
     providers: [
         GitHub({
             clientId: process.env.GITHUB_CLIENT_ID,
-            clientSecret: process.env.GITHUB_CLIENT_SECRET
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
         }),
         Google({
             clientId: process.env.GOOGLE_CLIENT_ID,
@@ -162,6 +162,7 @@ export default {
                 return null;
             }
         })
-    ]
+    ],
+    trustHost: true
 } satisfies NextAuthConfig;
 
