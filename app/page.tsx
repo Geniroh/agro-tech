@@ -43,8 +43,9 @@ export default function Home() {
     <div>
         <Navbar />
         <main className="container mx-auto">
-            <h1 className="text-3xl font-jakara font-bold  mt-14 leading-[52px] text-center">Sustainable Technologies for Agricultural Value-Chain Mechanization in Africa</h1>
-            <h2 className="text-xl text-mygray text-center">Expertly chosen agro-technologies provided by the Pan African Society for Agricultural Engineering (PASAE)</h2>
+            <h1 className="text-[32px] font-jakara font-bold  mt-14 leading-[42px]">Sustainable Technologies for Agricultural Value-Chain Mechanization in Africa</h1>
+            {/* <h2 className="text-xl text-mygray text-center">Expertly chosen agro-technologies provided by the Pan African Society for Agricultural Engineering (PASAE)</h2> */}
+            <h2 className="text-[18px] leading-[27px] font-normal text-[#242424] mt-3">Welcome to STAVMiA, the central hub for agricultural innovations across Africa! Helping farmers, processors, input suppliers, business owners, consultants, and researchers find valuable technologies and methods easily. Our platform allows everyone in the agricultural value chain to access, share, discuss, and collaborate on technologies, boosting agro productivity. Join us in transforming agriculture in Africa!</h2>
 
             <div className="mt-10">
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-6">

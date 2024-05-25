@@ -52,8 +52,8 @@ export const CollectionTable = () => {
               </div>
 
               <div className="flex gap-x-2">
-                <Button variant={`${displayState == 1 ? "default": "outline"}`} onClick={() => setDisplayState(2)}><LayoutGrid size={16}/></Button>
-                <Button variant={`${displayState == 2 ? "default": "outline"}`} onClick={() => setDisplayState(1)}><List size={16} /></Button>
+                <Button variant={`${displayState == 2 ? "default": "outline"}`} onClick={() => setDisplayState(2)}><LayoutGrid size={16}/></Button>
+                <Button variant={`${displayState == 1 ? "default": "outline"}`} onClick={() => setDisplayState(1)}><List size={16} /></Button>
               </div>
             </div>
             <div className="mt-10 mb-[100px]">

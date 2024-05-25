@@ -48,7 +48,7 @@ export const Navbar = () => {
                             return (
                                 <Link 
                                     href={link.href} 
-                                    className={isActive ? "text-mygreen font-open-sans font-semibold" : "text-mygray hover:text-myblack font-open-sans font-semibold"} 
+                                    className={isActive ? "text-mygreen font-open-sans font-semibold" : "text-mygray hover:text-mygreen font-open-sans font-semibold"} 
                                     key={link.name}
                                 >
                                     {link.name}

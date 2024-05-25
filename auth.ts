@@ -63,7 +63,7 @@ export const {
             return session
         },
 
-        async jwt({ token}) {
+        async jwt({ token, user }) {
 
             if(!token.sub) return token;
 
@@ -73,6 +73,8 @@ export const {
 
             token.role  = existingUser.role
 
+            console.log("NEW")
+            console.log({token, user})
 
             return token
         },
