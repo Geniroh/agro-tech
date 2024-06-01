@@ -18,7 +18,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({ id, className,
   };
 
   return (
-    <div className={`relative ${className}`} onClick={handleClick}>
+    <div className={`relative ${className}`} >
       <input
         id={id}
         type="file"

@@ -1,52 +1,67 @@
-import { ClimbingLoaderP } from '@/components/general/climbing-loader'
-import React from 'react'
-import { useSession } from 'next-auth/react';
+// import { ClimbingLoaderP } from '@/components/general/climbing-loader'
+// import React from 'react'
+// import { useSession } from 'next-auth/react';
 
-const Tester = async () => {
-  const { data: session } = useSession();
+// const Tester = async () => {
+//   const { data: session } = useSession();
 
-  if (session) {
-    console.log(session)
-    // const res = await fetch('http://localhost:8080/api/protected', {
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //     'Authorization': `Bearer ${session}`, // Replace accessToken with the correct token if different
-    //   },
-    // });
+//   if (session) {
+//     console.log(session)
+//     // const res = await fetch('http://localhost:8080/api/protected', {
+//     //   headers: {
+//     //     'Content-Type': 'application/json',
+//     //     'Authorization': `Bearer ${session}`, // Replace accessToken with the correct token if different
+//     //   },
+//     // });
 
-    // const data = await res.json();
-    // console.log(data);
-  } else {
-    console.log('User not authenticated');
-  }
-  return (
-    <div>
-        Hello check console
-    </div>
-  )
-}
+//     // const data = await res.json();
+//     // console.log(data);
+//   } else {
+//     console.log('User not authenticated');
+//   }
+//   return (
+//     <div>
+//         Hello check console
+//     </div>
+//   )
+// }
 
-export default Tester
+// export default Tester
 
+"use client"
+import { useSession } from "next-auth/react";
+import { useEffect } from "react";
 
+const fetchData = async (accessToken:string) => {
+  const res = await fetch("http://localhost:8080/api/protected", {
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${accessToken}`,
+    },
+  });
 
-
-const fetchData = async () => {
-  const { data: session } = useSession();
-
-  if (session) {
-    const res = await fetch('http://localhost:8080/api/protected', {
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${session}`, // Replace accessToken with the correct token if different
-      },
-    });
-
-    const data = await res.json();
-    console.log(data);
-  } else {
-    console.log('User not authenticated');
-  }
+  const data = await res.json();
+  console.log({ data });
 };
 
-// Call fetchData when needed, e.g., in a useEffect or onClick event
+const YourComponent = () => {
+  const { data: session, status } = useSession();
+
+  useEffect(() => {
+    // if (status === "authenticated" && session) {
+    //   fetchData(session.user.accessToken);
+    // }
+
+    console.log({session, status})
+  }, [status, session]);
+
+  return (
+    <div>
+      {/* Your component content */}
+      Hello check console
+    </div>
+  );
+};
+
+export default YourComponent;
+
