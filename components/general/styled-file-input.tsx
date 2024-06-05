@@ -1,5 +1,5 @@
 // components/StyledFileInput.tsx
-import React, { useRef } from 'react';
+import React, { useRef } from "react";
 import { CiImageOn } from "react-icons/ci";
 
 interface StyledFileInputProps {
@@ -8,7 +8,11 @@ interface StyledFileInputProps {
   placeholder?: string;
 }
 
-export const StyledFileInput: React.FC<StyledFileInputProps> = ({ id, className, placeholder }) => {
+export const StyledFileInput: React.FC<StyledFileInputProps> = ({
+  id,
+  className,
+  placeholder,
+}) => {
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
   const handleClick = () => {
@@ -18,7 +22,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({ id, className,
   };
 
   return (
-    <div className={`relative ${className}`} >
+    <div className={`relative ${className}`}>
       <input
         id={id}
         type="file"
@@ -27,9 +31,10 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({ id, className,
       />
       <div className="flex justify-center items-center h-full">
         {/* You can replace this with any custom text or image */}
-        <span className='flex gap-x-2 items-center text-muted-foreground'>{placeholder || 'Upload a file'} <CiImageOn size={16} /></span>
+        <span className="flex gap-x-2 items-center text-muted-foreground">
+          {placeholder || "Upload a file"} <CiImageOn size={16} />
+        </span>
       </div>
     </div>
   );
 };
-

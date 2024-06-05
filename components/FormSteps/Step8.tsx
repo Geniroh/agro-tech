@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -23,13 +23,15 @@ import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { IoTrashBin } from "react-icons/io5";
 import { useFormSubmit } from "@/hooks/multi-step-submit";
+import { ClipLoader } from "react-spinners";
 
 const formSchema = z.object({
-  isGenderFriendly: z.string(),
+  isGenderFriendly: z.boolean(),
   gender_description: z.string().optional(),
 });
 
 const Step8: React.FC = () => {
+  const [loading, setLoading] = useState<boolean>(false);
   const {
     formData,
     setFormData,
@@ -60,9 +62,15 @@ const Step8: React.FC = () => {
   };
 
   const finalStep = async () => {
-    form.handleSubmit(saveData)();
-    console.log("Click submit final");
-    await handleSubmit(formData);
+    setLoading(true);
+    try {
+      form.handleSubmit(saveData)();
+      console.log("Click submit final");
+      await handleSubmit(formData);
+    } catch (error) {
+      console.log({ error });
+    }
+    setLoading(false);
 
     // form.handleSubmit(handleSubmit)()
   };
@@ -88,9 +96,10 @@ const Step8: React.FC = () => {
               <FormLabel>Does This Product Have HSE Guidelines?</FormLabel>
               <FormControl>
                 <Select
-                  value={field.value}
+                  value={String(field.value)}
                   onValueChange={(value: string) => {
-                    field.onChange(value);
+                    const booleanValue = value === "true";
+                    field.onChange(booleanValue);
                   }}
                 >
                   <SelectTrigger className="w-full bg-[#fafafa]">
@@ -107,7 +116,7 @@ const Step8: React.FC = () => {
           )}
         />
 
-        {form.watch("isGenderFriendly") === "true" && (
+        {form.watch("isGenderFriendly") && (
           <FormField
             control={form.control}
             name={`gender_description`}
@@ -145,8 +154,9 @@ const Step8: React.FC = () => {
           variant="default"
           className=" text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
           onClick={form.handleSubmit(finalStep)}
+          disabled={loading}
         >
-          Submit Innovation
+          {loading ? <ClipLoader color="#fff" /> : " Submit Innovation"}
         </Button>
       </div>
     </Form>

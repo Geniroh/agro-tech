@@ -161,6 +161,7 @@ const Step2: React.FC = () => {
         <button
           className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
           onClick={prevStep}
+          type="button"
           disabled={currentStep < 1}
         >
           Go Back
@@ -177,8 +178,9 @@ const Step2: React.FC = () => {
         <Button
           size="lg"
           variant="outline"
+          type="button"
           className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={saveStep}
+          onClick={form.handleSubmit(saveStep)}
         >
           Save Progress
         </Button>

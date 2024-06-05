@@ -1,43 +1,5 @@
-// import { useFormContext } from "@/context/FormContext";
-
-// interface FormData {
-//   [key: string]: any;
-// }
-
-// export const useFormSubmit = () => {
-//   const { formData, setFormData, setCurrentStep, setMySteps, setSubmitStatus } =
-//     useFormContext();
-
-//   const handleSubmit = async (data: FormData) => {
-//     // e.preventDefault();
-
-//     // Perform your form submission logic here
-
-//     try {
-//       console.log("Form submitted successfully", formData);
-
-//       // Clear local storage
-//       localStorage.removeItem("formData");
-//       localStorage.removeItem("currentStep");
-//       localStorage.removeItem("totalSteps");
-
-//       // Reset the state to reflect cleared storage
-//       setFormData({});
-//       setCurrentStep(0);
-//       setMySteps(1);
-//       setSubmitStatus(true);
-//     } catch (error) {
-//       console.error("Form submission failed", error);
-//       setSubmitStatus(false);
-//     }
-//   };
-
-//   return {
-//     handleSubmit,
-//   };
-// };
-
 import { useFormContext } from "@/context/FormContext";
+import axios from "axios";
 
 interface FormData {
   [key: string]: any;
@@ -49,28 +11,29 @@ export const useFormSubmit = () => {
 
   const handleSubmit = async (data: FormData) => {
     try {
-      console.log("Before clearing:", {
-        formData: localStorage.getItem("formData"),
-        currentStep: localStorage.getItem("currentStep"),
-        totalSteps: localStorage.getItem("totalSteps"),
-      });
+      console.log("THiS IONE", process.env.NEXT_PUBLIC_BACKEND_API);
+      console.log("TRYUIIY", process.env.BACKEND_API);
+
+      const { data: res } = await axios.post(
+        "http://localhost:8080/innovation",
+        data
+      );
+
+      console.log(res?._id);
 
       // Clear local storage
       localStorage.removeItem("formData");
       localStorage.removeItem("currentStep");
       localStorage.removeItem("totalSteps");
 
+      // localStorage.clear();
+
       // Reset the state to reflect cleared storage
       setFormData({});
       setCurrentStep(0);
       setMySteps(1);
-      setSubmitStatus(true);
 
-      console.log("After clearing:", {
-        formData: localStorage.getItem("formData"),
-        currentStep: localStorage.getItem("currentStep"),
-        totalSteps: localStorage.getItem("totalSteps"),
-      });
+      setSubmitStatus(true);
     } catch (error) {
       console.error("Form submission failed", error);
       setSubmitStatus(false);

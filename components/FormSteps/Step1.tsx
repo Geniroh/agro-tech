@@ -73,15 +73,12 @@ const Step1: React.FC = () => {
       { length: currentYear - 1970 + 1 },
       (_, index) => 1970 + index
     );
-    yearsArray.sort((a, b) => a - b);
+    yearsArray.sort((a, b) => b - a);
     setYears(yearsArray);
   };
 
   useEffect(() => {
     getYears();
-    localStorage.removeItem("formData");
-    localStorage.removeItem("currentStep");
-    localStorage.removeItem("totalSteps");
   }, []);
 
   return (
@@ -120,7 +117,7 @@ const Step1: React.FC = () => {
                   <SelectTrigger className="w-full bg-[#fafafa]">
                     <SelectValue placeholder="Select a year" />
                   </SelectTrigger>
-                  <SelectContent position="popper">
+                  <SelectContent position="item-aligned">
                     {years.map((year) => (
                       <SelectItem key={year} value={year.toString()}>
                         {year}
@@ -223,8 +220,9 @@ const Step1: React.FC = () => {
           <Button
             size="lg"
             variant="outline"
+            type="button"
             className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-            onClick={saveStep}
+            onClick={form.handleSubmit(saveStep)}
           >
             Save Progress
           </Button>

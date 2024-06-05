@@ -236,7 +236,7 @@ import { IoTrashBin } from "react-icons/io5";
 import { Input } from "../ui/input";
 
 const baseSchema = z.object({
-  isInstruction: z.string(),
+  isInstruction: z.boolean(),
 });
 
 const instructionSchema = z.object({
@@ -254,7 +254,7 @@ const Step4: React.FC = () => {
     useFormContext();
 
   const formSchema = baseSchema.extend(
-    formData.isInstruction === "true"
+    formData.isInstruction
       ? { instructions: instructionSchema.shape.instructions }
       : {}
   );
@@ -270,14 +270,11 @@ const Step4: React.FC = () => {
     name: "instructions",
   });
 
-  const handleIsInstructionChange = (value: string) => {
+  const handleIsInstructionChange = (value: boolean) => {
     form.setValue("isInstruction", value);
-    if (value === "false") {
+    if (!value) {
       form.setValue("instructions", []);
-    } else if (
-      value === "true" &&
-      form.getValues("instructions")?.length === 0
-    ) {
+    } else if (value && form.getValues("instructions")?.length === 0) {
       append({ instruction_step: "" });
     }
   };
@@ -314,10 +311,11 @@ const Step4: React.FC = () => {
               <FormLabel>Do You Have User Instructions?</FormLabel>
               <FormControl>
                 <Select
-                  value={field.value}
+                  value={String(field.value)}
                   onValueChange={(value: string) => {
-                    field.onChange(value);
-                    handleIsInstructionChange(value);
+                    const booleanValue = value === "true";
+                    field.onChange(booleanValue);
+                    handleIsInstructionChange(booleanValue);
                   }}
                 >
                   <SelectTrigger className="w-full bg-[#fafafa]">
@@ -334,13 +332,13 @@ const Step4: React.FC = () => {
           )}
         />
 
-        {form.watch("isInstruction") === "true" && (
+        {form.watch("isInstruction") && (
           <h1 className="text-muted-foreground">
             Please provide the Instruction in Steps
           </h1>
         )}
 
-        {form.watch("isInstruction") === "true" &&
+        {form.watch("isInstruction") &&
           fields.map((field, index) => (
             <div key={field.id}>
               {index > 0 && (
@@ -374,7 +372,7 @@ const Step4: React.FC = () => {
             </div>
           ))}
 
-        {form.watch("isInstruction") === "true" && (
+        {form.watch("isInstruction") && (
           <div className="w-full flex justify-center">
             <button
               className="text-[#329632]"
@@ -410,7 +408,7 @@ const Step4: React.FC = () => {
           size="lg"
           variant="outline"
           className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={saveStep}
+          onClick={form.handleSubmit(saveStep)}
         >
           Save Progress
         </Button>

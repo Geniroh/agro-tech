@@ -172,7 +172,7 @@ import { Button } from "@/components/ui/button";
 import { IoTrashBin } from "react-icons/io5";
 
 const baseSchema = z.object({
-  isHSEGuideline: z.string(),
+  isHSEGuideline: z.boolean(),
 });
 
 const guidelineSchema = z.object({
@@ -190,7 +190,7 @@ const Step7: React.FC = () => {
     useFormContext();
 
   const formSchema = baseSchema.extend(
-    formData.isHSEGuideline === "true"
+    formData.isHSEGuideline
       ? { hseguidelines: guidelineSchema.shape.hseguidelines }
       : {}
   );
@@ -206,14 +206,11 @@ const Step7: React.FC = () => {
     name: "hseguidelines",
   });
 
-  const handleIsHSEChange = (value: string) => {
+  const handleIsHSEChange = (value: boolean) => {
     form.setValue("isHSEGuideline", value);
-    if (value === "false") {
+    if (!value) {
       form.setValue("hseguidelines", []);
-    } else if (
-      value === "true" &&
-      form.getValues("hseguidelines")?.length === 0
-    ) {
+    } else if (value && form.getValues("hseguidelines")?.length === 0) {
       append({ name: "" });
     }
   };
@@ -250,10 +247,11 @@ const Step7: React.FC = () => {
               <FormLabel>Does This Product Have HSE Guidelines?</FormLabel>
               <FormControl>
                 <Select
-                  value={field.value}
+                  value={String(field.value)}
                   onValueChange={(value: string) => {
-                    field.onChange(value);
-                    handleIsHSEChange(value);
+                    const booleanValue = value === "true";
+                    field.onChange(booleanValue);
+                    handleIsHSEChange(booleanValue);
                   }}
                 >
                   <SelectTrigger className="w-full bg-[#fafafa]">
@@ -270,7 +268,7 @@ const Step7: React.FC = () => {
           )}
         />
 
-        {form.watch("isHSEGuideline") === "true" &&
+        {form.watch("isHSEGuideline") &&
           fields.map((field, index) => (
             <div key={field.id} className="space-y-4">
               {index > 0 && (
@@ -305,7 +303,7 @@ const Step7: React.FC = () => {
             </div>
           ))}
 
-        {form.watch("isHSEGuideline") === "true" && (
+        {form.watch("isHSEGuideline") && (
           <div className="w-full flex justify-center">
             <Button
               type="button"
@@ -342,7 +340,7 @@ const Step7: React.FC = () => {
           size="lg"
           variant="outline"
           className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={saveStep}
+          onClick={form.handleSubmit(saveStep)}
         >
           Save Progress
         </Button>

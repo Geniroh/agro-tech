@@ -44,14 +44,11 @@ const MultiStepForm = () => {
     setSubmitStatus,
   } = useFormContext();
 
-  console.log(formData);
-
   const StepComponent = steps[currentStep].component;
   setMySteps(steps.length);
 
   const handleSuccessClose = () => {
     setSubmitStatus(false);
-    console.log("You clicked me");
   };
 
   useEffect(() => {}, [submitStatus]);

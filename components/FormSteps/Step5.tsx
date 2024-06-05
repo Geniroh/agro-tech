@@ -193,7 +193,7 @@ import { Button } from "@/components/ui/button";
 import { IoTrashBin } from "react-icons/io5";
 
 const baseSchema = z.object({
-  isInventor: z.string(),
+  isInventor: z.boolean(),
 });
 
 const inventorSchema = z.object({
@@ -202,7 +202,7 @@ const inventorSchema = z.object({
       z.object({
         inventor_name: z.string().min(2, { message: "Name is required" }),
         inventor_email: z.string().email({ message: "Invalid email address" }),
-        inventor_contact: z.string().optional(),
+        inventor_contact: z.string(),
       })
     )
     .min(1, { message: "At least one inventor is required" }),
@@ -213,9 +213,7 @@ const Step5: React.FC = () => {
     useFormContext();
 
   const formSchema = baseSchema.extend(
-    formData.isInventor === "true"
-      ? { inventor: inventorSchema.shape.inventor }
-      : {}
+    formData.isInventor ? { inventor: inventorSchema.shape.inventor } : {}
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -229,11 +227,11 @@ const Step5: React.FC = () => {
     name: "inventor",
   });
 
-  const handleIsInventorChange = (value: string) => {
+  const handleIsInventorChange = (value: boolean) => {
     form.setValue("isInventor", value);
-    if (value === "false") {
+    if (!value) {
       form.setValue("inventor", []);
-    } else if (value === "true" && form.getValues("inventor")?.length === 0) {
+    } else if (value && form.getValues("inventor")?.length === 0) {
       append({ inventor_name: "", inventor_email: "", inventor_contact: "" });
     }
   };
@@ -270,10 +268,11 @@ const Step5: React.FC = () => {
               <FormLabel>Are You An Inventor On This Product?</FormLabel>
               <FormControl>
                 <Select
-                  value={field.value}
+                  value={String(field.value)}
                   onValueChange={(value: string) => {
-                    field.onChange(value);
-                    handleIsInventorChange(value);
+                    const booleanValue = value === "true";
+                    field.onChange(booleanValue);
+                    handleIsInventorChange(booleanValue);
                   }}
                 >
                   <SelectTrigger className="w-full bg-[#fafafa]">
@@ -290,7 +289,7 @@ const Step5: React.FC = () => {
           )}
         />
 
-        {form.watch("isInventor") === "true" &&
+        {form.watch("isInventor") &&
           fields.map((field, index) => (
             <div key={field.id} className="space-y-4">
               {index > 0 && (
@@ -361,7 +360,7 @@ const Step5: React.FC = () => {
             </div>
           ))}
 
-        {form.watch("isInventor") === "true" && (
+        {form.watch("isInventor") && (
           <div className="w-full flex justify-center">
             <Button
               type="button"
@@ -404,7 +403,7 @@ const Step5: React.FC = () => {
           size="lg"
           variant="outline"
           className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={saveStep}
+          onClick={form.handleSubmit(saveStep)}
         >
           Save Progress
         </Button>
