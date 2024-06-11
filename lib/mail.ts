@@ -1,6 +1,10 @@
 var nodemailer = require("nodemailer");
 
-export async function sendMail(subject: string, toEmail: string, otpText: string) {
+export async function sendMail(
+  subject: string,
+  toEmail: string,
+  otpText: string
+) {
   var transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
@@ -26,22 +30,22 @@ export async function sendMail(subject: string, toEmail: string, otpText: string
   });
 }
 
+export const sendVerificationEmail = async (email: string, token: string) => {
+  const confirmLink = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/new-verification?token=${token}`;
 
-export const sendVerificationEmail = async (
-    email: string, token: string
-) => {
-    const confirmLink = `http://localhost:3000/auth/new-verification?token=${token}`;
+  await sendMail(
+    "Confirm your email",
+    email,
+    `<p>Click <a href="${confirmLink}">here</a> to confirm email. </p>`
+  );
+};
 
-    await sendMail("Confirm your email", email, `<p>Click <a href="${confirmLink}">here</a> to confirm email. </p>`)
-}
+export const sendPasswordResetEmail = async (email: string, token: string) => {
+  const resetLink = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/auth/new-password?token=${token}`;
 
-
-export const sendPasswordResetEmail = async (
-  email: string, token: string
-) => {
-  const resetLink = `http://localhost:3000/auth/new-password?token=${token}`;
-
-   await sendMail("Reset your password", email, `<p>Click <a href="${resetLink}">here</a> to reset password. </p>`)
-}
-
-
+  await sendMail(
+    "Reset your password",
+    email,
+    `<p>Click <a href="${resetLink}">here</a> to reset password. </p>`
+  );
+};
