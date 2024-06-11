@@ -1,15 +1,27 @@
-"use client"
+"use client";
 
-import { logout } from "@/actions/logout"
+import { logout } from "@/actions/logout";
+import { useState } from "react";
+import { ClipLoader } from "react-spinners";
 
-export const LogoutButton = ({ children, className }: { children: React.ReactNode, className?: string}) => {
-    const onClick = () => {
-        logout()
-    }
+export const LogoutButton = ({
+  children,
+  className,
+}: {
+  children: React.ReactNode;
+  className?: string;
+}) => {
+  const [loading, setLoading] = useState(false);
 
-    return (
-        <button onClick={onClick} className={className}>
-            {children}
-        </button>
-    )
-}
+  const onClick = async () => {
+    setLoading(true);
+    await logout();
+    setLoading(false);
+  };
+
+  return (
+    <button onClick={onClick} className={className} disabled={loading}>
+      {loading ? <ClipLoader size={14} /> : children}
+    </button>
+  );
+};
