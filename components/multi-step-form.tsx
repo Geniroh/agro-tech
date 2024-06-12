@@ -51,6 +51,8 @@ const MultiStepForm = () => {
     setSubmitStatus(false);
   };
 
+  console.log(formData);
+
   useEffect(() => {}, [submitStatus]);
 
   return (

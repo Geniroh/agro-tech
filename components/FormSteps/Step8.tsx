@@ -65,14 +65,11 @@ const Step8: React.FC = () => {
     setLoading(true);
     try {
       form.handleSubmit(saveData)();
-      console.log("Click submit final");
       await handleSubmit(formData);
     } catch (error) {
       console.log({ error });
     }
     setLoading(false);
-
-    // form.handleSubmit(handleSubmit)()
   };
 
   const prevStep = () => {
@@ -93,7 +90,7 @@ const Step8: React.FC = () => {
           name="isGenderFriendly"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Does This Product Have HSE Guidelines?</FormLabel>
+              <FormLabel>Is this product Gender friendly?</FormLabel>
               <FormControl>
                 <Select
                   value={String(field.value)}

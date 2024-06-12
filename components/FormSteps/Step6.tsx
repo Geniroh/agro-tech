@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
@@ -43,6 +43,8 @@ const Step6: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
 
+  const [areExtraFieldsValid, setAreExtraFieldsValid] = useState(false);
+
   const formSchema = baseSchema.extend(
     formData.isSupplier ? { supplier: supplierSchema.shape.supplier } : {}
   );
@@ -72,10 +74,12 @@ const Step6: React.FC = () => {
   };
 
   const nextStep = () => {
-    if (currentStep < mySteps - 1) {
-      form.handleSubmit(saveData)();
-      setCurrentStep(currentStep + 1);
-    }
+    form.handleSubmit((values) => {
+      saveData(values);
+      if (currentStep < mySteps - 1) {
+        setCurrentStep(currentStep + 1);
+      }
+    })();
   };
 
   const prevStep = () => {
@@ -87,6 +91,24 @@ const Step6: React.FC = () => {
   const saveStep = () => {
     form.handleSubmit(saveData)();
   };
+
+  const checkExtraFieldsValidity = () => {
+    const suppliers = form.getValues("supplier");
+    if (form.watch("isSupplier")) {
+      const isValid = suppliers.every(
+        (supplier: any) =>
+          supplier.supplier_name.length >= 2 &&
+          supplier.supplier_email.length >= 2
+      );
+      setAreExtraFieldsValid(isValid);
+    } else {
+      setAreExtraFieldsValid(true);
+    }
+  };
+
+  useEffect(() => {
+    checkExtraFieldsValidity();
+  }, [form.watch("isSupplier"), form.watch("supplier")]);
 
   return (
     <Form {...form}>
@@ -205,7 +227,7 @@ const Step6: React.FC = () => {
                 })
               }
             >
-              Add another supplier +
+              Add supplier +
             </Button>
           </div>
         )}
@@ -225,7 +247,7 @@ const Step6: React.FC = () => {
           variant="default"
           className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
           onClick={form.handleSubmit(nextStep)}
-          disabled={!(currentStep < mySteps - 1)}
+          disabled={!(currentStep < mySteps - 1) || !areExtraFieldsValid}
         >
           Continue
         </Button>

@@ -38,7 +38,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
         const BACKEND_API =
           process.env.NEXT_PUBLIC_BACKEND_API || "http://localhost:8080";
 
-        const response = await fetch(`${BACKEND_API}/api/upload`, {
+        const response = await fetch(`/api/v1/upload`, {
           method: "POST",
           body: formData,
         });

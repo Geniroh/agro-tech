@@ -71,17 +71,17 @@ model Innovation {
   yearInvented             String
   country                  String
   cost                     Float
-  productChain             String[]
+  productChain             String
   productPhase             String
   productUse               String[]
   productDescription       String
   productMedia             Json[]
   isExample                Boolean
-  productExample           Json[]
-  productInstruction       Json[]
-  productInventor          Json[]
-  productSupplier          Json[]
-  productGuidelines        Json[]
+  productExample           Json[]   @default([])
+  productInstruction       Json[]   @default([])
+  productInventor          Json[]   @default([])
+  productSupplier          Json[]   @default([])
+  productGuidelines        Json[]   @default([])
   isGenderFriendly         Boolean?
   productGenderDescription String?
   createdAt                DateTime @default(now())

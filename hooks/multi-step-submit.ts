@@ -11,15 +11,11 @@ export const useFormSubmit = () => {
 
   const handleSubmit = async (data: FormData) => {
     try {
-      console.log("THiS IONE", process.env.NEXT_PUBLIC_BACKEND_API);
-      console.log("TRYUIIY", process.env.BACKEND_API);
+      console.log({ data });
 
-      const { data: res } = await axios.post(
-        "http://localhost:8080/innovation",
-        data
-      );
+      const { data: res } = await axios.post("/api/v1/innovation", data);
 
-      console.log(res?._id);
+      console.log(res);
 
       // Clear local storage
       localStorage.removeItem("formData");

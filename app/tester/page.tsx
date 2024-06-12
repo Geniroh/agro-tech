@@ -57,6 +57,7 @@ function UploadForm() {
       });
       // handle the error
       if (!res.ok) throw new Error(await res.text());
+      console.log(res);
     } catch (e: any) {
       // Handle errors here
       console.error(e);
