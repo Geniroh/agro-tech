@@ -3,31 +3,28 @@
  * @type {string[]}
  */
 
-
 export const publicRoutes = [
-    "/",
-    "/auth/new-verification",
-    "/tester"
-]
+  "/",
+  "/auth/new-verification",
+  "/tester",
+  "/api/v1",
+  "/api/v1/upload",
+];
 
 /**
  * An array of routes that require authentication
  * @type {string[]}
  */
 export const authRoutes = [
-    "/auth/login",
-    "/auth/login/signin",
-    "/auth/register",
-    "/auth/error",
-    "/auth/reset",
-    "/auth/new-password",
-]
+  "/auth/login",
+  "/auth/login/signin",
+  "/auth/register",
+  "/auth/error",
+  "/auth/reset",
+  "/auth/new-password",
+];
 
-export const protectedRoutes = [
-    "/discussion",
-    "/analytics",
-]
-
+export const protectedRoutes = ["/discussion", "/analytics"];
 
 /**
  * Prefix for api authentication routes
@@ -35,9 +32,8 @@ export const protectedRoutes = [
  */
 export const apiAuthPrefix = "/api/auth";
 
-
 /**
  * default redirect path after login
  * @type {string}
  */
-export const DEFAULT_LOGIN_REDIRECT = "/"
+export const DEFAULT_LOGIN_REDIRECT = "/";

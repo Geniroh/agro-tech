@@ -1,67 +1,78 @@
-// import { ClimbingLoaderP } from '@/components/general/climbing-loader'
-// import React from 'react'
-// import { useSession } from 'next-auth/react';
+// "use client"
+// import { useSession } from "next-auth/react";
+// import { useEffect } from "react";
 
-// const Tester = async () => {
-//   const { data: session } = useSession();
+// const fetchData = async (accessToken:string) => {
+//   const res = await fetch("http://localhost:8080/api/protected", {
+//     headers: {
+//       "Content-Type": "application/json",
+//       Authorization: `Bearer ${accessToken}`,
+//     },
+//   });
 
-//   if (session) {
-//     console.log(session)
-//     // const res = await fetch('http://localhost:8080/api/protected', {
-//     //   headers: {
-//     //     'Content-Type': 'application/json',
-//     //     'Authorization': `Bearer ${session}`, // Replace accessToken with the correct token if different
-//     //   },
-//     // });
+//   const data = await res.json();
+//   console.log({ data });
+// };
 
-//     // const data = await res.json();
-//     // console.log(data);
-//   } else {
-//     console.log('User not authenticated');
-//   }
+// const YourComponent = () => {
+//   const { data: session, status } = useSession();
+
+//   useEffect(() => {
+//     // if (status === "authenticated" && session) {
+//     //   fetchData(session.user.accessToken);
+//     // }
+
+//     console.log({session, status})
+//   }, [status, session]);
+
 //   return (
 //     <div>
-//         Hello check console
+//       {/* Your component content */}
+//       Hello check console
 //     </div>
-//   )
-// }
+//   );
+// };
 
-// export default Tester
+// export default YourComponent;
 
-"use client"
-import { useSession } from "next-auth/react";
-import { useEffect } from "react";
+"use client";
 
-const fetchData = async (accessToken:string) => {
-  const res = await fetch("http://localhost:8080/api/protected", {
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+import { useState } from "react";
 
-  const data = await res.json();
-  console.log({ data });
-};
+function UploadForm() {
+  const [file, setFile] = useState<File>();
 
-const YourComponent = () => {
-  const { data: session, status } = useSession();
+  const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    console.log("Clicked");
+    e.preventDefault();
+    if (!file) return;
 
-  useEffect(() => {
-    // if (status === "authenticated" && session) {
-    //   fetchData(session.user.accessToken);
-    // }
+    try {
+      const data = new FormData();
+      data.set("file", file);
 
-    console.log({session, status})
-  }, [status, session]);
+      const res = await fetch("/api/v1/upload", {
+        method: "POST",
+        body: data,
+      });
+      // handle the error
+      if (!res.ok) throw new Error(await res.text());
+    } catch (e: any) {
+      // Handle errors here
+      console.error(e);
+    }
+  };
 
   return (
-    <div>
-      {/* Your component content */}
-      Hello check console
-    </div>
+    <form onSubmit={onSubmit}>
+      <input
+        type="file"
+        name="file"
+        onChange={(e) => setFile(e.target.files?.[0])}
+      />
+      <button type="submit">Uplopad</button>
+    </form>
   );
-};
+}
 
-export default YourComponent;
-
+export default UploadForm;
