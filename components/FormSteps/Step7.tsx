@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useFormContext } from "@/context/FormContext";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -71,15 +72,29 @@ const Step7: React.FC = () => {
 
   const saveData = (values: z.infer<typeof formSchema>) => {
     setFormData({ ...formData, ...values });
+    checkExtraFieldsValidity();
   };
 
+  // const nextStep = () => {
+  //   form.handleSubmit((values) => {
+  //     saveData(values);
+  //     if (currentStep < mySteps - 1) {
+  //       setCurrentStep(currentStep + 1);
+  //     }
+  //   })();
+  // };
+
   const nextStep = () => {
-    form.handleSubmit((values) => {
-      saveData(values);
-      if (currentStep < mySteps - 1) {
+    if (currentStep < mySteps - 1) {
+      form.handleSubmit(saveData)();
+      if (areExtraFieldsValid) {
         setCurrentStep(currentStep + 1);
+      } else {
+        toast.error(
+          "Please ensure you have filled all required fields then continue!"
+        );
       }
-    })();
+    }
   };
 
   const prevStep = () => {
@@ -203,7 +218,7 @@ const Step7: React.FC = () => {
           variant="default"
           className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
           onClick={form.handleSubmit(nextStep)}
-          disabled={!(currentStep < mySteps - 1) || !areExtraFieldsValid}
+          disabled={!(currentStep < mySteps - 1)}
         >
           Continue
         </Button>

@@ -15,7 +15,7 @@ import ImageCard from "@/components/general/image-card";
 import { ColorTag } from "@/components/general/color-tags";
 import { Footer } from "@/components/general/footer";
 
-const innovationList: InnovationType[] = [
+const innovationList = [
   {
     name: "Powerful mill",
     usage: "Used in rice production",

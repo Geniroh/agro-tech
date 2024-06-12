@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
 import { useFormContext } from "@/context/FormContext";
+import { toast } from "sonner";
 import {
   Form,
   FormControl,
@@ -76,7 +77,16 @@ const Step4: React.FC = () => {
   const nextStep = () => {
     if (currentStep < mySteps - 1) {
       form.handleSubmit(saveData)();
-      setCurrentStep(currentStep + 1);
+
+      checkExtraFieldsValidity();
+
+      if (areExtraFieldsValid) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        toast.error(
+          "Please ensure you have filled all required fields then continue!"
+        );
+      }
     }
   };
 
@@ -104,7 +114,11 @@ const Step4: React.FC = () => {
 
   useEffect(() => {
     checkExtraFieldsValidity();
-  }, [form.watch("isInstruction"), form.watch("instructions")]);
+  }, [
+    form.watch("isInstruction"),
+    form.watch("instructions"),
+    areExtraFieldsValid,
+  ]);
 
   return (
     <Form {...form}>

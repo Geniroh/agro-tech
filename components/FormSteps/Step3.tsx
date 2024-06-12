@@ -23,6 +23,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
 import { StyledFileInput } from "@/components/general/upload-input";
 import { IoTrashBin } from "react-icons/io5";
+import { toast } from "sonner";
 
 const baseSchema = z.object({
   isUsageExample: z.boolean(),
@@ -85,7 +86,16 @@ const Step3: React.FC = () => {
   const nextStep = () => {
     if (currentStep < mySteps - 1) {
       form.handleSubmit(saveData)();
-      setCurrentStep(currentStep + 1);
+
+      checkExtraFieldsValidity();
+
+      if (areExtraFieldsValid) {
+        setCurrentStep(currentStep + 1);
+      } else {
+        toast.error(
+          "Please ensure you have filled all required fields then continue!"
+        );
+      }
     }
   };
 

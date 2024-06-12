@@ -24,6 +24,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { IoTrashBin } from "react-icons/io5";
 import { useFormSubmit } from "@/hooks/multi-step-submit";
 import { ClipLoader } from "react-spinners";
+import { toast } from "sonner";
 
 const formSchema = z.object({
   isGenderFriendly: z.boolean(),
@@ -67,7 +68,7 @@ const Step8: React.FC = () => {
       form.handleSubmit(saveData)();
       await handleSubmit(formData);
     } catch (error) {
-      console.log({ error });
+      toast.error("There was an error in uploading innovation");
     }
     setLoading(false);
   };

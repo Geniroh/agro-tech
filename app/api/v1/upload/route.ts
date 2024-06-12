@@ -47,7 +47,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     const fileRecord = {
       filename: file.name,
       size: file.size.toString(),
-      url: `https://${bucketName}.${process.env.DO_ENDPOINT}/${file.name}`,
+      url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
     };
 
     await db.file.create({ data: fileRecord });
