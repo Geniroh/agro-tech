@@ -7,7 +7,8 @@ import Link from "next/link";
 import { RevenueMock } from "@/mocks/data";
 import BarChartCard from "@/components/data/charts/BarChartCard";
 import { DonutChartCard } from "@/components/data/charts/DonutChartCard";
-import { ChloropethMap } from "@/components/data/charts/ChloropethMap";
+// import { ChloropethMap } from "@/components/data/charts/ChloropethMap";
+import DynamicChloropethMap from "@/components/data/charts/DynamicChloropethMap";
 
 export default function AnalyticsPage() {
   return (
@@ -23,10 +24,7 @@ export default function AnalyticsPage() {
 
       <div className="flex gap-x-6 container">
         <div className="md:w-[443px] h-[688px]">
-          <ChloropethMap />
-          {/* <div className="min-h-[500px] rounded-lg bg-[#9a9a9a]">
-
-                </div> */}
+          <DynamicChloropethMap />
         </div>
 
         <div className="w-full Xl:w-[60%] flex flex-col gap-y-10">

@@ -70,25 +70,15 @@ export const Navbar = () => {
           <div className="flex gap-x-3">
             {session ? (
               <>
-                {status === "loading" ? (
+                <div className="flex items-center gap-x-3">
                   <Button
-                    variant="outline"
                     className="dark:text-white"
-                    disabled={true}
+                    onClick={() => router.push("/upload")}
                   >
-                    <ClipLoader size={13} />
+                    Upload Innovation
                   </Button>
-                ) : (
-                  <div className="flex items-center gap-x-3">
-                    <Button
-                      className="dark:text-white"
-                      onClick={() => router.push("/upload")}
-                    >
-                      Upload Innovation
-                    </Button>
-                    <UserDropdownMenu />
-                  </div>
-                )}
+                  <UserDropdownMenu />
+                </div>
               </>
             ) : (
               <>
