@@ -9,6 +9,7 @@ import { generateArrayFromNumber } from "@/utils/function";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import axios from "axios";
+import Link from "next/link";
 
 const columns2: ColumnProps[] = [
   {
@@ -22,7 +23,11 @@ const columns2: ColumnProps[] = [
     header: "Innovation",
     accessor: "productName",
     render: (name, record) => {
-      return <ImageList text={name} imgUrl={record?.productMedia[0]?.url} />;
+      return (
+        <Link href={`innovations/${record.id}`}>
+          <ImageList text={name} imgUrl={record?.productMedia[0]?.url} />{" "}
+        </Link>
+      );
     },
   },
   {
