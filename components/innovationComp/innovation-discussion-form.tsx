@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
+import { Skeleton } from "@/components/ui/skeleton";
 import { z } from "zod";
 import {
   Form,
@@ -14,14 +15,21 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { toast } from "sonner";
+import { IoSendSharp } from "react-icons/io5";
+import { ClipLoader } from "react-spinners";
 
 const formSchema = z.object({
   innovation_id: z.string(),
   message: z.string().min(1, "Message is required"),
 });
 
-export const ForumChats = ({ innovationId }: { innovationId: string }) => {
+export const InnovationDiscussionForum = ({
+  innovationId,
+}: {
+  innovationId: string;
+}) => {
   const [loading, setLoading] = useState<boolean>(false);
+  const [btnLoading, setBtnLoading] = useState<boolean>(false);
   const [comments, setComments] = useState<IInnovationComment[]>([]);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -36,7 +44,7 @@ export const ForumChats = ({ innovationId }: { innovationId: string }) => {
   };
 
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
-    setLoading(true);
+    setBtnLoading(true);
     try {
       const { data } = await axios.post(
         "/api/v1/innovation/discussion",
@@ -48,7 +56,7 @@ export const ForumChats = ({ innovationId }: { innovationId: string }) => {
       toast.error("Network error");
       console.log(error);
     }
-    setLoading(false);
+    setBtnLoading(false);
   };
 
   const handleReaction = async (reaction: "like" | "dislike", id: string) => {
@@ -69,6 +77,7 @@ export const ForumChats = ({ innovationId }: { innovationId: string }) => {
   };
 
   const fetchData = async () => {
+    setLoading(true);
     try {
       const { data } = await axios.get(
         `/api/v1/innovation/${innovationId}/discussion`
@@ -80,41 +89,64 @@ export const ForumChats = ({ innovationId }: { innovationId: string }) => {
     } catch (error) {
       toast.error("Network error");
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchData();
   }, []);
 
+  if (loading) {
+    return (
+      <div className="flex flex-col space-y-3 w-full container">
+        <Skeleton className="h-[300px] w-full mt-10" />
+      </div>
+    );
+  }
+
   return (
-    <div className="w-full">
-      <Form {...form}>
-        <div className="space-y-6">
-          <FormField
-            control={form.control}
-            name="message"
-            render={({ field }) => (
-              <FormItem>
-                <FormControl>
-                  <Input {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          {/* Include a hidden input for innovation_id */}
-          <input type="hidden" {...form.register("innovation_id")} />
-        </div>
-        <Button
-          size="lg"
-          variant="outline"
-          className="text-[16px] leading-[22px] rounded-xl font-semibold"
-          onClick={form.handleSubmit(saveComment)}
-          disabled={loading}
-        >
-          {loading ? "Sending..." : "Send"}
-        </Button>
-      </Form>
+    <div className="container w-full">
+      <h2 className="text-lg text-muted-foreground mt-10">
+        Join the community
+      </h2>
+      <div className="my-10">
+        <Form {...form}>
+          <div className="space-y-6">
+            <input type="hidden" {...form.register("innovation_id")} />
+
+            <FormField
+              control={form.control}
+              name="message"
+              render={({ field }) => (
+                <FormItem>
+                  <FormControl>
+                    <div className="bg-myoffwhie py-1 px-6 rounded-3xl w-full flex items-center">
+                      <input
+                        {...field}
+                        className="bg-transparent border-0 outline-none w-full text-[14px]"
+                        placeholder="Share your thoughts"
+                      />
+                      <div className="flex text-[14px] gap-x-2">
+                        {btnLoading ? (
+                          <ClipLoader size={13} />
+                        ) : (
+                          <button
+                            className="p-2 flex items-center justify-center rounded-full hover:bg-white border"
+                            onClick={form.handleSubmit(saveComment)}
+                          >
+                            <IoSendSharp />
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+        </Form>
+      </div>
 
       <div>
         {comments.map((comment, i) => (

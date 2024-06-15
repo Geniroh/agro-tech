@@ -46,6 +46,8 @@ interface IInnovationType {
   yearInvented: string;
   country: string;
   cost: number;
+  likes: number;
+  dislikes: number;
   productChain: string;
   productPhase: string;
   productUse: string[];
@@ -63,6 +65,28 @@ interface IInnovationType {
   updatedAt?: string;
 }
 
+interface IInnovationComment {
+  createdAt?: Date;
+  dislikes: number;
+  email: string;
+  id: string;
+  innovationDiscussionId: string;
+  likes: number;
+  message: string;
+  replies?: any | any[];
+  topReply?: string;
+  updatedAt?: Date;
+  username: string;
+}
+
+interface IGetInnovationReactions {
+  message?: string;
+  totalComments: number;
+  totalDislikes: number;
+  totalLikes: number;
+  totalReplies: number;
+}
+
 const data: IInnovationType[] = [
   {
     id: "66697f03e9c81c3233f0c24d",
@@ -70,6 +94,8 @@ const data: IInnovationType[] = [
     yearInvented: "2023",
     country: "Algeria",
     cost: 2000,
+    likes: 0,
+    dislikes: 0,
     productChain: "Farm supply",
     productPhase: "testing",
     productUse: ["For automatically clearing weeds and land cultivation"],

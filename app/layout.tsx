@@ -22,7 +22,7 @@ export default function RootLayout({
       <body className={`font-open-sans bg-white w-screen overflow-x-hidden`}>
         <SessionProvider>
           {children}
-          <Toaster />
+          <Toaster position="top-right" richColors />
         </SessionProvider>
       </body>
     </html>

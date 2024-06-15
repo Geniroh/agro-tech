@@ -1,6 +1,7 @@
+"use client";
 import React from "react";
 
-const page = () => {
+const ErrorBoundary = ({ error }: { error: Error }) => {
   return (
     <div
       style={{
@@ -42,11 +43,11 @@ const page = () => {
               alignItems: "center",
             }}
           >
-            <p style={{ color: "#fff", fontSize: "18px" }}>Loading</p>
+            <p style={{ color: "#fff", fontSize: "18px" }}>{error.message}</p>
             <p
               style={{
                 border: "8px solid transparent",
-                borderTop: "8px solid #329632",
+                borderTop: "8px solid red",
                 borderRadius: "50%",
                 width: "10px",
                 height: "10px",
@@ -60,4 +61,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ErrorBoundary;

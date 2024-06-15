@@ -1,6 +1,6 @@
 import React from "react";
 
-const page = () => {
+export const LoadingPage = () => {
   return (
     <div
       style={{
@@ -59,5 +59,3 @@ const page = () => {
     </div>
   );
 };
-
-export default page;

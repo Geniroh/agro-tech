@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm, useFieldArray } from "react-hook-form";
 import { z } from "zod";
@@ -109,7 +109,7 @@ const Step3: React.FC = () => {
     form.handleSubmit(saveData)();
   };
 
-  const checkExtraFieldsValidity = () => {
+  const checkExtraFieldsValidity = useCallback(() => {
     const instances = form.getValues("instances");
     if (form.watch("isUsageExample")) {
       const isValid = instances.every(
@@ -122,11 +122,11 @@ const Step3: React.FC = () => {
     } else {
       setAreExtraFieldsValid(true);
     }
-  };
+  }, [form.watch("isUsageExample"), form.watch("instances")]);
 
   useEffect(() => {
     checkExtraFieldsValidity();
-  }, [form.watch("isUsageExample"), form.watch("instances")]);
+  }, [checkExtraFieldsValidity]);
 
   return (
     <Form {...form}>
