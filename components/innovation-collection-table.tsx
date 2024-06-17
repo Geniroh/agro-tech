@@ -7,7 +7,7 @@ import { useState, useEffect } from "react";
 import {
   CollectionDataTableP,
   CollectionDataImageGrid,
-} from "./data/collections-table";
+} from "@/components/data/collections-table";
 import axios from "axios";
 import { toast } from "sonner";
 import { countriesData } from "@/data/country-region";
@@ -123,7 +123,7 @@ export const CollectionTable = () => {
         </div>
 
         <div className="mb-5 flex flex-col gap-4 md:flex-row justify-between items-center">
-          <div className="flex gap-x-7 flex-wrap gap-y-4">
+          <div className="flex gap-x-7 flex-wrap gap-y-4 justify-between md:justify-normal">
             <TagSelect
               name="Implementation phase"
               optionsName="Phase"

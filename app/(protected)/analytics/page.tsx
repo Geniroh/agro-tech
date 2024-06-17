@@ -9,13 +9,57 @@ import BarChartCard from "@/components/data/charts/BarChartCard";
 import { DonutChartCard } from "@/components/data/charts/DonutChartCard";
 // import { ChloropethMap } from "@/components/data/charts/ChloropethMap";
 import DynamicChloropethMap from "@/components/data/charts/DynamicChloropethMap";
+import BreadcrumbP from "@/components/general/my-breadcrumb";
 
 export default function AnalyticsPage() {
   return (
-    <main className="lg:h-screen">
+    <main className="lg:max-h-screen">
       <Navbar />
+      <div className="flex justify-center items-center">
+        <BreadcrumbP
+          fromHref="/"
+          fromTitle="Back to Home page"
+          toHref="/analytics"
+          toTitle="Analytics"
+          className="hidden md:block"
+        />
+        <h1 className="text-[16px] leading-[24px] font-semibold text-center md:hidden my-10">
+          Analytics
+        </h1>
+      </div>
 
-      <div className="flex justify-center items-center text-sm gap-x-2 my-10 font-semibold">
+      <div className="w-full h-full container">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="w-full h-[calc(95vh-170px)] border mb-10">
+            <DynamicChloropethMap />
+          </div>
+          <div className="col-span-2 flex flex-col gap-y-4 mb-10 md:h-[calc(95vh-170px)">
+            <InnovationBar />
+            <div className="flex flex-col md:flex-row gap-4">
+              <div className="md:w-[40%]">
+                <DonutChartCard />
+              </div>
+              <div className="h-[200px] md:w-[60%]">
+                <BarChartCard
+                  title="Revenue Performance"
+                  subtitle="Keep track of revenue performance for the beach house for the last 12 month"
+                  data={RevenueMock}
+                  dataKey="value"
+                  height={250}
+                  cellFill="#9E77ED"
+                  XdataKey="name"
+                  fill="#475467"
+                  Ylabel="Revenue (N)"
+                  key={1}
+                  barWidth={32}
+                  // className="h-full max-h-[523px]"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      {/* <div className="flex justify-center items-center text-sm gap-x-2 my-10 font-semibold">
         <span className="text-[#888888]">Back to HomePage</span>/
         <span>
           <Link href="/upload">Upload Innovation</Link>
@@ -55,7 +99,7 @@ export default function AnalyticsPage() {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
     </main>
   );
 }

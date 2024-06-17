@@ -104,9 +104,10 @@ export const Navbar = () => {
                 ) : (
                   <>
                     <LoginButton>
-                      <Button variant="outline" className="dark:text-white">
+                      <Button variant="outline" className="hidden md:flex">
                         Sign In
                       </Button>
+                      <Button className="bg-mygreen md:hidden">Sign In</Button>
                     </LoginButton>
                     <RegisterButton>
                       <Button className="hidden md:flex gap-x-2 bg-mygreen">

@@ -3,10 +3,7 @@ import React, { useEffect, useState } from "react";
 import { ColumnProps, TableP } from "@/components/general/p-table";
 import { ImageList } from "@/components/general/image-list";
 import { ColorTag } from "@/components/general/color-tags";
-import { Button } from "@/components/ui/button";
 import InnovationCard from "@/components/innovation-card";
-import { toast } from "sonner";
-import axios from "axios";
 import Link from "next/link";
 
 const columns2: ColumnProps[] = [

@@ -74,7 +74,7 @@ const ChloropethMap: React.FC = () => {
     <MapContainer
       center={center}
       zoom={4}
-      style={{ height: "100%", width: "100%" }}
+      style={{ height: "100%", width: "100%", zIndex: -4 }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"

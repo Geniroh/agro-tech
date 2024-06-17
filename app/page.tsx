@@ -4,9 +4,12 @@ import { Navbar } from "@/components/general/navbar";
 import ImageCard from "@/components/general/image-card";
 import { ColorTag } from "@/components/general/color-tags";
 import { Footer } from "@/components/general/footer";
+import { Button } from "@/components/ui/button";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import { CircleHelp } from "lucide-react";
+import { IoMdHelpCircle } from "react-icons/io";
 
 const innovations = [
   {
@@ -183,6 +186,12 @@ export default function Home() {
           <CollectionTable />
         </div>
       </main>
+      <Button
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0"
+        variant="outline"
+      >
+        <IoMdHelpCircle className="text-[18px]" /> <span>Help</span>
+      </Button>
       <Footer />
     </div>
   );
