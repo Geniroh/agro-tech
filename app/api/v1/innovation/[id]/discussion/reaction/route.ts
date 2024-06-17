@@ -3,8 +3,12 @@ import { NextResponse } from "next/server";
 import { auth } from "@/auth";
 import Joi from "joi";
 
-// Define the schema for request validation
-const schema = Joi.object({
+// Define schema for the commentId parameter
+const getReactionsSchema = Joi.object({
+  commentId: Joi.string().required(),
+});
+
+const postReactionschema = Joi.object({
   commentId: Joi.string().required(),
   reaction: Joi.string().valid("like", "dislike").required(),
 });
@@ -12,7 +16,7 @@ const schema = Joi.object({
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { error, value } = schema.validate(body);
+    const { error, value } = postReactionschema.validate(body);
     if (error) {
       return NextResponse.json(
         { error: error.details[0].message },
@@ -124,6 +128,51 @@ export async function POST(req: Request) {
     console.error(error);
     return NextResponse.json(
       { error: "Failed to process reaction" },
+      { status: 500 }
+    );
+  }
+}
+
+// GET handler to fetch all reactions for a specific comment
+export async function GET(
+  req: Request,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const body = await req.json();
+    const { error, value } = getReactionsSchema.validate(body);
+    if (error) {
+      return NextResponse.json(
+        { error: error.details[0].message },
+        { status: 400 }
+      );
+    }
+
+    const session = await auth();
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { commentId } = value;
+
+    // Fetch all reactions for the specified comment
+    const reactions = await db.commentReaction.findMany({
+      where: { commentId },
+      include: { User: true }, // Include user details if needed
+    });
+
+    if (!reactions || reactions.length === 0) {
+      return NextResponse.json(
+        { error: "No reactions found for this comment" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({ reactions }, { status: 200 });
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to get reactions" },
       { status: 500 }
     );
   }

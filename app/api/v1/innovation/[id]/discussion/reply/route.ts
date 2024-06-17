@@ -77,7 +77,8 @@ export async function GET(
     const replies = await db.commentReply.findMany({
       where: { commentId },
       include: {
-        User: true, // Include user details
+        User: true,
+        reactions: true, // Include user details
       },
     });
 

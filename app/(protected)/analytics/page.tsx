@@ -41,7 +41,7 @@ export default function AnalyticsPage() {
               </div>
               <div className="h-[200px] md:w-[60%]">
                 <BarChartCard
-                  title="Revenue Performance"
+                  title="Innovation per year"
                   subtitle="Keep track of revenue performance for the beach house for the last 12 month"
                   data={RevenueMock}
                   dataKey="value"

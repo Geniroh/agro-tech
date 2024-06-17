@@ -21,12 +21,13 @@ model User {
   password             String?
   role                 UserRole               @default(USER)
   accounts             Account[]
-  // Reply                Reply[]
-  // Discussion           Discussion[]
+  Reply                Reply[]
+  Discussion           Discussion[]
   reactions            CommentReaction[]
   replies              CommentReply[]
   CommentReplyReaction CommentReplyReaction[]
   innovationReaction   InnovationReaction[]
+  discussionReaction   Reaction[]
 
   @@map("users")
 }
@@ -77,6 +78,7 @@ model Innovation {
   cost                     Float
   productChain             String
   productPhase             String
+  status                   String                 @default("pending")
   likes                    Int?                   @default(0)
   dislikes                 Int?                   @default(0)
   productUse               String[]
@@ -98,37 +100,51 @@ model Innovation {
   @@map("innovations")
 }
 
-// model Reply {
-//   id        String   @id @default(auto()) @map("_id") @db.ObjectId
-//   content   String
-//   authorId  String   @db.ObjectId
-//   likes     Int?     @default(0)
-//   dislikes  Int?     @default(0)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+model Reply {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  message   String
+  userId    String   @db.ObjectId
+  likes     Int?     @default(0)
+  dislikes  Int?     @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   author       User       @relation(fields: [authorId], references: [id], onDelete: Cascade)
-//   discussionId String     @db.ObjectId
-//   Discussion   Discussion @relation(fields: [discussionId], references: [id])
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discussionId String     @db.ObjectId
+  Discussion   Discussion @relation(fields: [discussionId], references: [id])
 
-//   @@map("replies")
-// }
+  @@map("replies")
+}
 
-// model Discussion {
-//   id       String  @id @default(auto()) @map("_id") @db.ObjectId
-//   title    String
-//   content  String
-//   authorId String  @db.ObjectId
-//   likes    Int?    @default(0)
-//   dislikes Int?    @default(0)
-//   replies  Reply[]
+model Discussion {
+  id        String     @id @default(auto()) @map("_id") @db.ObjectId
+  title     String
+  message   String
+  userId    String     @db.ObjectId
+  likes     Int?       @default(0)
+  dislikes  Int?       @default(0)
+  replies   Reply[]
+  reactions Reaction[]
 
-//   author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
-//   createdAt DateTime @default(now())
-//   updatedAt DateTime @updatedAt
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-//   @@map("discussions")
-// }
+  @@map("discussions")
+}
+
+model Reaction {
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  type         String @map("type")
+  userId       String @db.ObjectId
+  discussionId String @db.ObjectId
+
+  user       User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  discussion Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, discussionId])
+  @@map("reactions")
+}
 
 model InnovationComment {
   id        String            @id @default(auto()) @map("_id") @db.ObjectId
