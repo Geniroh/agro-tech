@@ -21,6 +21,7 @@ import { InnovationReactions } from "@/components/innovationComp/innovation-reac
 import { InnovationDiscussionForum } from "@/components/innovationComp/innovation-discussion-form";
 import { IoPlay } from "react-icons/io5";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
+import { Navbar } from "@/components/general/navbar";
 
 const InnovationPage = () => {
   const router = useRouter();
@@ -116,6 +117,7 @@ const InnovationPage = () => {
 
   return (
     <>
+      <Navbar />
       {!data ? (
         <section className="flex items-center h-full sm:p-16 dark:bg-gray-50 dark:text-gray-800">
           <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8 space-y-8 text-center sm:max-w-md">

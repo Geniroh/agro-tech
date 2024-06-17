@@ -11,9 +11,20 @@ export async function GET(req: NextRequest, res: NextResponse) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const discussions = await db.discussion.findMany();
+    const discussions = await db.discussion.findMany({
+      include: { replies: true, user: true },
+    });
+    const innovationDiscussion = await db.innovationDiscussion.findMany({
+      include: { comments: true },
+    });
 
-    return NextResponse.json(discussions);
+    const combinedDiscussion = [...discussions, ...innovationDiscussion];
+
+    return NextResponse.json({
+      userDiscussion: discussions,
+      innovationDiscussion,
+      all: combinedDiscussion,
+    });
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to get discussions" });

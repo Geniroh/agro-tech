@@ -88,6 +88,44 @@ interface IGetInnovationResponse {
   totalPages: number;
 }
 
+interface IInnovationDiscussion {
+  createdAt: string | Date;
+  dislikes: number;
+  id: string;
+  innovation_id: string;
+  likes: number;
+  topComment: any;
+  updatedAt: string | Date;
+  comments: any[];
+}
+
+interface IUserDiscussion {
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  likes: number;
+  message: string;
+  title: string;
+  updatedAt: string;
+  userId: string;
+}
+
+interface ICombinedDiscussion {
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  innovation_id: string;
+  likes: number;
+  topComment: any;
+  updatedAt: string;
+  comments?: any[];
+  message: string;
+  title: string;
+  userId: string;
+  replies?: any[];
+  user?: any;
+}
+
 // interface IInnovationComments {
 //   createdAt: Date;
 //   dislikes: number;
