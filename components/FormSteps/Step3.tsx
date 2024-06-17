@@ -109,6 +109,9 @@ const Step3: React.FC = () => {
     form.handleSubmit(saveData)();
   };
 
+  const watchExample = form.watch("isUsageExample");
+  const watchInstance = form.watch("instances");
+
   const checkExtraFieldsValidity = useCallback(() => {
     const instances = form.getValues("instances");
     if (form.watch("isUsageExample")) {
@@ -122,7 +125,7 @@ const Step3: React.FC = () => {
     } else {
       setAreExtraFieldsValid(true);
     }
-  }, [form.watch("isUsageExample"), form.watch("instances")]);
+  }, [watchExample, watchInstance]);
 
   useEffect(() => {
     checkExtraFieldsValidity();

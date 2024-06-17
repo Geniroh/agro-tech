@@ -1,5 +1,4 @@
 "use client";
-import Link from "next/link";
 import React from "react";
 
 const ErrorBoundary = ({ error }: { error: Error }) => {
@@ -12,9 +11,6 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
         alignItems: "center",
         height: "100vh",
         width: "100vw",
-        zIndex: 10000,
-        position: "fixed",
-        top: 0,
       }}
     >
       <div style={{ display: "flex", flexDirection: "column", gap: "0" }}>
@@ -39,17 +35,6 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
               fill="#329632"
             />
           </svg>
-          <p
-            style={{
-              color: "red",
-              fontSize: "20px",
-              fontWeight: 600,
-              display: "block",
-              textAlign: "center",
-            }}
-          >
-            ERROR
-          </p>
           <div
             style={{
               display: "flex",
@@ -70,10 +55,6 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
               }}
             ></p>
           </div>
-
-          <Link href="/" style={{ color: "#329632", fontWeight: 500 }}>
-            Go Home
-          </Link>
         </div>
       </div>
     </div>

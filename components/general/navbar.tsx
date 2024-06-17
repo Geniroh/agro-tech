@@ -8,8 +8,9 @@ import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
+import { Menu, X } from "lucide-react";
 
 const navLinks = [
   {
@@ -29,21 +30,31 @@ const navLinks = [
 export const Navbar = () => {
   const pathname = usePathname();
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession();
 
   useEffect(() => {}, [session, status]);
 
   return (
-    <div className="border-b shadow-sm border-b-white sticky top-0 bg-white z-40 px-5">
+    <div className="border-b shadow-sm border-b-white relative md:sticky top-0 bg-white z-40 px-5">
       <nav className="w-full h-[70px] grid grid-cols-3 items-center max-w-[1200px] mx-auto">
-        <div>
-          <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
-            STAVMiA
+        <div className="flex items-center gap-3">
+          <Button
+            variant="outline"
+            className="lg:hidden"
+            onClick={() => setIsOpen(true)}
+          >
+            <Menu />
+          </Button>
+          <div>
+            <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
+              STAVMiA
+            </div>
           </div>
         </div>
 
         <div>
-          <div className="flex gap-6 text-[16px] justify-center">
+          <div className="hidden lg:flex gap-6 text-[16px] justify-center">
             {navLinks.map((link) => {
               const isActive =
                 link.href === "/"
@@ -72,7 +83,7 @@ export const Navbar = () => {
               <>
                 <div className="flex items-center gap-x-3">
                   <Button
-                    className="dark:text-white"
+                    className="dark:text-white hidden md:flex"
                     onClick={() => router.push("/upload")}
                   >
                     Upload Innovation
@@ -98,7 +109,7 @@ export const Navbar = () => {
                       </Button>
                     </LoginButton>
                     <RegisterButton>
-                      <Button className="flex gap-x-2 bg-mygreen">
+                      <Button className="hidden md:flex gap-x-2 bg-mygreen">
                         Create an account <FaUser />
                       </Button>
                     </RegisterButton>
@@ -109,6 +120,52 @@ export const Navbar = () => {
           </div>
         </div>
       </nav>
+
+      {/* Mobile Menu */}
+      <div
+        className={`fixed lg:hidden top-0 left-0 z-20 w-64 h-full transition-all duration-500 transform bg-white shadow-lg ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="flex justify-end p-4">
+          <X
+            className=" text-[24px] font-light leading-[32px] cursor-pointer"
+            onClick={() => setIsOpen(false)}
+          />
+        </div>
+        <div className="px-6 py-4 flex flex-col">
+          <div className="px-3 py-2 text-[28px] font-black-ops w-full text-center rounded-lg tracking-wider text-mygreen">
+            STAVMiA
+          </div>
+          <div>
+            {navLinks.map((link, i) => (
+              <Link
+                key={i}
+                href={link.href}
+                className={`${
+                  pathname === link.href
+                    ? "text-mygreen font-open-sans font-semibold"
+                    : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+                } min-h-[15px] flex items-center py-3 justify-center w-full border-b border-b-mygreen`}
+              >
+                {link.name}
+              </Link>
+            ))}
+
+            <Link
+              key={12133}
+              href={"/upload"}
+              className={`${
+                pathname === "/upload"
+                  ? "text-mygreen font-open-sans font-semibold"
+                  : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+              } min-h-[15px] flex items-center py-3 justify-center w-full border-b border-b-mygreen`}
+            >
+              Upload Innovation
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

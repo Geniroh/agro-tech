@@ -24,10 +24,19 @@ export async function GET(
       include: { comments: true },
     });
 
+    // if (!discussion) {
+    //   return NextResponse.json(
+    //     { error: "Discussion not found" },
+    //     { status: 404 }
+    //   );
+    // }
     if (!discussion) {
       return NextResponse.json(
-        { error: "Discussion not found" },
-        { status: 404 }
+        {
+          message: "Discussion not found",
+          comments: [],
+        },
+        { status: 200 }
       );
     }
 

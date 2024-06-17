@@ -12,7 +12,7 @@ import DynamicChloropethMap from "@/components/data/charts/DynamicChloropethMap"
 
 export default function AnalyticsPage() {
   return (
-    <main>
+    <main className="lg:h-screen">
       <Navbar />
 
       <div className="flex justify-center items-center text-sm gap-x-2 my-10 font-semibold">
@@ -22,12 +22,12 @@ export default function AnalyticsPage() {
         </span>
       </div>
 
-      <div className="flex gap-x-6 container">
-        <div className="md:w-[443px] h-[688px]">
+      <div className="gap-x-6 container lg:grid lg:grid-cols-3">
+        <div className="">
           <DynamicChloropethMap />
         </div>
 
-        <div className="w-full Xl:w-[60%] flex flex-col gap-y-10">
+        <div className="w-full flex flex-col gap-y-10 lg:col-span-2">
           <div className="">
             <InnovationBar />
           </div>
@@ -50,7 +50,7 @@ export default function AnalyticsPage() {
                 Ylabel="Revenue (N)"
                 key={1}
                 barWidth={32}
-                className="h-full"
+                className="h-full max-h-[523px]"
               />
             </div>
           </div>

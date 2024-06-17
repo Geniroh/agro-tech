@@ -17,6 +17,8 @@ import axios from "axios";
 import { toast } from "sonner";
 import { IoSendSharp } from "react-icons/io5";
 import { ClipLoader } from "react-spinners";
+import { ChatCard } from "../general/chat-card";
+import InnovationCommentCard from "./innovation-comment-card";
 
 const formSchema = z.object({
   innovation_id: z.string(),
@@ -25,12 +27,14 @@ const formSchema = z.object({
 
 export const InnovationDiscussionForum = ({
   innovationId,
+  comments,
 }: {
   innovationId: string;
+  comments: IInnovationComment[];
 }) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
-  const [comments, setComments] = useState<IInnovationComment[]>([]);
+  const [comment, setComment] = useState<IInnovationComment[]>(comments);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -43,6 +47,8 @@ export const InnovationDiscussionForum = ({
     handleSubmit(values);
   };
 
+  console.log(comments);
+
   const handleSubmit = async (values: z.infer<typeof formSchema>) => {
     setBtnLoading(true);
     try {
@@ -51,6 +57,7 @@ export const InnovationDiscussionForum = ({
         values
       );
       console.log(data);
+      form.reset();
       toast.success("Comment submitted successfully");
     } catch (error) {
       toast.error("Network error");
@@ -70,6 +77,7 @@ export const InnovationDiscussionForum = ({
         payload
       );
       console.log(data);
+      fetchData();
     } catch (error) {
       toast.error("Network error");
       console.log(error);
@@ -82,9 +90,7 @@ export const InnovationDiscussionForum = ({
       const { data } = await axios.get(
         `/api/v1/innovation/${innovationId}/discussion`
       );
-
-      setComments(data.comments);
-
+      setComment(data.comments);
       console.log({ inn: data });
     } catch (error) {
       toast.error("Network error");
@@ -92,9 +98,7 @@ export const InnovationDiscussionForum = ({
     setLoading(false);
   };
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  useEffect(() => {}, []);
 
   if (loading) {
     return (
@@ -105,7 +109,7 @@ export const InnovationDiscussionForum = ({
   }
 
   return (
-    <div className="container w-full">
+    <div className="w-full">
       <h2 className="text-lg text-muted-foreground mt-10">
         Join the community
       </h2>
@@ -120,11 +124,17 @@ export const InnovationDiscussionForum = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <div className="bg-myoffwhie py-1 px-6 rounded-3xl w-full flex items-center">
+                    <div className="bg-myoffwhie py-2 px-6 rounded-3xl w-full flex items-center">
                       <input
                         {...field}
                         className="bg-transparent border-0 outline-none w-full text-[14px]"
                         placeholder="Share your thoughts"
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            e.preventDefault();
+                            form.handleSubmit(saveComment)();
+                          }
+                        }}
                       />
                       <div className="flex text-[14px] gap-x-2">
                         {btnLoading ? (
@@ -148,22 +158,12 @@ export const InnovationDiscussionForum = ({
         </Form>
       </div>
 
-      <div>
-        {comments.map((comment, i) => (
-          <div>
-            <ul key={i} className="flex gap-6">
-              <li>{comment?.message}</li>
-              <li>Dislikes: {comment.dislikes}</li>
-              <li>Likes: {comment.likes}</li>
-              <Button onClick={() => handleReaction("like", comment.id)}>
-                Like
-              </Button>
-              <Button onClick={() => handleReaction("dislike", comment.id)}>
-                Dislike
-              </Button>
-            </ul>
-          </div>
-        ))}
+      <div className="ml-[15px] md:ml-[30px] lg:ml-[60px] px-10">
+        <div className="space-y-6">
+          {comments.map((comment, i) => (
+            <InnovationCommentCard comments={comment} key={i} />
+          ))}
+        </div>
       </div>
     </div>
   );

@@ -3,10 +3,8 @@ import React, { useEffect, useState } from "react";
 import { ColumnProps, TableP } from "@/components/general/p-table";
 import { ImageList } from "@/components/general/image-list";
 import { ColorTag } from "@/components/general/color-tags";
-import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
 import { Button } from "@/components/ui/button";
-import { generateArrayFromNumber } from "@/utils/function";
-import { Input } from "@/components/ui/input";
+import InnovationCard from "@/components/innovation-card";
 import { toast } from "sonner";
 import axios from "axios";
 import Link from "next/link";
@@ -36,7 +34,7 @@ const columns2: ColumnProps[] = [
     render: (value: string | string[], record) => {
       const valueChainArray = Array.isArray(value) ? value : [value];
       return (
-        <div className="flex gap-x-1">
+        <div className="flex gap-x-1 w-full">
           {valueChainArray.map((item, i) => (
             <ColorTag name={item} type="purple" key={i} />
           ))}
@@ -58,133 +56,33 @@ const columns2: ColumnProps[] = [
   },
 ];
 
-const data2: IInnovationType[] = [
-  {
-    id: "1",
-    productName: "Vertical Farming",
-    yearInvented: "2024",
-    country: "USA",
-    cost: 5000,
-    productChain: "Input supply",
-    productPhase: "Wide Use",
-    productUse: ["Rice Mill"],
-    productDescription: "Example description",
-    productMedia: [
-      {
-        name: "green-house.jpeg",
-        url: "/images/green-house.jpeg",
-      },
-    ],
-    isExample: true,
-    productExample: [
-      {
-        instance_description: "Example instance",
-        instance_media: {
-          name: "example-media.jpeg",
-          url: "/images/example-media.jpeg",
-        },
-      },
-    ],
-    productInstruction: [
-      {
-        instruction_step: "Step 1",
-      },
-    ],
-    productInventor: [
-      {
-        inventor_name: "Inventor 1",
-        inventor_email: "inventor1@example.com",
-        inventor_contact: "1234567890",
-      },
-    ],
-    productSupplier: [
-      {
-        supplier_name: "Supplier 1",
-        supplier_email: "supplier1@example.com",
-        supplier_contact: "0987654321",
-      },
-    ],
-    productGuidelines: [
-      {
-        name: "Guideline 1",
-      },
-    ],
-    isGenderFriendly: true,
-    productGenderDescription: "Description here",
-    createdAt: "2024-06-12T10:57:07.486Z",
-    updatedAt: "2024-06-12T10:57:07.486Z",
-  },
-];
+interface CollectionTablesProps {
+  innovations: IInnovationType[];
+  activePageNo?: number;
+}
 
-export const CollectionDataTableP = () => {
-  const [pageNo, setPageNo] = useState<number>(4);
-  const [innovations, setInnovations] = useState<IInnovationType[]>([]);
-
-  const paginationPage = generateArrayFromNumber(pageNo);
-
-  const fetchInnovations = async () => {
-    try {
-      const { data } = await axios.get<IInnovationType[]>("/api/v1/innovation");
-      setInnovations(data);
-    } catch (error) {
-      toast.error(
-        "Please we are unable to get Innovations at his time, please try again!"
-      );
-    }
-  };
-
-  useEffect(() => {
-    fetchInnovations();
-  }, []);
-
+export const CollectionDataTableP = ({
+  innovations,
+}: CollectionTablesProps) => {
   return (
     <div>
       <div className="w-full h-full mt-10">
         <TableP columns={columns2} data={innovations} />
       </div>
-      <div className="mt-20 flex justify-center w-full">
-        <div className="flex items-center gap-3">
-          <div>
-            <Button size="sm">
-              <FaCaretLeft className="text-white text-sm" />
-            </Button>
-          </div>
-          <div className="flex gap-x-2 items-center">
-            <div className="flex gap-x-2">
-              {paginationPage.map((page) => (
-                <Button
-                  size="sm"
-                  className="rounded-full"
-                  variant="outline"
-                  key={page}
-                >
-                  {page}
-                </Button>
-              ))}
-            </div>
-            <div className="flex gap-x-2">
-              <Input
-                placeholder="Enter page to jump to ..."
-                size={10}
-                className="max-w-[300px] placeholder:text-[11px]"
-              />
-              {paginationPage.length > 10 && (
-                <Button size="sm" className="rounded-full" variant="outline">
-                  {paginationPage.length}
-                </Button>
-              )}
-              <Button size="sm" className="rounded-full" variant="outline">
-                20
-              </Button>
-            </div>
-          </div>
-          <div>
-            <Button size="sm">
-              <FaCaretRight className="text-white text-sm" />
-            </Button>
-          </div>
-        </div>
-      </div>
     </div>
   );
 };
+
+export function CollectionDataImageGrid({
+  innovations,
+}: CollectionTablesProps) {
+  return (
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {innovations.map((innovation, i) => (
+          <InnovationCard innovation={innovation} key={i} />
+        ))}
+      </div>
+    </div>
+  );
+}

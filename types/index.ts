@@ -1,10 +1,3 @@
-interface InnovationType {
-  id: number;
-  name: string;
-  industry?: string;
-  usage: string;
-}
-
 type SocialProvidersType = "google" | "github" | "facebook" | "apple";
 interface Media {
   name: string;
@@ -86,6 +79,27 @@ interface IGetInnovationReactions {
   totalLikes: number;
   totalReplies: number;
 }
+
+interface IGetInnovationResponse {
+  data: IInnovationType[];
+  page: number;
+  pageSize: number;
+  totalCount: number;
+  totalPages: number;
+}
+
+// interface IInnovationComments {
+//   createdAt: Date;
+//   dislikes: number;
+//   email: string;
+//   id: string;
+//   innovationDiscussionId: string;
+//   likes: number;
+//   message: string;
+//   topReply: any;
+//   updatedAt: Date;
+//   username: string;
+// }
 
 const data: IInnovationType[] = [
   {

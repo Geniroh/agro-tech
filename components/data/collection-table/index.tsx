@@ -1,136 +1,67 @@
-"use client"
-import { InnovationTableColumn, Payment, columns } from "@/components/data/collection-table/column"
-import { DataTable } from "@/components/data/collection-table/data-table"
-import { useEffect, useState } from "react"
-import { FaCaretLeft, FaCaretRight } from "react-icons/fa";
-import { Button } from "@/components/ui/button"
-import { generateArrayFromNumber } from "@/utils/function";
-import { Input } from "@/components/ui/input";
+"use client";
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/button";
 import InnovationCard from "@/components/innovation-card";
+import axios from "axios";
+import { toast } from "sonner";
 
-async function getData(): Promise<InnovationTableColumn[]> {
-  // Fetch data from your API here.
-  return [
-    {
-      id: "728ed52f",
-      name: "Innovation type",
-      chain: ["Input supply", "farm production"],
-      usage: "mill",
-      phase: "Wide use",
-      year: "2024"
-    },
-    {
-      id: "728ed52f56",
-      name: "Innovation type",
-      chain: ["Input supply", "farm production"],
-      usage: "mill",
-      phase: "Wide use",
-      year: "2024"
-    },
-    {
-      id: "728ed52f890",
-      name: "Innovation type",
-      chain: ["Input supply", "farm production"],
-      usage: "mill",
-      phase: "Wide use",
-      year: "2024"
-    },
-    // ...
-  ]
-}
+export function CollectionDataImageGrid() {
+  const [pageNo, setPageNo] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [innovations, setInnovations] = useState<IInnovationType[]>([]);
 
-const innovationList: InnovationType[] = [
-    {
-        name: "Powerful mill",
-        usage: "Used in rice production",
-        id: 1,
-    },
-    {
-        name: "Efficient irrigation system",
-        usage: "Saves water usage by 30%",
-        id: 2,
-    },
-    {
-        name: "Smart crop monitoring device",
-        usage: "Real-time data on crop health",
-        id: 3,
-    },
-    {
-        name: "Smart crop monitoring device",
-        usage: "Real-time data on crop health",
-        id: 4,
-    },
+  const fetchInnovations = async () => {
+    try {
+      const { data } = await axios.get<IGetInnovationResponse>(
+        "/api/v1/innovation",
+        {
+          params: {
+            page: pageNo,
+          },
+        }
+      );
+      setInnovations(data.data);
+      setPageNo(data.page);
+      setTotalPages(data.totalPages);
+    } catch (error) {
+      toast.error(
+        "Please we are unable to get Innovations at his time, please try again!"
+      );
+    }
+  };
 
-];
-
-export function CollectionsDataTable() {
-  const [tableData, setTableData] = useState<InnovationTableColumn[]>([])
-  const [pageNo, setPageNo] = useState<number>(4)
-
-  const paginationPage = generateArrayFromNumber(pageNo);
-
-  console.log({page: paginationPage})
-
-  const getTableData = async () => {
-    const data = await getData()
-    setTableData(data)
-  }
+  const handleSetPage = async (No: number) => {
+    setPageNo(No);
+    fetchInnovations();
+  };
 
   useEffect(() => {
-    getTableData()
-  }, [])
-
+    fetchInnovations();
+  }, [fetchInnovations]);
   return (
-    <div className="">
-      <DataTable columns={columns} data={tableData} />
-
-
-      
-      <div className="mt-10 flex justify-center w-full">
-
-            <div className="flex items-center gap-3">
-                <div>
-                    <Button size="sm"><FaCaretLeft className="text-white text-sm" /></Button>
-                </div>
-                <div className="flex gap-x-2 items-center">
-                    <div className="flex gap-x-2">
-                        {
-                            paginationPage.map(page => (
-                                <Button size="sm" className="rounded-full" variant="outline" key={page}>{page}</Button>
-                            ))
-                        }
-                    </div>
-                    <div className="flex gap-x-2">
-                        <Input placeholder="Enter page to jump to ..." size={10} className="max-w-[300px] placeholder:text-[11px]" />
-                        {
-                            paginationPage.length > 10 && (
-                                <Button size="sm" className="rounded-full" variant="outline" key={paginationPage.length}>{paginationPage.length}</Button>
-                            )
-                        }
-
-                        <Button size="sm" className="rounded-full" variant="outline" key={paginationPage.length}>20</Button>
-                       
-                    </div>
-                </div>
-                <div>
-                    <Button size="sm"><FaCaretRight className="text-white text-sm" /></Button>
-                </div>
-            </div>
+    <div>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {innovations.map((innovation, i) => (
+          <InnovationCard innovation={innovation} key={i} />
+        ))}
+      </div>
+      {totalPages > 1 && (
+        <div className="mt-20 flex justify-center items-center max-w-[500px] mx-auto flex-wrap gap-4">
+          {Array.from({ length: totalPages }).map((page, i) => (
+            <Button
+              size="sm"
+              className={`rounded-full ${
+                pageNo == i + 1 && "bg-mygreen text-white"
+              }`}
+              variant="outline"
+              key={i}
+              onClick={() => handleSetPage(i + 1)}
+            >
+              {i + 1}
+            </Button>
+          ))}
         </div>
+      )}
     </div>
-  )
+  );
 }
-
-
-export function CollectionDataImageGrid () {
-    return (
-        <div className="grid grid-cols-3 gap-4">
-            { 
-                innovationList.map((innovation, i) => (
-                    <InnovationCard innovation={innovation} key={i} />
-                ))
-            }
-        </div>
-    )
-}
-

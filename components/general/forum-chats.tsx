@@ -84,7 +84,7 @@ export const ForumChats = ({ innovationId }: { innovationId: string }) => {
 
   useEffect(() => {
     fetchData();
-  }, []);
+  });
 
   return (
     <div className="w-full">
@@ -118,7 +118,7 @@ export const ForumChats = ({ innovationId }: { innovationId: string }) => {
 
       <div>
         {comments.map((comment, i) => (
-          <div>
+          <div key={i}>
             <ul key={i} className="flex gap-6">
               <li>{comment?.message}</li>
               <li>Dislikes: {comment.dislikes}</li>

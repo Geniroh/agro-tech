@@ -85,7 +85,7 @@ const DiscussionPage = () => {
               </button>
             </div>
             <div>
-              <TagSelect name="Filter By" options={selectList} />
+              {/* <TagSelect name="Filter By" options={selectList} /> */}
             </div>
           </div>
 
