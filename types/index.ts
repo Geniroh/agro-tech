@@ -40,6 +40,7 @@ interface IInnovationType {
   country: string;
   cost: number;
   likes: number;
+  status?: string;
   dislikes: number;
   productChain: string;
   productPhase: string;
@@ -54,8 +55,10 @@ interface IInnovationType {
   productGuidelines?: ProductGuidelines[];
   isGenderFriendly?: boolean | null;
   productGenderDescription?: string | null;
-  createdAt?: string;
+  createdAt: string;
   updatedAt?: string;
+  discussion?: IInnovationDiscussion[];
+  reactions?: any[];
 }
 
 interface IInnovationComment {
@@ -86,6 +89,48 @@ interface IGetInnovationResponse {
   pageSize: number;
   totalCount: number;
   totalPages: number;
+}
+
+interface IInnovationDiscussion {
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  innovation_id: string;
+  likes: number;
+  topComment: any;
+  updatedAt: string;
+  comments: any[];
+  Innovation?: IInnovationType;
+}
+
+interface IUserDiscussion {
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  likes: number;
+  message: string;
+  title: string;
+  updatedAt: string;
+  userId: string;
+  user: any;
+  replies: any;
+}
+
+interface ICombinedDiscussion {
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  innovation_id: string;
+  likes: number;
+  topComment: any;
+  updatedAt: string;
+  comments?: any[];
+  message: string;
+  title: string;
+  userId: string;
+  replies?: any[];
+  user?: any;
+  Innovation?: IInnovationType;
 }
 
 // interface IInnovationComments {
