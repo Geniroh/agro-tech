@@ -15,7 +15,7 @@ export async function GET(req: NextRequest, res: NextResponse) {
       include: { replies: true, user: true },
     });
     const innovationDiscussion = await db.innovationDiscussion.findMany({
-      include: { comments: true },
+      include: { comments: true, Innovation: true },
     });
 
     const combinedDiscussion = [...discussions, ...innovationDiscussion];

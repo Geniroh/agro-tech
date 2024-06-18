@@ -1,32 +1,6 @@
 import React from "react";
-import {
-  ThumbsUp,
-  ThumbsDown,
-  MessageSquareText,
-  Share,
-  Upload,
-} from "lucide-react";
-import { DateDifference } from "../general/date-diff-calculator";
-
-interface CombinedDiscussionType {
-  createdAt: string | Date;
-  dislikes: number;
-  id: string;
-  innovation_id: string;
-  likes: number;
-  topComment: any;
-  updatedAt: string | Date;
-  comments?: any[];
-  message: string;
-  title: string;
-  userId: string;
-  user?: any;
-  replies: any[];
-}
-
-interface ReplyCardPros {
-  discussion: CombinedDiscussionType;
-}
+import { ThumbsUp, ThumbsDown, MessageSquareText } from "lucide-react";
+import { DateDifference } from "@/components/general/date-diff-calculator";
 
 export const CombinedReplyCard = ({
   discussion,
@@ -52,7 +26,6 @@ export const CombinedReplyCard = ({
               <h1 className="text-[14px] leading-[20px] font-semibold text-muted-foreground">
                 <DateDifference date={discussion.createdAt} />
               </h1>
-              {/* <span className='text-muted-foreground text-xs'>{}</span> */}
             </div>
           </div>
 
@@ -85,14 +58,19 @@ export const CombinedReplyCard = ({
         <div className="w-full flex flex-col gap-y-6">
           <div className="flex items-center gap-x-3 ">
             <div
-              className="w-[30px] h-[30px] bg-center bg-cover bg-no-repeat"
+              className="w-[30px] h-[30px] bg-center bg-cover bg-no-repeat rounded-sm"
               style={{ background: "#329632" }}
             ></div>
             <div className="flex flex-wrap gap-x-4 items-center">
               <h1 className="text-lg font-semibold text-myblack">
-                {discussion.title}
+                {discussion.Innovation?.productName}
               </h1>
-              <span className="text-muted-foreground text-xs">Hello</span>
+              <h1 className="text-[14px] leading-[20px] font-semibold text-muted-foreground">
+                <DateDifference date={discussion.createdAt} />
+              </h1>
+              <span className="text-muted-foreground text-xs">
+                {discussion.title}
+              </span>
             </div>
           </div>
 

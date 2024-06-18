@@ -32,6 +32,8 @@ import axios from "axios";
 import { message } from "antd";
 import { ClipLoader } from "react-spinners";
 import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-card";
+import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
+import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
 
 const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
@@ -234,7 +236,7 @@ const DiscussionPage = () => {
               <button
                 className={`${
                   activeSection == 1
-                    ? "text-white bg-black"
+                    ? "text-white bg-mygreen"
                     : "bg-transparent text-black"
                 } py-1 px-6 rounded-3xl`}
                 onClick={() => setActiveSection(1)}
@@ -244,7 +246,7 @@ const DiscussionPage = () => {
               <button
                 className={`${
                   activeSection == 2
-                    ? "text-white bg-black"
+                    ? "text-white bg-mygreen"
                     : "bg-transparent text-black"
                 } py-1 px-6 rounded-3xl`}
                 onClick={() => setActiveSection(2)}
@@ -254,7 +256,7 @@ const DiscussionPage = () => {
               <button
                 className={`${
                   activeSection == 3
-                    ? "text-white bg-black"
+                    ? "text-white bg-mygreen"
                     : "bg-transparent text-black"
                 } py-1 px-6 rounded-3xl`}
                 onClick={() => setActiveSection(3)}
@@ -262,57 +264,38 @@ const DiscussionPage = () => {
                 Discussion
               </button>
             </div>
-            <div>
-              {/* <TagSelect name="Filter By" options={selectList} /> */}
-            </div>
           </div>
 
-          {allDiscussion.map((discussion, i) => (
-            <CombinedReplyCard discussion={discussion} />
-          ))}
-          <div className="mt-5 pb-5 border-b">
-            <ReplyCard
-              username="Innovation title"
-              id={"1"}
-              postedby="Posted 2 hours ago"
-            />
-          </div>
-          <div className="mt-5 pb-5 border-b">
-            <ReplyCard
-              username="Username"
-              id={"1"}
-              postedby="Posted 2 hours ago"
-              message="What do you people think of value chain?"
-            />
-          </div>
-          <div className="mt-5 pb-5 border-b">
-            <ReplyCard
-              username="Innovation title"
-              id={"1"}
-              postedby="Posted 2 hours ago"
-            />
-          </div>
-          <div className="mt-5 pb-5 border-b">
-            <ReplyCard
-              username="Username"
-              id={"1"}
-              postedby="Posted 2 hours ago"
-            />
-          </div>
-          <div className="mt-5 pb-5 border-b">
-            <ReplyCard
-              username="Innovation title"
-              id={"1"}
-              postedby="Posted 2 hours ago"
-            />
-          </div>
+          {activeSection === 1 && (
+            <>
+              {allDiscussion.map((discussion, i) => (
+                <CombinedReplyCard discussion={discussion} key={i} />
+              ))}
+            </>
+          )}
+
+          {activeSection === 2 && (
+            <>
+              {innovationDiscussion.map((discussion, i) => (
+                <InnovationReplyCard discussion={discussion} key={i} />
+              ))}
+            </>
+          )}
+
+          {activeSection === 3 && (
+            <>
+              {userDiscussion.map((discussion, i) => (
+                <UserReplyCard discussion={discussion} key={i} />
+              ))}
+            </>
+          )}
         </div>
 
-        <div className="my-[100px] flex items-center justify-center">
-          <button className="flex gap-3 items-center bg-myoffwhie/50 text-mypurple px-3 py-1 rounded-2xl hover:text-white hover:bg-mypurple">
+        {/* <div className="my-[100px] flex items-center justify-center">
+          <button className="flex gap-3 items-center bg-myoffwhie/50 text-green px-3 py-1 rounded-2xl hover:text-white hover:bg-mypurple">
             More <FaPlus />
           </button>
-        </div>
+        </div> */}
       </div>
     </div>
   );

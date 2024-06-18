@@ -88,6 +88,7 @@ export async function GET(req: NextRequest) {
         where,
         skip,
         take,
+        include: { discussions: true, reactions: true },
       }),
       db.innovation.count({ where }),
     ]);
