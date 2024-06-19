@@ -42,7 +42,7 @@ export const WhiteLoaderWithoutText = () => {
               alignItems: "center",
             }}
           >
-            <p style={{ color: "#fff", fontSize: "18px" }}>Loading</p>
+            <p style={{ color: "#329632", fontSize: "18px" }}>Loading</p>
             <p
               style={{
                 border: "8px solid transparent",

@@ -16,11 +16,11 @@ const UploadPage = () => {
           toHref="/upload"
           toTitle="Upload Invention Page"
         />
-        <h1 className="w-full text-center text-4xl font-playfair font-semibold mt-[50px]">
+        <h1 className="w-full text-center text-2xl md:text-4xl font-playfair font-semibold mt-[50px]">
           Upload Innovation
         </h1>
         <h3 className="text-muted-foreground text-md w-full text-center my-3 mb-5">
-          fill out this form accurately and Concisely
+          Fill out this form accurately and concisely
         </h3>
         <MultiStepForm />
       </div>

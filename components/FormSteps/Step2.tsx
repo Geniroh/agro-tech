@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { useFormContext } from "@/context/FormContext";
-import { Input, Form, Select, Button, Upload } from "antd";
+import { Input, Form, Select, Button, Upload, message } from "antd";
 import { toast } from "sonner";
 import { UploadOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
@@ -18,6 +18,8 @@ const Step2: React.FC = () => {
     formData.product_media ? [formData.product_media] : []
   );
 
+  const [isUploading, setIsUploading] = useState(false);
+
   useEffect(() => {
     form.setFieldsValue(formData);
   }, [formData, form]);
@@ -30,9 +32,11 @@ const Step2: React.FC = () => {
       const { status, name, response } = info.file;
       if (status === "uploading") {
         setFileList(info.fileList);
+        setIsUploading(true);
       }
       if (status === "done") {
-        toast.success(`${info.file.name} file uploaded successfully`);
+        setIsUploading(false);
+        message.success(`${info.file.name} file uploaded successfully`);
         const { url } = info.file.response;
 
         const uploadedFile = {
@@ -45,7 +49,7 @@ const Step2: React.FC = () => {
         form.setFieldsValue({ product_media: uploadedFile });
         setFormData({ ...formData, product_media: uploadedFile });
       } else if (info.file.status === "error") {
-        toast.error(`${info.file.name} file upload failed.`);
+        message.error(`${info.file.name} file upload failed.`);
       }
     },
     progress: {
@@ -199,6 +203,7 @@ const Step2: React.FC = () => {
             className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
             size="large"
             type="primary"
+            disabled={isUploading}
             onClick={handleNextStep}
           >
             Continue

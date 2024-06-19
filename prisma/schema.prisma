@@ -76,20 +76,25 @@ model Innovation {
   yearInvented             String
   country                  String
   cost                     Float
-  productChain             String
+  month                    String
+  productChain             String[]
   productPhase             String
   status                   String                 @default("pending")
   likes                    Int?                   @default(0)
   dislikes                 Int?                   @default(0)
-  productUse               String[]
+  productUse               String
   productDescription       String
-  productMedia             Json[]
+  productMedia             Json
   isExample                Boolean
   productExample           Json[]                 @default([])
   productInstruction       Json[]                 @default([])
   productInventor          Json[]                 @default([])
   productSupplier          Json[]                 @default([])
   productGuidelines        Json[]                 @default([])
+  isInstruction            Boolean?
+  isInventor               Boolean?
+  isSupplier               Boolean?
+  isHSEGuidelines          Boolean?
   isGenderFriendly         Boolean?
   productGenderDescription String?
   createdAt                DateTime               @default(now())

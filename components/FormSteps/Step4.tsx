@@ -130,13 +130,13 @@ const Step4: React.FC = () => {
               <Option value={false}>No</Option>
             </Select>
           </Item>
-          <h2 className="text-muted-foreground text-[14px] leading-[20px]">
-            Please provide the Instructions in steps.
-          </h2>
         </div>
 
         {selectValue && (
           <div>
+            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+              Please provide the Instructions in steps.
+            </h2>
             {stepInstructions.map((instruction, index) => (
               <div key={index}>
                 <div>

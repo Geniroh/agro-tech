@@ -116,10 +116,10 @@ const Step7: React.FC = () => {
       >
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Are you an inventor on this product?
+            Does this product Have HSE Guidelines?
           </h3>
           <Item
-            name="isHSEGuideline"
+            name="isHSEGuidelines"
             rules={[{ required: true, message: "Please Select an Option" }]}
           >
             <Select size="large" onChange={handleSelectChange}>
@@ -127,18 +127,18 @@ const Step7: React.FC = () => {
               <Option value={false}>No</Option>
             </Select>
           </Item>
-          <h2 className="text-muted-foreground text-[14px] leading-[20px]">
-            Please provide details below.
-          </h2>
         </div>
 
         {selectValue && (
           <div>
+            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+              Please Provide all Necessary HSE Guidelines
+            </h2>
             {guidelines.map((guideline, index) => (
               <div key={index}>
                 <div>
                   <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Does this product Have HSE Guidelines?
+                    {index + 1}
                   </h3>
 
                   <Item
@@ -147,7 +147,7 @@ const Step7: React.FC = () => {
                   >
                     <Input
                       value={guideline.name}
-                      placeholder="Please ENter Info"
+                      placeholder="Please Enter Info"
                       size="large"
                       onChange={(e) =>
                         handleGuidelineChange(index, "name", e.target.value)
@@ -155,9 +155,6 @@ const Step7: React.FC = () => {
                       required
                     />
                   </Item>
-                  <h2 className="text-muted-foreground text-[14px] leading-[20px]">
-                    please Provide all Necessary HSE Guidelines
-                  </h2>
                 </div>
 
                 {index > 0 && (
