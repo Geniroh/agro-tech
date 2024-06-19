@@ -141,13 +141,13 @@ const Step6: React.FC = () => {
               <Option value={false}>No</Option>
             </Select>
           </Item>
-          <h2 className="text-muted-foreground text-[14px] leading-[20px]">
-            Please provide details below.
-          </h2>
         </div>
 
         {selectValue && (
           <div>
+            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+              Please provide details below.
+            </h2>
             {suppliers.map((supplier, index) => (
               <div key={index}>
                 <div>

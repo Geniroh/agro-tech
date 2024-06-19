@@ -32,6 +32,7 @@ const Step3: React.FC = () => {
     useFormContext();
   const [selectValue, setSelectValue] = useState<boolean | null>(null);
   const [exampleInstances, setExampleInstances] = useState<IInstances[]>([]);
+  const [isUploading, setIsUploading] = useState<boolean>(false);
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -150,6 +151,7 @@ const Step3: React.FC = () => {
     onChange(info) {
       const { status, response } = info.file;
       if (status === "uploading") {
+        setIsUploading(true);
         const updatedMedia = info.fileList.map((file) => ({
           uid: file.uid,
           name: file.name,
@@ -161,6 +163,7 @@ const Step3: React.FC = () => {
       }
       if (status === "done") {
         message.success(`${info.file.name} file uploaded successfully`);
+        setIsUploading(false);
         const { url } = response;
 
         const uploadedFile: IMedia = {
@@ -176,6 +179,7 @@ const Step3: React.FC = () => {
           uploadedFile,
         ];
         handleInstanceChange(index, "instance_media", updatedMedia);
+        console.log(updatedMedia);
       } else if (status === "error") {
         message.error(`${info.file.name} file upload failed.`);
       }
@@ -309,6 +313,7 @@ const Step3: React.FC = () => {
             className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
             size="large"
             type="primary"
+            disabled={isUploading}
             onClick={handleNextStep}
           >
             Continue

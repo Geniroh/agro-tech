@@ -1,4 +1,5 @@
 import { useFormContext } from "@/context/FormContext";
+import { message } from "antd";
 import axios from "axios";
 
 interface FormData {
@@ -14,6 +15,10 @@ export const useFormSubmit = () => {
       console.log({ data });
 
       const { data: res } = await axios.post("/api/v1/innovation", data);
+
+      if (res.error) {
+        throw new Error("There was an error in creating an innovation");
+      }
 
       console.log(res);
 
@@ -32,6 +37,7 @@ export const useFormSubmit = () => {
       setSubmitStatus(true);
     } catch (error) {
       console.error("Form submission failed", error);
+      message.error("There was an error submitting Innovation");
       setSubmitStatus(false);
     }
   };

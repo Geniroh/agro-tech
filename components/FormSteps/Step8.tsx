@@ -113,7 +113,7 @@ const Step7: React.FC = () => {
             size="large"
             type="text"
             onClick={prevStep}
-            disabled={currentStep < 1}
+            disabled={currentStep < 1 || loading}
           >
             Go Back
           </Button>
