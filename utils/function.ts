@@ -67,31 +67,6 @@ export const validatePhoneNumber = (
 };
 
 //CHARTS FUNCTION
-// export const transformInnovationsToChartData = (
-//   innovations: IInnovationType[]
-// ): BarChartData[] => {
-//   const yearCounts: { [key: string]: number } = {};
-//   innovations.forEach((innovation) => {
-//     const year = innovation.yearInvented;
-//     if (year in yearCounts) {
-//       yearCounts[year]++;
-//     } else {
-//       yearCounts[year] = 1;
-//     }
-//   });
-
-//   const chartData: BarChartData[] = Object.keys(yearCounts).map((year) => {
-//     return {
-//       name: year,
-//       value: yearCounts[year],
-//     };
-//   });
-
-//   console.log(chartData);
-
-//   return chartData;
-// };
-
 export const transformInnovationsToChartData = (
   innovations: IInnovationType[]
 ): ChartData[] => {

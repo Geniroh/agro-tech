@@ -1,49 +1,63 @@
 "use client";
 import React from "react";
-import { LatLngExpression, LatLngTuple } from "leaflet";
+import { LatLngExpression } from "leaflet";
 import { MapContainer, TileLayer, GeoJSON } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import { AfricaData } from "@/data/africageodata";
 import L from "leaflet";
-import { FeatureCollection, GeoJsonObject } from "geojson";
+import { FeatureCollection } from "geojson";
 
 const africaData: FeatureCollection = AfricaData as FeatureCollection;
 
-const getColor = (density: number) => {
-  return density > 1000
-    ? "#800026"
-    : density > 500
-    ? "#BD0026"
-    : density > 200
-    ? "#E31A1C"
-    : density > 100
-    ? "#FC4E2A"
-    : density > 50
-    ? "#FD8D3C"
-    : density > 20
-    ? "#FEB24C"
-    : density > 10
-    ? "#FED976"
-    : "#FFEDA0";
+const countInnovationsPerCountry = (
+  innovations: any[],
+  countryProperty = "country"
+) => {
+  const innovationCounts: { [country: string]: number } = {};
+  for (const innovation of innovations) {
+    const country = innovation[countryProperty];
+    if (country) {
+      innovationCounts[country] = (innovationCounts[country] || 0) + 1;
+    }
+  }
+  return innovationCounts;
 };
 
-const style = (feature: any) => {
-  const uniqueColor =
-    feature.properties.name === "Nigeria"
-      ? "#9430e3"
-      : getColor(feature.properties.density || 0);
+// Function to calculate opacity based on innovation count
+const getOpacity = (innovationCount: number, maxCount: number) => {
+  const baseOpacity = innovationCount / maxCount;
+  return Math.min(baseOpacity, 0.5); // Limit opacity to 0.5 (fully opaque)
+};
+
+const getColor = (innovationCount: number, maxCount: number) => {
+  const opacity = getOpacity(innovationCount, maxCount);
+  return `rgba(50, 150, 50, ${opacity})`; // Adjust color and adjust opacity based on calculation
+};
+
+const style = (
+  feature: any,
+  innovationCounts: { [key: string]: number },
+  maxCount: number
+) => {
+  const country = feature.properties.name;
+  const innovationCount = innovationCounts[country] || 0;
+
   return {
-    fillColor: uniqueColor,
+    fillColor: getColor(innovationCount, maxCount),
     weight: 2,
     opacity: 1,
     color: "white",
     dashArray: "3",
     fillOpacity: 0.7,
-    zoom: 2,
   };
 };
 
-const onEachFeature = (feature: any, layer: any) => {
+const onEachFeature = (
+  feature: any,
+  layer: any,
+  innovationCounts: { [key: string]: number },
+  maxCount: number
+) => {
   layer.on({
     mouseover: (e: any) => {
       const target = e.target;
@@ -59,7 +73,7 @@ const onEachFeature = (feature: any, layer: any) => {
     },
     mouseout: (e: any) => {
       const target = e.target;
-      target.setStyle(style(target.feature));
+      target.setStyle(style(target.feature, innovationCounts, maxCount));
     },
     click: (e: any) => {
       e.target._map.fitBounds(e.target.getBounds());
@@ -67,126 +81,30 @@ const onEachFeature = (feature: any, layer: any) => {
   });
 };
 
-const ChloropethMap: React.FC = () => {
+const ChloropethMap: React.FC<{ innovations: any[] }> = ({ innovations }) => {
   const center: LatLngExpression = [10.100919031416632, 8.077777040117438];
+  const innovationCounts = countInnovationsPerCountry(innovations);
+  const maxCount = Math.max(...Object.values(innovationCounts)); // Get the maximum count for opacity calculation
 
   return (
     <MapContainer
       center={center}
       zoom={4}
-      style={{ height: "100%", width: "100%", zIndex: -4 }}
+      style={{ height: "100%", width: "100%" }}
     >
       <TileLayer
         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
         attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
       />
-      <GeoJSON data={africaData} style={style} onEachFeature={onEachFeature} />
+      <GeoJSON
+        data={africaData}
+        style={(feature) => style(feature, innovationCounts, maxCount)}
+        onEachFeature={(feature, layer) =>
+          onEachFeature(feature, layer, innovationCounts, maxCount)
+        }
+      />
     </MapContainer>
   );
 };
 
 export default ChloropethMap;
-
-// "use client";
-// import dynamic from "next/dynamic";
-// import React, { useEffect, useState } from "react";
-// import { LatLngExpression } from "leaflet";
-// import "leaflet/dist/leaflet.css";
-// import { AfricaData } from "@/data/africageodata";
-// import { FeatureCollection } from "geojson";
-// import L from "leaflet";
-
-// const DynamicMapContainer = dynamic(
-//   () => import("react-leaflet").then((mod) => mod.MapContainer),
-//   { ssr: false }
-// );
-// const DynamicTileLayer = dynamic(
-//   () => import("react-leaflet").then((mod) => mod.TileLayer),
-//   { ssr: false }
-// );
-// const DynamicGeoJSON = dynamic(
-//   () => import("react-leaflet").then((mod) => mod.GeoJSON),
-//   { ssr: false }
-// );
-
-// const africaData: FeatureCollection = AfricaData as FeatureCollection;
-
-// const getColor = (density: number) => {
-//   return density > 1000
-//     ? "#800026"
-//     : density > 500
-//     ? "#BD0026"
-//     : density > 200
-//     ? "#E31A1C"
-//     : density > 100
-//     ? "#FC4E2A"
-//     : density > 50
-//     ? "#FD8D3C"
-//     : density > 20
-//     ? "#FEB24C"
-//     : density > 10
-//     ? "#FED976"
-//     : "#FFEDA0";
-// };
-
-// const style = (feature: any) => {
-//   const uniqueColor =
-//     feature.properties.name === "Nigeria"
-//       ? "#9430e3"
-//       : getColor(feature.properties.density || 0);
-//   return {
-//     fillColor: uniqueColor,
-//     weight: 2,
-//     opacity: 1,
-//     color: "white",
-//     dashArray: "3",
-//     fillOpacity: 0.7,
-//     zoom: 2,
-//   };
-// };
-
-// const onEachFeature = (feature: any, layer: any) => {
-//   layer.on({
-//     mouseover: (e: any) => {
-//       const target = e.target;
-//       target.setStyle({
-//         weight: 5,
-//         color: "#666",
-//         dashArray: "",
-//         fillOpacity: 0.7,
-//       });
-//       if (!L.Browser.ie && !L.Browser.opera && !L.Browser.edge) {
-//         target.bringToFront();
-//       }
-//     },
-//     mouseout: (e: any) => {
-//       const target = e.target;
-//       target.setStyle(style(target.feature));
-//     },
-//     click: (e: any) => {
-//       e.target._map.fitBounds(e.target.getBounds());
-//     },
-//   });
-// };
-
-// export const ChloropethMap: React.FC = () => {
-//   const center: LatLngExpression = [10.100919031416632, 8.077777040117438];
-
-//   return (
-//     <DynamicMapContainer
-//       center={center}
-//       zoom={4}
-//       style={{ height: "100%", width: "100%" }}
-//     >
-//       <DynamicTileLayer
-//         url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-//         attribution="&copy; <a href='https://www.openstreetmap.org/copyright'>OpenStreetMap</a> contributors"
-//       />
-//       <DynamicGeoJSON
-//         data={africaData}
-//         style={style}
-//         onEachFeature={onEachFeature}
-//       />
-//     </DynamicMapContainer>
-//   );
-// };

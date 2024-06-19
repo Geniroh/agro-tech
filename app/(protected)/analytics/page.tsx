@@ -68,14 +68,14 @@ export default function AnalyticsPage() {
         </h1>
       </div> */}
 
-      <h1 className="text-[16px] leading-[24px] font-semibold text-center md:hidden my-10">
+      <h1 className="text-[16px] leading-[24px] font-semibold text-center my-10">
         Analytics
       </h1>
 
       <div className="w-full h-full container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="w-full h-[calc(95vh-170px)] border mb-10">
-            <DynamicChloropethMap />
+            <DynamicChloropethMap innovations={innovation} />
           </div>
           <div className="col-span-2 flex flex-col gap-y-4 mb-10 md:h-[calc(95vh-170px)">
             <InnovationBar innovations={innovation} count={count} />
