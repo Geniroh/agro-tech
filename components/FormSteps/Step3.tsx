@@ -1,27 +1,30 @@
+"use client";
 import React, { useState, useEffect } from "react";
-import { Select, Button, Input, Form, Upload } from "antd";
+import { Select, Button, Input, Form, Upload, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
 import {
   PlusOutlined,
-  MinusCircleOutlined,
+  DeleteOutlined,
   UploadOutlined,
 } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import { toast } from "sonner";
+import type { UploadProps, UploadFile } from "antd";
+
+const { TextArea } = Input;
 
 const { Option } = Select;
 const { Item } = Form;
 
 interface IMedia {
+  uid: string;
   name: string;
   url: string;
   type?: string;
-  size?: string;
+  size?: number;
 }
 
 interface IInstances {
   instance_description: string;
-  instance_media: IMedia;
+  instance_media: IMedia[];
 }
 
 const Step3: React.FC = () => {
@@ -31,85 +34,47 @@ const Step3: React.FC = () => {
   const [exampleInstances, setExampleInstances] = useState<IInstances[]>([]);
   const [form] = Form.useForm();
 
-  const uploadFileProps: UploadProps = {
-    name: "file",
-    action: "/api/v1/upload",
-    fileList: fileList,
-    onChange(info) {
-      const { status, name, response } = info.file;
-      if (status === "uploading") {
-        setFileList(info.fileList);
-      }
-      if (status === "done") {
-        toast.success(`${info.file.name} file uploaded successfully`);
-        const { url } = info.file.response;
-
-        const uploadedFile = {
-          name: info.file.name,
-          url,
-          type: info.file.type,
-          size: info.file.size,
-        };
-        setFileList([uploadedFile]);
-        form.setFieldsValue({ product_media: uploadedFile });
-        setFormData({ ...formData, product_media: uploadedFile });
-      } else if (info.file.status === "error") {
-        toast.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    progress: {
-      strokeColor: {
-        "0%": "#108ee9",
-        "100%": "#87d068",
-      },
-      strokeWidth: 3,
-      format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
-    },
-    onRemove(file) {
-      setFileList([]);
-      setFormData({ ...formData, product_media: null });
-    },
-  };
-
   useEffect(() => {
-    if (selectValue && exampleInstances.length === 0) {
-      setExampleInstances([
-        { instance_description: "", instance_media: { name: "", url: "" } },
-      ]);
-    } else if (selectValue) {
+    if (selectValue === true && exampleInstances.length === 0) {
+      setExampleInstances([{ instance_description: "", instance_media: [] }]);
+    } else if (selectValue === false) {
       setExampleInstances([]);
+    } else if (selectValue === null && formData.isUsageExample !== undefined) {
+      setSelectValue(formData.isUsageExample);
+      setExampleInstances(formData.instances || []);
     }
   }, [selectValue]);
 
   const handleSelectChange = (value: boolean) => {
     setSelectValue(value);
     if (!value) {
-      console.log("No selected");
-      // Do something here when 'No' is selected
+      setExampleInstances([]);
     }
+    setFormData({ ...formData, isUsageExample: value });
   };
 
   const addInstance = () => {
     setExampleInstances([
       ...exampleInstances,
-      { instance_description: "", instance_media: { name: "", url: "" } },
+      { instance_description: "", instance_media: [] },
     ]);
   };
 
   const removeInstance = (index: number) => {
     if (index === 0) return;
-    setExampleInstances(exampleInstances.filter((_, i) => i != index));
+    setExampleInstances(exampleInstances.filter((_, i) => i !== index));
   };
 
   const handleInstanceChange = (
     index: number,
     field: keyof IInstances,
-    value: string
+    value: any
   ) => {
     const updatedInstance = [...exampleInstances];
     if (field === "instance_description") {
       updatedInstance[index]["instance_description"] = value;
     } else if (field === "instance_media") {
+      updatedInstance[index]["instance_media"] = value;
     }
     setExampleInstances(updatedInstance);
   };
@@ -117,15 +82,27 @@ const Step3: React.FC = () => {
   const handleNextStep = async () => {
     try {
       const values = await form.validateFields();
+      if (selectValue) {
+        for (const instance of exampleInstances) {
+          if (
+            !instance.instance_description ||
+            instance.instance_media.length === 0
+          ) {
+            throw new Error(
+              "Please fill in all required fields for each instance"
+            );
+          }
+        }
+      }
       saveData(values);
       setCurrentStep(currentStep + 1);
     } catch (error) {
-      toast.error("Please fill in all required fields");
+      message.error("Please fill in all required fields for each instance");
     }
   };
 
   const saveData = (values: any) => {
-    setFormData({ ...formData, ...values });
+    setFormData({ ...formData, ...values, instances: exampleInstances });
   };
 
   const prevStep = () => {
@@ -140,20 +117,84 @@ const Step3: React.FC = () => {
       if (values && typeof window !== "undefined") {
         localStorage.setItem(
           "formData",
-          JSON.stringify({ ...formData, ...values })
+          JSON.stringify({
+            ...formData,
+            ...values,
+            instances: exampleInstances,
+          })
         );
         localStorage.setItem("currentStep", currentStep.toString());
         localStorage.setItem("totalSteps", mySteps.toString());
       }
-      toast.success("Your progress has been saved");
+      message.success("Your progress has been saved");
     } catch (error) {
-      toast.error("Please fill in all required fields");
+      message.error("Please fill in all required fields");
     }
   };
 
   useEffect(() => {
     form.setFieldsValue(formData);
   }, [formData, form]);
+
+  const uploadFileProps = (index: number): UploadProps => ({
+    name: "file",
+    action: "/api/v1/upload",
+    fileList: exampleInstances[index].instance_media.map((media) => ({
+      uid: media.uid,
+      name: media.name,
+      status: "done",
+      url: media.url,
+      type: media.type,
+      size: media.size,
+    })),
+    onChange(info) {
+      const { status, response } = info.file;
+      if (status === "uploading") {
+        const updatedMedia = info.fileList.map((file) => ({
+          uid: file.uid,
+          name: file.name,
+          url: file.url || "",
+          type: file.type,
+          size: file.size,
+        }));
+        handleInstanceChange(index, "instance_media", updatedMedia);
+      }
+      if (status === "done") {
+        message.success(`${info.file.name} file uploaded successfully`);
+        const { url } = response;
+
+        const uploadedFile: IMedia = {
+          uid: info.file.uid,
+          name: info.file.name,
+          url,
+          type: info.file.type,
+          size: info.file.size,
+        };
+
+        const updatedMedia = [
+          ...exampleInstances[index].instance_media,
+          uploadedFile,
+        ];
+        handleInstanceChange(index, "instance_media", updatedMedia);
+      } else if (status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+    progress: {
+      strokeColor: {
+        "0%": "#108ee9",
+        "100%": "#87d068",
+      },
+      strokeWidth: 3,
+      format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
+    },
+    onRemove(file) {
+      const updatedMedia = exampleInstances[index].instance_media.filter(
+        (media) => media.uid !== file.uid
+      );
+      handleInstanceChange(index, "instance_media", updatedMedia);
+    },
+  });
 
   return (
     <div>
@@ -182,46 +223,75 @@ const Step3: React.FC = () => {
           <div>
             {exampleInstances.map((example, index) => (
               <div key={index}>
-                <Item label="Instance Description" required className="w-full">
-                  <Input
-                    value={example.instance_description}
-                    onChange={(e) =>
-                      handleInstanceChange(
-                        index,
-                        "instance_description",
-                        e.target.value
-                      )
-                    }
-                    required
-                  />
-                </Item>
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Instance Media Upload
+                  </h3>
 
-                <Item label="Instance Media" required className="w-full">
-                  <Upload {...uploadFileProps}>
-                    <Button icon={<UploadOutlined />} className="w-full">
-                      Click to Upload
-                    </Button>
-                  </Upload>
-                </Item>
+                  <Item
+                    className="w-full"
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <Upload {...uploadFileProps(index)}>
+                      <Button
+                        icon={<UploadOutlined />}
+                        className="w-full"
+                        size="large"
+                      >
+                        Click to add images/videos of product
+                      </Button>
+                    </Upload>
+                  </Item>
+                </div>
+
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Add very Brief Description
+                  </h3>
+
+                  <Item
+                    className="w-full"
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <TextArea
+                      value={example.instance_description}
+                      placeholder="Please enter brief description to support image"
+                      size="large"
+                      onChange={(e) =>
+                        handleInstanceChange(
+                          index,
+                          "instance_description",
+                          e.target.value
+                        )
+                      }
+                      required
+                      rows={4}
+                    />
+                  </Item>
+                </div>
 
                 {index > 0 && (
                   <Button
                     type="dashed"
+                    style={{ color: "red" }}
                     onClick={() => removeInstance(index)}
-                    icon={<MinusCircleOutlined />}
+                    icon={<DeleteOutlined />}
                   />
                 )}
               </div>
             ))}
-            <Form.Item>
-              <Button
-                type="dashed"
-                onClick={addInstance}
-                icon={<PlusOutlined />}
-              >
-                Add Person
-              </Button>
-            </Form.Item>
+            <div className="w-full flex justify-center items-center">
+              <Form.Item>
+                <Button
+                  type="text"
+                  style={{ color: "#329632" }}
+                  onClick={addInstance}
+                  icon={<PlusOutlined />}
+                >
+                  Add Instance
+                </Button>
+              </Form.Item>
+            </div>
           </div>
         )}
 
@@ -258,277 +328,3 @@ const Step3: React.FC = () => {
 };
 
 export default Step3;
-
-// "use client";
-// import React, { useCallback, useEffect, useState } from "react";
-// import { zodResolver } from "@hookform/resolvers/zod";
-// import { useForm, useFieldArray } from "react-hook-form";
-// import { z } from "zod";
-// import { useFormContext } from "@/context/FormContext";
-// import {
-//   Form,
-//   FormControl,
-//   FormMessage,
-//   FormItem,
-//   FormField,
-//   FormLabel,
-// } from "@/components/ui/form";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Textarea } from "@/components/ui/textarea";
-// import { Button } from "@/components/ui/button";
-// import { StyledFileInput } from "@/components/general/upload-input";
-// import { IoTrashBin } from "react-icons/io5";
-// import { toast } from "sonner";
-
-// const baseSchema = z.object({
-//   isUsageExample: z.boolean(),
-// });
-
-// const instancesSchema = z.object({
-//   instances: z
-//     .array(
-//       z.object({
-//         instance_description: z
-//           .string()
-//           .min(2, { message: "Description is required." }),
-//         instance_media: z.object({
-//           url: z.string().url({ message: "A valid URL is required" }),
-//           name: z.string().min(1, { message: "File name is required" }),
-//         }),
-//       })
-//     )
-//     .min(1, { message: "At least one instance is required" }),
-// });
-
-// const Step3: React.FC = () => {
-//   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
-//     useFormContext();
-//   const [areExtraFieldsValid, setAreExtraFieldsValid] = useState(false);
-
-//   const formSchema = baseSchema.extend(
-//     formData.isUsageExample
-//       ? { instances: instancesSchema.shape.instances }
-//       : {}
-//   );
-
-//   const form = useForm<z.infer<typeof formSchema>>({
-//     resolver: zodResolver(formSchema),
-//     defaultValues: formData,
-//     mode: "onChange",
-//   });
-
-//   const { fields, append, remove } = useFieldArray({
-//     control: form.control,
-//     name: "instances",
-//   });
-
-//   const handleIsUsageExampleChange = (value: boolean) => {
-//     form.setValue("isUsageExample", value);
-//     if (!value) {
-//       form.setValue("instances", []);
-//     } else if (value && form.getValues("instances")?.length === 0) {
-//       append({
-//         instance_description: "",
-//         instance_media: { url: "", name: "" },
-//       });
-//     }
-//   };
-
-//   const saveData = (values: z.infer<typeof formSchema>) => {
-//     setFormData({ ...formData, ...values });
-//   };
-
-//   const nextStep = () => {
-//     if (currentStep < mySteps - 1) {
-//       form.handleSubmit(saveData)();
-
-//       checkExtraFieldsValidity();
-
-//       if (areExtraFieldsValid) {
-//         setCurrentStep(currentStep + 1);
-//       } else {
-//         toast.error(
-//           "Please ensure you have filled all required fields then continue!"
-//         );
-//       }
-//     }
-//   };
-
-//   const prevStep = () => {
-//     if (currentStep > 0) {
-//       setCurrentStep(currentStep - 1);
-//     }
-//   };
-
-//   const saveStep = () => {
-//     form.handleSubmit(saveData)();
-//   };
-
-//   const watchExample = form.watch("isUsageExample");
-//   const watchInstance = form.watch("instances");
-
-//   const checkExtraFieldsValidity = useCallback(() => {
-//     const instances = form.getValues("instances");
-//     if (form.watch("isUsageExample")) {
-//       const isValid = instances.every(
-//         (instance: any) =>
-//           instance.instance_description.length >= 2 &&
-//           instance.instance_media?.url &&
-//           instance.instance_media?.name
-//       );
-//       setAreExtraFieldsValid(isValid);
-//     } else {
-//       setAreExtraFieldsValid(true);
-//     }
-//   }, [watchExample, watchInstance]);
-
-//   useEffect(() => {
-//     checkExtraFieldsValidity();
-//   }, [checkExtraFieldsValidity]);
-
-//   return (
-//     <Form {...form}>
-//       <div className="space-y-6">
-//         <FormField
-//           control={form.control}
-//           name="isUsageExample"
-//           render={({ field }) => (
-//             <FormItem>
-//               <FormLabel>Do You Have Usage Examples To Show?</FormLabel>
-//               <FormControl>
-//                 <Select
-//                   value={String(field.value)}
-//                   onValueChange={(value: string) => {
-//                     const booleanValue = value === "true";
-//                     field.onChange(booleanValue);
-//                     handleIsUsageExampleChange(booleanValue);
-//                   }}
-//                 >
-//                   <SelectTrigger className="w-full bg-[#fafafa]">
-//                     <SelectValue placeholder="Please select an option" />
-//                   </SelectTrigger>
-//                   <SelectContent position="popper">
-//                     <SelectItem value="true">Yes</SelectItem>
-//                     <SelectItem value="false">No</SelectItem>
-//                   </SelectContent>
-//                 </Select>
-//               </FormControl>
-//               <FormMessage />
-//             </FormItem>
-//           )}
-//         />
-
-//         {form.watch("isUsageExample") &&
-//           fields.map((field, index) => (
-//             <div key={field.id} className="space-y-4">
-//               {index > 0 && (
-//                 <Button
-//                   variant="destructive"
-//                   className="p-2"
-//                   onClick={() => remove(index)}
-//                 >
-//                   <IoTrashBin />
-//                 </Button>
-//               )}
-
-//               <FormField
-//                 control={form.control}
-//                 name={`instances.${index}.instance_media`}
-//                 render={({ field }) => (
-//                   <FormItem>
-//                     <FormLabel>Instance Media Upload</FormLabel>
-//                     <FormControl>
-//                       <StyledFileInput
-//                         id={`instances.${index}.instance_media`}
-//                         name={`instances.${index}.instance_media`}
-//                         placeholder="Click to add images/videos of product"
-//                         defaultValue={field.value?.name}
-//                         onChange={({ url, name }) => {
-//                           field.onChange({ url, name });
-//                         }}
-//                       />
-//                     </FormControl>
-//                     <FormMessage />
-//                   </FormItem>
-//                 )}
-//               />
-
-//               <FormField
-//                 control={form.control}
-//                 name={`instances.${index}.instance_description`}
-//                 render={({ field }) => (
-//                   <FormItem>
-//                     <FormLabel>Add Very Brief Description</FormLabel>
-//                     <FormControl>
-//                       <Textarea
-//                         {...field}
-//                         placeholder="Please Enter A Brief Description To Support Image"
-//                         className="bg-[#fafafa]"
-//                         rows={4}
-//                       />
-//                     </FormControl>
-//                     <FormMessage />
-//                   </FormItem>
-//                 )}
-//               />
-//             </div>
-//           ))}
-
-//         {form.watch("isUsageExample") && (
-//           <div className="w-full flex justify-center">
-//             <button
-//               type="button"
-//               className="text-[#329632]"
-//               onClick={() =>
-//                 append({
-//                   instance_description: "",
-//                   instance_media: { url: "", name: "" },
-//                 })
-//               }
-//             >
-//               Add instance example +
-//             </button>
-//           </div>
-//         )}
-//       </div>
-
-//       <div className="mt-10 flex flex-col gap-y-4">
-//         <button
-//           className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
-//           onClick={prevStep}
-//           disabled={currentStep < 1}
-//         >
-//           Go Back
-//         </button>
-//         <Button
-//           size="lg"
-//           variant="default"
-//           className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
-//           onClick={form.handleSubmit(nextStep)}
-//           title={
-//             !areExtraFieldsValid ? "Please all required field to continue" : ""
-//           }
-//           disabled={!(currentStep < mySteps - 1)}
-//         >
-//           Continue
-//         </Button>
-//         <Button
-//           size="lg"
-//           variant="outline"
-//           className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-//           onClick={saveStep}
-//         >
-//           Save Progress
-//         </Button>
-//       </div>
-//     </Form>
-//   );
-// };
-
-// export default Step3;

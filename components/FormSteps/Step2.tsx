@@ -174,7 +174,7 @@ const Step2: React.FC = () => {
         >
           <Upload {...uploadFileProps}>
             <Button icon={<UploadOutlined />} className="w-full">
-              Click to Upload
+              Click to add images/videos of product
             </Button>
           </Upload>
         </Item>
