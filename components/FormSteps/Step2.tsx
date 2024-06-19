@@ -100,8 +100,12 @@ const Step2: React.FC = () => {
   };
 
   const implementationPhaseOptions = [
-    { value: "Testing", label: "Testing" },
-    { value: "Distribution", label: "Distribution" },
+    { value: "Concept", label: "Concept" },
+    { value: "Prototype", label: "Prototype" },
+    { value: "Commercial", label: "Commercial" },
+    { value: "In Wide Use", label: "In Wide Use" },
+    { value: "Upgraded", label: "Upgraded" },
+    { value: "Phased Out", label: "Phased Out" },
   ];
 
   return (

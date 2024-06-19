@@ -63,6 +63,21 @@ const Step1: React.FC = () => {
     { value: "Export", label: "Export" },
   ];
 
+  const monthOptions = [
+    { value: "January", label: "January" },
+    { value: "February", label: "February" },
+    { value: "March", label: "March" },
+    { value: "April", label: "April" },
+    { value: "May", label: "May" },
+    { value: "June", label: "June" },
+    { value: "July", label: "July" },
+    { value: "August", label: "August" },
+    { value: "September", label: "September" },
+    { value: "October", label: "October" },
+    { value: "November", label: "November" },
+    { value: "December", label: "December" },
+  ];
+
   const generateYearOptions = () => {
     const currentYear = new Date().getFullYear();
     const years = [];
@@ -125,6 +140,23 @@ const Step1: React.FC = () => {
                 .localeCompare((optionB?.label ?? "").toLowerCase())
             }
             options={generateYearOptions()}
+          />
+        </Item>
+      </div>
+
+      <div>
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">Month</h3>
+        <Item
+          name="innovation_month"
+          rules={[
+            { required: true, message: "Please select the Innovation month" },
+          ]}
+        >
+          <Select
+            placeholder="Select Innovation Month"
+            className="w-full"
+            size="large"
+            options={monthOptions}
           />
         </Item>
       </div>
