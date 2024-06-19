@@ -1,11 +1,10 @@
-"use client";
 import React from "react";
 
-const ErrorBoundary = ({ error }: { error: Error }) => {
+export const WhiteLoaderWithoutText = () => {
   return (
     <div
       style={{
-        background: "#242424",
+        background: "#",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -43,20 +42,11 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
               alignItems: "center",
             }}
           >
-            <p
-              style={{
-                color: "#fff",
-                fontSize: "18px",
-                maxWidth: "500px",
-                marginInline: "auto",
-              }}
-            >
-              {error.message}
-            </p>
+            <p style={{ color: "#fff", fontSize: "18px" }}>Loading</p>
             <p
               style={{
                 border: "8px solid transparent",
-                borderTop: "8px solid red",
+                borderTop: "8px solid #329632",
                 borderRadius: "50%",
                 width: "10px",
                 height: "10px",
@@ -69,5 +59,3 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
     </div>
   );
 };
-
-export default ErrorBoundary;

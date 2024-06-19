@@ -1,6 +1,7 @@
 import React from "react";
 import { StackedProgressBar } from "@/components/data/charts/StackedProgressBar";
 import { ProgressLineP } from "@/components/data/charts/ProgressLineP";
+import { knumberformatter } from "@/utils/function";
 
 const data = [
   { title: "Proposed", value: 2000, color: "#9430e3" },
@@ -10,7 +11,13 @@ const data = [
   { title: "In Phased Out", value: 2500, color: "#f1f5a3" },
 ];
 
-export const InnovationBar = () => {
+export const InnovationBar = ({
+  innovations,
+  count,
+}: {
+  innovations: IInnovationType[];
+  count: number;
+}) => {
   const values = [20, 30, 60, 25]; // Example values
   const colors = ["#9430E3", "#D19FF9", "#ECDAFB", "#DBB3C2"]; // Example colors
   return (
@@ -21,7 +28,9 @@ export const InnovationBar = () => {
 
       <div className="flex gap-x-4 items-center">
         <div className="h-full flex flex-col justify-end">
-          <div className="text-[30px] font-bold leading-[40px]">32k</div>
+          <div className="text-[30px] font-bold leading-[40px]">
+            {knumberformatter(count)}
+          </div>
           <div className="text-[14px] leading-[21px]">Innovations</div>
         </div>
 

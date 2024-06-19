@@ -133,6 +133,11 @@ interface ICombinedDiscussion {
   Innovation?: IInnovationType;
 }
 
+interface ChartData {
+  name: string;
+  value: number;
+}
+
 // interface IInnovationComments {
 //   createdAt: Date;
 //   dislikes: number;
