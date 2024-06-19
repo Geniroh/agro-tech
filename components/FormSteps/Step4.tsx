@@ -1,93 +1,77 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
+import React, { useState, useEffect } from "react";
+import { Select, Button, Input, Form, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
-import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormItem,
-  FormField,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { IoTrashBin } from "react-icons/io5";
-import { Input } from "../ui/input";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const baseSchema = z.object({
-  isInstruction: z.boolean(),
-});
+const { Option } = Select;
+const { Item } = Form;
 
-const instructionSchema = z.object({
-  instructions: z
-    .array(
-      z.object({
-        instruction_step: z.string().min(2, { message: "Required" }),
-      })
-    )
-    .min(1, { message: "At least one step is required" }),
-});
+interface IInstructionStep {
+  instruction_step: string;
+}
 
 const Step4: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
-
-  const [areExtraFieldsValid, setAreExtraFieldsValid] = useState(false);
-
-  const formSchema = baseSchema.extend(
-    formData.isInstruction
-      ? { instructions: instructionSchema.shape.instructions }
-      : {}
+  const [form] = Form.useForm();
+  const [selectValue, setSelectValue] = useState<boolean | null>(
+    formData.isInstruction ?? null
+  );
+  const [stepInstructions, setStepInstructions] = useState<IInstructionStep[]>(
+    formData.instructions || []
   );
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formData,
-    mode: "onChange",
-  });
+  useEffect(() => {
+    if (selectValue === true && stepInstructions.length === 0) {
+      setStepInstructions([{ instruction_step: "" }]);
+    } else if (selectValue === false) {
+      setStepInstructions([]);
+    }
+  }, [selectValue]);
 
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "instructions",
-  });
-
-  const handleIsInstructionChange = (value: boolean) => {
-    form.setValue("isInstruction", value);
+  const handleSelectChange = (value: boolean) => {
+    setSelectValue(value);
     if (!value) {
-      form.setValue("instructions", []);
-    } else if (value && form.getValues("instructions")?.length === 0) {
-      append({ instruction_step: "" });
+      setStepInstructions([]);
     }
+    setFormData({ ...formData, isInstruction: value });
   };
 
-  const saveData = (values: z.infer<typeof formSchema>) => {
-    setFormData({ ...formData, ...values });
+  const addInstruction = () => {
+    setStepInstructions([...stepInstructions, { instruction_step: "" }]);
   };
 
-  const nextStep = () => {
-    if (currentStep < mySteps - 1) {
-      form.handleSubmit(saveData)();
+  const removeInstruction = (index: number) => {
+    if (index === 0) return;
+    setStepInstructions(stepInstructions.filter((_, i) => i !== index));
+  };
 
-      checkExtraFieldsValidity();
+  const handleInstructionChange = (index: number, value: string) => {
+    const updatedInstructions = [...stepInstructions];
+    updatedInstructions[index].instruction_step = value;
+    setStepInstructions(updatedInstructions);
+  };
 
-      if (areExtraFieldsValid) {
-        setCurrentStep(currentStep + 1);
-      } else {
-        toast.error(
-          "Please ensure you have filled all required fields then continue!"
-        );
+  const handleNextStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (selectValue) {
+        for (const instruction of stepInstructions) {
+          if (!instruction.instruction_step) {
+            throw new Error("Please fill in all required fields for each step");
+          }
+        }
       }
+      saveData(values);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      message.error("Please fill in all required fields for each step");
     }
+  };
+
+  const saveData = (values: any) => {
+    setFormData({ ...formData, ...values, instructions: stepInstructions });
   };
 
   const prevStep = () => {
@@ -96,144 +80,138 @@ const Step4: React.FC = () => {
     }
   };
 
-  const saveStep = () => {
-    form.handleSubmit(saveData)();
-  };
-
-  const checkExtraFieldsValidity = () => {
-    const instruction = form.getValues("instructions");
-    if (form.watch("isInstruction")) {
-      const isValid = instruction.every(
-        (instruction: any) => instruction.instruction_step.length >= 2
-      );
-      setAreExtraFieldsValid(isValid);
-    } else {
-      setAreExtraFieldsValid(true);
+  const handleSaveStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (values && typeof window !== "undefined") {
+        localStorage.setItem(
+          "formData",
+          JSON.stringify({
+            ...formData,
+            ...values,
+            instructions: stepInstructions,
+          })
+        );
+        localStorage.setItem("currentStep", currentStep.toString());
+        localStorage.setItem("totalSteps", mySteps.toString());
+      }
+      message.success("Your progress has been saved");
+    } catch (error) {
+      message.error("Please fill in all required fields");
     }
   };
 
   useEffect(() => {
-    checkExtraFieldsValidity();
-  }, [
-    form.watch("isInstruction"),
-    form.watch("instructions"),
-    areExtraFieldsValid,
-  ]);
+    form.setFieldsValue(formData);
+  }, [formData, form]);
 
   return (
-    <Form {...form}>
-      <div className="space-y-6">
-        <FormField
-          control={form.control}
-          name="isInstruction"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Do You Have User Instructions?</FormLabel>
-              <FormControl>
-                <Select
-                  value={String(field.value)}
-                  onValueChange={(value: string) => {
-                    const booleanValue = value === "true";
-                    field.onChange(booleanValue);
-                    handleIsInstructionChange(booleanValue);
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-[#fafafa]">
-                    <SelectValue placeholder="Please select an option" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value="true">Yes</SelectItem>
-                    <SelectItem value="false">No</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-
-        {form.watch("isInstruction") && (
-          <h1 className="text-muted-foreground">
-            Please provide the Instruction in Steps
-          </h1>
-        )}
-
-        {form.watch("isInstruction") &&
-          fields.map((field, index) => (
-            <div key={field.id}>
-              {index > 0 && (
-                <Button
-                  variant="destructive"
-                  className="p-1"
-                  type="button"
-                  onClick={() => remove(index)}
-                >
-                  <IoTrashBin />
-                </Button>
-              )}
-
-              <FormField
-                control={form.control}
-                name={`instructions.${index}.instruction_step`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{`Step ${index + 1}`}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Please Enter Info"
-                        className="bg-[#fafafa]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-            </div>
-          ))}
-
-        {form.watch("isInstruction") && (
-          <div className="w-full flex justify-center">
-            <button
-              className="text-[#329632]"
-              type="button"
-              onClick={() => append({ instruction_step: "" })}
+    <div>
+      <Form
+        form={form}
+        layout="vertical"
+        className="space-y-4"
+        initialValues={{ ...formData }}
+      >
+        <div>
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Do you have User Instructions ?
+          </h3>
+          <Item
+            name="isInstruction"
+            rules={[{ required: true, message: "Please Select an Option" }]}
+          >
+            <Select
+              size="large"
+              value={selectValue}
+              onChange={handleSelectChange}
             >
-              Add a step +
-            </button>
+              <Option value={true}>Yes</Option>
+              <Option value={false}>No</Option>
+            </Select>
+          </Item>
+          <h2 className="text-muted-foreground text-[14px] leading-[20px]">
+            Please provide the Instructions in steps.
+          </h2>
+        </div>
+
+        {selectValue && (
+          <div>
+            {stepInstructions.map((instruction, index) => (
+              <div key={index}>
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Step {index + 1}
+                  </h3>
+                  <Item
+                    className="w-full"
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <Input
+                      value={instruction.instruction_step}
+                      placeholder="Please Enter Info"
+                      size="large"
+                      onChange={(e) =>
+                        handleInstructionChange(index, e.target.value)
+                      }
+                      required
+                    />
+                  </Item>
+                </div>
+                {index > 0 && (
+                  <Button
+                    type="dashed"
+                    style={{ color: "red" }}
+                    onClick={() => removeInstruction(index)}
+                    icon={<DeleteOutlined />}
+                  />
+                )}
+              </div>
+            ))}
+            <div className="w-full flex justify-center items-center">
+              <Form.Item>
+                <Button
+                  type="text"
+                  style={{ color: "#329632" }}
+                  onClick={addInstruction}
+                  icon={<PlusOutlined />}
+                >
+                  Add Instruction
+                </Button>
+              </Form.Item>
+            </div>
           </div>
         )}
-      </div>
 
-      <div className="mt-10 flex flex-col gap-y-4">
-        <button
-          type="button"
-          className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
-          onClick={prevStep}
-          disabled={currentStep < 1}
-        >
-          Go Back
-        </button>
-        <Button
-          size="lg"
-          variant="default"
-          className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
-          onClick={form.handleSubmit(nextStep)}
-          disabled={!(currentStep < mySteps - 1)}
-        >
-          Continue
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="outline"
-          className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={form.handleSubmit(saveStep)}
-        >
-          Save Progress
-        </Button>
-      </div>
-    </Form>
+        <div className="mt-10 flex flex-col gap-y-4">
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="text"
+            onClick={prevStep}
+            disabled={currentStep < 1}
+          >
+            Go Back
+          </Button>
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="primary"
+            onClick={handleNextStep}
+          >
+            Continue
+          </Button>
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="default"
+            onClick={handleSaveStep}
+          >
+            Save Progress
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
 

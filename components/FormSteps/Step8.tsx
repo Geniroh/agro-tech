@@ -1,76 +1,41 @@
 "use client";
-import React, { useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import React, { useState, useEffect } from "react";
+import { Select, Button, Input, Form, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormItem,
-  FormField,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { IoTrashBin } from "react-icons/io5";
 import { useFormSubmit } from "@/hooks/multi-step-submit";
-import { ClipLoader } from "react-spinners";
-import { toast } from "sonner";
 
-const formSchema = z.object({
-  isGenderFriendly: z.boolean(),
-  gender_description: z.string().optional(),
-});
+const { TextArea } = Input;
 
-const Step8: React.FC = () => {
-  const [loading, setLoading] = useState<boolean>(false);
-  const {
-    formData,
-    setFormData,
-    currentStep,
-    setCurrentStep,
-    mySteps,
-    submitStatus,
-    setSubmitStatus,
-  } = useFormContext();
+const { Option } = Select;
+const { Item } = Form;
 
+const Step7: React.FC = () => {
+  const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
+    useFormContext();
   const { handleSubmit } = useFormSubmit();
+  const [selectValue, setSelectValue] = useState<boolean | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [form] = Form.useForm();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formData,
-    mode: "onChange",
-  });
-
-  const saveData = (values: z.infer<typeof formSchema>) => {
-    setFormData({ ...formData, ...values });
+  const handleSelectChange = (value: boolean) => {
+    setSelectValue(value);
   };
 
-  const nextStep = () => {
-    if (currentStep < mySteps - 1) {
-      form.handleSubmit(saveData)();
-      setCurrentStep(currentStep + 1);
-    }
-  };
-
-  const finalStep = async () => {
+  const handleNextStep = async () => {
     setLoading(true);
     try {
-      form.handleSubmit(saveData)();
+      const values = await form.validateFields();
+      saveData(values);
+
       await handleSubmit(formData);
     } catch (error) {
-      toast.error("There was an error in uploading innovation");
+      message.error("Please fill in all required fields");
     }
     setLoading(false);
+  };
+
+  const saveData = (values: any) => {
+    setFormData({ ...formData, ...values });
   };
 
   const prevStep = () => {
@@ -79,86 +44,93 @@ const Step8: React.FC = () => {
     }
   };
 
-  const saveStep = () => {
-    form.handleSubmit(saveData)();
+  const handleSaveStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (values && typeof window !== "undefined") {
+        localStorage.setItem(
+          "formData",
+          JSON.stringify({ ...formData, ...values })
+        );
+        localStorage.setItem("currentStep", currentStep.toString());
+        localStorage.setItem("totalSteps", mySteps.toString());
+      }
+      message.success("Your progress has been saved");
+    } catch (error) {
+      message.error("Please fill in all required fields");
+    }
   };
 
+  useEffect(() => {
+    form.setFieldsValue(formData);
+  }, [formData, form]);
+
   return (
-    <Form {...form}>
-      <div className="space-y-6">
-        <FormField
-          control={form.control}
-          name="isGenderFriendly"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Is this product Gender friendly?</FormLabel>
-              <FormControl>
-                <Select
-                  value={String(field.value)}
-                  onValueChange={(value: string) => {
-                    const booleanValue = value === "true";
-                    field.onChange(booleanValue);
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-[#fafafa]">
-                    <SelectValue placeholder="Please select an option" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value={"true"}>Yes</SelectItem>
-                    <SelectItem value={"false"}>No</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div>
+      <Form
+        form={form}
+        layout="vertical"
+        className="space-y-4"
+        initialValues={{ ...formData }}
+      >
+        <div>
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Is this product gender friendly ?
+          </h3>
+          <Item
+            name="isGenderFriendly"
+            rules={[{ required: true, message: "Please Select an Option" }]}
+          >
+            <Select size="large" onChange={handleSelectChange}>
+              <Option value={true}>Yes</Option>
+              <Option value={false}>No</Option>
+            </Select>
+          </Item>
+        </div>
 
-        {form.watch("isGenderFriendly") && (
-          <FormField
-            control={form.control}
-            name={`gender_description`}
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>
-                  Briefly describe how this technology is inclusive of the
-                  female gender.
-                </FormLabel>
-                <FormControl>
-                  <Textarea
-                    {...field}
-                    placeholder="Description"
-                    rows={4}
-                    className="bg-[#fafafa]"
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        {selectValue && (
+          <div>
+            <div>
+              <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                Briefly describe how this technology is inclusive of the female
+                gender.
+              </h3>
+
+              <Item className="w-full" name="gender_description">
+                <TextArea
+                  placeholder="Please enter brief description to support image"
+                  size="large"
+                  rows={4}
+                />
+              </Item>
+            </div>
+          </div>
         )}
-      </div>
 
-      <div className="mt-10 flex flex-col gap-y-4">
-        <button
-          className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
-          onClick={prevStep}
-          disabled={currentStep < 1}
-        >
-          Go Back
-        </button>
-        <Button
-          size="lg"
-          variant="default"
-          className=" text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
-          onClick={form.handleSubmit(finalStep)}
-          disabled={loading}
-        >
-          {loading ? <ClipLoader color="#fff" /> : " Submit Innovation"}
-        </Button>
-      </div>
-    </Form>
+        <div className="mt-10 flex flex-col gap-y-4">
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="text"
+            onClick={prevStep}
+            disabled={currentStep < 1}
+          >
+            Go Back
+          </Button>
+          <Button
+            className="text-white bg-myblack rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="primary"
+            loading={loading}
+            disabled={loading}
+            onClick={handleNextStep}
+          >
+            Submit
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
 
-export default Step8;
+export default Step7;

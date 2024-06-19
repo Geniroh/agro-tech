@@ -41,6 +41,7 @@ const InnovationPage = () => {
       const { data } = await axios.get<IInnovationType>(
         `/api/v1/innovation/${id}`
       );
+
       const { data: comments } = await axios.get<{
         message: string;
         comments: IInnovationComment[];
@@ -50,14 +51,13 @@ const InnovationPage = () => {
       setComments(comments.comments);
     } catch (error) {
       setError("Network Error, please try again!");
-    } finally {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {
     fetchData(innovation_id);
-  });
+  }, []);
 
   if (loading) {
     return (
@@ -117,7 +117,6 @@ const InnovationPage = () => {
 
   return (
     <>
-      <Navbar />
       {!data ? (
         <section className="flex items-center h-full sm:p-16 dark:bg-gray-50 dark:text-gray-800">
           <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8 space-y-8 text-center sm:max-w-md">
@@ -430,20 +429,20 @@ const InnovationPage = () => {
               <div className="mt-10"></div>
             )}
 
-            <div className="w-full border shadow-sm rounded-md mt-5 h-[35px] flex items-center justify-between px-2">
+            {/* <div className="w-full border shadow-sm rounded-md mt-5 h-[35px] flex items-center justify-between px-2">
               <InnovationReactions innovationId={innovation_id} key={2} />
 
               <div className="flex gap-x-4">
                 <ShareButton link={`innovation/${innovation_id}`} />
               </div>
-            </div>
+            </div> */}
 
-            {comments && (
+            {/* {comments && (
               <InnovationDiscussionForum
                 innovationId={innovation_id}
                 comments={comments}
               />
-            )}
+            )} */}
           </div>
         </div>
       )}

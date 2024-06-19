@@ -137,6 +137,95 @@
 //   );
 // };
 
+// "use client";
+// import React, { createContext, useContext, useState, useEffect } from "react";
+
+// interface FormData {
+//   [key: string]: any;
+// }
+
+// interface FormContextType {
+//   formData: FormData;
+//   setFormData: (data: FormData) => void;
+//   currentStep: number;
+//   setCurrentStep: (step: number) => void;
+//   mySteps: number;
+//   setMySteps: (steps: number) => void;
+//   submitStatus: boolean;
+//   setSubmitStatus: (status: boolean) => void;
+// }
+
+// const FormContext = createContext<FormContextType | undefined>(undefined);
+
+// export const useFormContext = () => {
+//   const context = useContext(FormContext);
+//   if (!context) {
+//     throw new Error("useFormContext must be used within a FormProvider");
+//   }
+//   return context;
+// };
+
+// export const FormProvider: React.FC<{ children: React.ReactNode }> = ({
+//   children,
+// }) => {
+//   const [formData, setFormData] = useState<FormData>({});
+//   const [currentStep, setCurrentStep] = useState<number>(0);
+//   const [mySteps, setMySteps] = useState<number>(1);
+//   const [submitStatus, setSubmitStatus] = useState<boolean>(false);
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       const savedFormData = localStorage.getItem("formData");
+//       if (savedFormData) {
+//         setFormData(JSON.parse(savedFormData));
+//       }
+//       const savedStep = localStorage.getItem("currentStep");
+//       if (savedStep) {
+//         setCurrentStep(parseInt(savedStep, 10));
+//       }
+//       const savedSteps = localStorage.getItem("totalSteps");
+//       if (savedSteps) {
+//         setMySteps(parseInt(savedSteps, 10));
+//       }
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       localStorage.setItem("formData", JSON.stringify(formData));
+//     }
+//   }, [formData]);
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       localStorage.setItem("currentStep", currentStep.toString());
+//     }
+//   }, [currentStep]);
+
+//   useEffect(() => {
+//     if (typeof window !== "undefined") {
+//       localStorage.setItem("totalSteps", mySteps.toString());
+//     }
+//   }, [mySteps]);
+
+//   return (
+//     <FormContext.Provider
+//       value={{
+//         formData,
+//         setFormData,
+//         currentStep,
+//         setCurrentStep,
+//         mySteps,
+//         setMySteps,
+//         submitStatus,
+//         setSubmitStatus,
+//       }}
+//     >
+//       {children}
+//     </FormContext.Provider>
+//   );
+// };
+
 "use client";
 import React, { createContext, useContext, useState, useEffect } from "react";
 
@@ -153,6 +242,7 @@ interface FormContextType {
   setMySteps: (steps: number) => void;
   submitStatus: boolean;
   setSubmitStatus: (status: boolean) => void;
+  clearLocalStorage: () => void;
 }
 
 const FormContext = createContext<FormContextType | undefined>(undefined);
@@ -165,47 +255,59 @@ export const useFormContext = () => {
   return context;
 };
 
+const isBrowser = typeof window !== "undefined";
+
+const getLocalStorageItem = (key: string) => {
+  if (!isBrowser) return null;
+  const item = localStorage.getItem(key);
+  try {
+    return item ? JSON.parse(item) : null;
+  } catch (error) {
+    console.error(`Error parsing localStorage item ${key}:`, error);
+    return null;
+  }
+};
+
+const setLocalStorageItem = (key: string, value: any) => {
+  if (!isBrowser) return;
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    console.error(`Error setting localStorage item ${key}:`, error);
+  }
+};
+
 export const FormProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [formData, setFormData] = useState<FormData>({});
-  const [currentStep, setCurrentStep] = useState<number>(0);
-  const [mySteps, setMySteps] = useState<number>(1);
+  const [formData, setFormData] = useState<FormData>(
+    getLocalStorageItem("formData") || {}
+  );
+  const [currentStep, setCurrentStep] = useState<number>(
+    getLocalStorageItem("currentStep") || 0
+  );
+  const [mySteps, setMySteps] = useState<number>(
+    getLocalStorageItem("totalSteps") || 1
+  );
   const [submitStatus, setSubmitStatus] = useState<boolean>(false);
 
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      const savedFormData = localStorage.getItem("formData");
-      if (savedFormData) {
-        setFormData(JSON.parse(savedFormData));
-      }
-      const savedStep = localStorage.getItem("currentStep");
-      if (savedStep) {
-        setCurrentStep(parseInt(savedStep, 10));
-      }
-      const savedSteps = localStorage.getItem("totalSteps");
-      if (savedSteps) {
-        setMySteps(parseInt(savedSteps, 10));
-      }
-    }
-  }, []);
+  const clearLocalStorage = () => {
+    if (!isBrowser) return;
+    localStorage.removeItem("formData");
+    localStorage.removeItem("currentStep");
+    localStorage.removeItem("totalSteps");
+  };
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("formData", JSON.stringify(formData));
-    }
+    setLocalStorageItem("formData", formData);
   }, [formData]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("currentStep", currentStep.toString());
-    }
+    setLocalStorageItem("currentStep", currentStep);
   }, [currentStep]);
 
   useEffect(() => {
-    if (typeof window !== "undefined") {
-      localStorage.setItem("totalSteps", mySteps.toString());
-    }
+    setLocalStorageItem("totalSteps", mySteps);
   }, [mySteps]);
 
   return (
@@ -219,6 +321,7 @@ export const FormProvider: React.FC<{ children: React.ReactNode }> = ({
         setMySteps,
         submitStatus,
         setSubmitStatus,
+        clearLocalStorage,
       }}
     >
       {children}

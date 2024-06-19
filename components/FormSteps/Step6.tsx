@@ -1,93 +1,96 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
+import { Select, Button, Input, Form, Upload, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
-import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormItem,
-  FormField,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { IoTrashBin } from "react-icons/io5";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import { validateEmail, validatePhoneNumber } from "@/utils/function";
 
-const baseSchema = z.object({
-  isSupplier: z.boolean(),
-});
+const { TextArea } = Input;
 
-const supplierSchema = z.object({
-  supplier: z
-    .array(
-      z.object({
-        supplier_name: z.string().min(2, { message: "Name is required" }),
-        supplier_email: z.string().email({ message: "Invalid email address" }),
-        supplier_contact: z.string().optional(),
-      })
-    )
-    .min(1, { message: "At least one supplier is required" }),
-});
+const { Option } = Select;
+const { Item } = Form;
+
+interface IISupplier {
+  supplier_email: string;
+  supplier_name: string;
+  supplier_contact: string;
+}
 
 const Step6: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
+  const [selectValue, setSelectValue] = useState<boolean | null>(null);
+  const [suppliers, setSuppliers] = useState<IISupplier[]>([]);
+  const [form] = Form.useForm();
 
-  const [areExtraFieldsValid, setAreExtraFieldsValid] = useState(false);
+  useEffect(() => {
+    if (selectValue === true && suppliers.length === 0) {
+      setSuppliers([
+        { supplier_contact: "", supplier_email: "", supplier_name: "" },
+      ]);
+    } else if (selectValue === false) {
+      setSuppliers([]);
+    } else if (selectValue === null && formData.isSupplier !== undefined) {
+      setSelectValue(formData.isSupplier);
+      setSuppliers(formData.supplier || []);
+    }
+  }, [selectValue]);
 
-  const formSchema = baseSchema.extend(
-    formData.isSupplier ? { supplier: supplierSchema.shape.supplier } : {}
-  );
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formData,
-    mode: "onChange",
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "supplier",
-  });
-
-  const handleIsSupplierChange = (value: boolean) => {
-    form.setValue("isSupplier", value);
+  const handleSelectChange = (value: boolean) => {
+    setSelectValue(value);
     if (!value) {
-      form.setValue("supplier", []);
-    } else if (value && form.getValues("supplier")?.length === 0) {
-      append({ supplier_name: "", supplier_email: "", supplier_contact: "" });
+      setSuppliers([]);
     }
+    setFormData({ ...formData, isSupplier: value });
   };
 
-  const saveData = (values: z.infer<typeof formSchema>) => {
-    setFormData({ ...formData, ...values });
+  const addSupplier = () => {
+    setSuppliers([
+      ...suppliers,
+      { supplier_contact: "", supplier_email: "", supplier_name: "" },
+    ]);
   };
 
-  const nextStep = () => {
-    if (currentStep < mySteps - 1) {
-      form.handleSubmit(saveData)();
+  const removeSupplier = (index: number) => {
+    if (index === 0) return;
+    setSuppliers(suppliers.filter((_, i) => i !== index));
+  };
 
-      checkExtraFieldsValidity();
+  const handleSupplierChange = (
+    index: number,
+    field: keyof IISupplier,
+    value: any
+  ) => {
+    const updatedInstance = [...suppliers];
+    updatedInstance[index][field] = value;
+    setSuppliers(updatedInstance);
+  };
 
-      if (areExtraFieldsValid) {
-        setCurrentStep(currentStep + 1);
-      } else {
-        toast.error(
-          "Please ensure you have filled all required fields then continue!"
-        );
+  const handleNextStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (selectValue) {
+        for (const supplier of suppliers) {
+          if (
+            !supplier.supplier_contact ||
+            !supplier.supplier_email ||
+            !supplier.supplier_name
+          ) {
+            throw new Error(
+              "Please fill in all required fields for each instance"
+            );
+          }
+        }
       }
+      saveData(values);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      message.error("Please fill in all required fields for each supplier");
     }
+  };
+
+  const saveData = (values: any) => {
+    setFormData({ ...formData, ...values, supplier: suppliers });
   };
 
   const prevStep = () => {
@@ -96,180 +99,195 @@ const Step6: React.FC = () => {
     }
   };
 
-  const saveStep = () => {
-    form.handleSubmit(saveData)();
-  };
-
-  const checkExtraFieldsValidity = () => {
-    const suppliers = form.getValues("supplier");
-    if (form.watch("isSupplier")) {
-      const isValid = suppliers.every(
-        (supplier: any) =>
-          supplier.supplier_name.length >= 2 &&
-          supplier.supplier_email.length >= 2
-      );
-      setAreExtraFieldsValid(isValid);
-    } else {
-      setAreExtraFieldsValid(true);
+  const handleSaveStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (values && typeof window !== "undefined") {
+        localStorage.setItem(
+          "formData",
+          JSON.stringify({ ...formData, ...values, supplier: suppliers })
+        );
+        localStorage.setItem("currentStep", currentStep.toString());
+        localStorage.setItem("totalSteps", mySteps.toString());
+      }
+      message.success("Your progress has been saved");
+    } catch (error) {
+      message.error("Please fill in all required fields");
     }
   };
 
   useEffect(() => {
-    checkExtraFieldsValidity();
-  }, [form.watch("isSupplier"), form.watch("supplier")]);
+    form.setFieldsValue(formData);
+  }, [formData, form]);
 
   return (
-    <Form {...form}>
-      <div className="space-y-6">
-        <FormField
-          control={form.control}
-          name="isSupplier"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Do You Have a Supplier?</FormLabel>
-              <FormControl>
-                <Select
-                  value={String(field.value)}
-                  onValueChange={(value: string) => {
-                    const booleanValue = value === "true";
-                    field.onChange(booleanValue);
-                    handleIsSupplierChange(booleanValue);
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-[#fafafa]">
-                    <SelectValue placeholder="Please select an option" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value={"true"}>Yes</SelectItem>
-                    <SelectItem value={"false"}>No</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div>
+      <Form
+        form={form}
+        layout="vertical"
+        className="space-y-4"
+        initialValues={{ ...formData }}
+      >
+        <div>
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Do you have a supplier?
+          </h3>
+          <Item
+            name="isSupplier"
+            rules={[{ required: true, message: "Please Select an Option" }]}
+          >
+            <Select size="large" onChange={handleSelectChange}>
+              <Option value={true}>Yes</Option>
+              <Option value={false}>No</Option>
+            </Select>
+          </Item>
+          <h2 className="text-muted-foreground text-[14px] leading-[20px]">
+            Please provide details below.
+          </h2>
+        </div>
 
-        {form.watch("isSupplier") &&
-          fields.map((field, index) => (
-            <div key={field.id} className="space-y-4">
-              {index > 0 && (
+        {selectValue && (
+          <div>
+            {suppliers.map((supplier, index) => (
+              <div key={index}>
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Name
+                  </h3>
+
+                  <Item
+                    className="w-full"
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <Input
+                      value={supplier.supplier_name}
+                      placeholder="Please Enter Your Name"
+                      size="large"
+                      onChange={(e) =>
+                        handleSupplierChange(
+                          index,
+                          "supplier_name",
+                          e.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Item>
+                </div>
+
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Email
+                  </h3>
+
+                  <Item
+                    className="w-full"
+                    rules={[
+                      { required: true, message: "Required" },
+                      { validator: validateEmail },
+                    ]}
+                  >
+                    <Input
+                      value={supplier.supplier_email}
+                      placeholder="Please Enter Your Email"
+                      type="email"
+                      size="large"
+                      onChange={(e) =>
+                        handleSupplierChange(
+                          index,
+                          "supplier_email",
+                          e.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Item>
+                </div>
+
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Contact
+                  </h3>
+
+                  <Item
+                    className="w-full"
+                    rules={[
+                      { required: true, message: "Required" },
+                      { validator: validatePhoneNumber },
+                    ]}
+                  >
+                    <Input
+                      value={supplier.supplier_contact}
+                      placeholder="Please Enter Your Contact"
+                      suffix="Nigeria"
+                      prefix="234"
+                      size="large"
+                      onChange={(e) =>
+                        handleSupplierChange(
+                          index,
+                          "supplier_contact",
+                          e.target.value
+                        )
+                      }
+                      required
+                    />
+                  </Item>
+                </div>
+
+                {index > 0 && (
+                  <Button
+                    type="dashed"
+                    style={{ color: "red" }}
+                    onClick={() => removeSupplier(index)}
+                    icon={<DeleteOutlined />}
+                  />
+                )}
+              </div>
+            ))}
+            <div className="w-full flex justify-center items-center">
+              <Form.Item>
                 <Button
-                  type="button"
-                  variant="destructive"
-                  className="p-1"
-                  onClick={() => remove(index)}
+                  type="text"
+                  style={{ color: "#329632" }}
+                  onClick={addSupplier}
+                  icon={<PlusOutlined />}
                 >
-                  <IoTrashBin />
+                  Add Instance
                 </Button>
-              )}
-
-              <FormField
-                control={form.control}
-                name={`supplier.${index}.supplier_name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Name</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Please Enter Supplier's Name"
-                        type="text"
-                        className="bg-[#fafafa]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`supplier.${index}.supplier_email`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Email</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Please Enter Supplier's Email"
-                        type="email"
-                        className="bg-[#fafafa]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name={`supplier.${index}.supplier_contact`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Contact</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Please Enter Supplier's Contact"
-                        type="text"
-                        className="bg-[#fafafa]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+              </Form.Item>
             </div>
-          ))}
-
-        {form.watch("isSupplier") && (
-          <div className="w-full flex justify-center">
-            <Button
-              type="button"
-              variant="ghost"
-              className="text-[#329632]"
-              onClick={() =>
-                append({
-                  supplier_name: "",
-                  supplier_email: "",
-                  supplier_contact: "",
-                })
-              }
-            >
-              Add supplier +
-            </Button>
           </div>
         )}
-      </div>
 
-      <div className="mt-10 flex flex-col gap-y-4">
-        <button
-          type="button"
-          className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
-          onClick={prevStep}
-          disabled={currentStep < 1}
-        >
-          Go Back
-        </button>
-        <Button
-          size="lg"
-          variant="default"
-          className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
-          onClick={form.handleSubmit(nextStep)}
-          disabled={!(currentStep < mySteps - 1)}
-        >
-          Continue
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="outline"
-          className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={form.handleSubmit(saveStep)}
-        >
-          Save Progress
-        </Button>
-      </div>
-    </Form>
+        <div className="mt-10 flex flex-col gap-y-4">
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="text"
+            onClick={prevStep}
+            disabled={currentStep < 1}
+          >
+            Go Back
+          </Button>
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="primary"
+            onClick={handleNextStep}
+          >
+            Continue
+          </Button>
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="default"
+            onClick={handleSaveStep}
+          >
+            Save Progress
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
 

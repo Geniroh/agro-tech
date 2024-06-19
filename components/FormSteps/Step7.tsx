@@ -1,100 +1,82 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm, useFieldArray } from "react-hook-form";
-import { z } from "zod";
+import { Select, Button, Input, Form, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
-import { toast } from "sonner";
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormItem,
-  FormField,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { IoTrashBin } from "react-icons/io5";
+import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
-const baseSchema = z.object({
-  isHSEGuideline: z.boolean(),
-});
+const { Option } = Select;
+const { Item } = Form;
 
-const guidelineSchema = z.object({
-  hseguidelines: z
-    .array(
-      z.object({
-        name: z.string().min(1, { message: "Name is required" }),
-      })
-    )
-    .min(1, { message: "At least one guideline is required" }),
-});
+interface IGuidelines {
+  name: string;
+}
 
 const Step7: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
+  const [selectValue, setSelectValue] = useState<boolean | null>(null);
+  const [guidelines, setGuidelines] = useState<IGuidelines[]>([]);
+  const [form] = Form.useForm();
 
-  const [areExtraFieldsValid, setAreExtraFieldsValid] = useState(false);
+  useEffect(() => {
+    if (selectValue === true && guidelines.length === 0) {
+      setGuidelines([{ name: "" }]);
+    } else if (selectValue === false) {
+      setGuidelines([]);
+    } else if (selectValue === null && formData.isHSEGuidelines !== undefined) {
+      setSelectValue(formData.isSupplier);
+      setGuidelines(formData.hseguidelines || []);
+    }
+  }, [selectValue]);
 
-  const formSchema = baseSchema.extend(
-    formData.isHSEGuideline
-      ? { hseguidelines: guidelineSchema.shape.hseguidelines }
-      : {}
-  );
-
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formData,
-    mode: "onChange",
-  });
-
-  const { fields, append, remove } = useFieldArray({
-    control: form.control,
-    name: "hseguidelines",
-  });
-
-  const handleIsHSEChange = (value: boolean) => {
-    form.setValue("isHSEGuideline", value);
+  const handleSelectChange = (value: boolean) => {
+    setSelectValue(value);
     if (!value) {
-      form.setValue("hseguidelines", []);
-    } else if (value && form.getValues("hseguidelines")?.length === 0) {
-      append({ name: "" });
+      setGuidelines([]);
     }
+    setFormData({ ...formData, isHSEGuideline: value });
   };
 
-  const saveData = (values: z.infer<typeof formSchema>) => {
-    setFormData({ ...formData, ...values });
-    checkExtraFieldsValidity();
+  const addGuideline = () => {
+    setGuidelines([...guidelines, { name: "" }]);
   };
 
-  // const nextStep = () => {
-  //   form.handleSubmit((values) => {
-  //     saveData(values);
-  //     if (currentStep < mySteps - 1) {
-  //       setCurrentStep(currentStep + 1);
-  //     }
-  //   })();
-  // };
+  const removeGuideline = (index: number) => {
+    if (index === 0) return;
+    setGuidelines(guidelines.filter((_, i) => i !== index));
+  };
 
-  const nextStep = () => {
-    if (currentStep < mySteps - 1) {
-      form.handleSubmit(saveData)();
-      if (areExtraFieldsValid) {
-        setCurrentStep(currentStep + 1);
-      } else {
-        toast.error(
-          "Please ensure you have filled all required fields then continue!"
-        );
+  const handleGuidelineChange = (
+    index: number,
+    field: keyof IGuidelines,
+    value: any
+  ) => {
+    const updatedInstance = [...guidelines];
+    updatedInstance[index][field] = value;
+    setGuidelines(updatedInstance);
+  };
+
+  const handleNextStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (selectValue) {
+        for (const guideline of guidelines) {
+          if (!guideline.name) {
+            throw new Error(
+              "Please fill in all required fields for each instance"
+            );
+          }
+        }
       }
+      saveData(values);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      message.error("Please fill in all required fields guideline");
     }
+  };
+
+  const saveData = (values: any) => {
+    setFormData({ ...formData, ...values, hseguidelines: guidelines });
   };
 
   const prevStep = () => {
@@ -103,136 +85,135 @@ const Step7: React.FC = () => {
     }
   };
 
-  const saveStep = () => {
-    form.handleSubmit(saveData)();
-  };
-
-  const checkExtraFieldsValidity = () => {
-    const guidelines = form.getValues("hseguidelines");
-    if (form.watch("isHSEGuideline")) {
-      const isValid = guidelines.every(
-        (guideline: any) => guideline.name.length >= 2
-      );
-      setAreExtraFieldsValid(isValid);
-    } else {
-      setAreExtraFieldsValid(true);
+  const handleSaveStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (values && typeof window !== "undefined") {
+        localStorage.setItem(
+          "formData",
+          JSON.stringify({ ...formData, ...values, hseguidelines: guidelines })
+        );
+        localStorage.setItem("currentStep", currentStep.toString());
+        localStorage.setItem("totalSteps", mySteps.toString());
+      }
+      message.success("Your progress has been saved");
+    } catch (error) {
+      message.error("Please fill in all required fields");
     }
   };
 
   useEffect(() => {
-    checkExtraFieldsValidity();
-  }, [form.watch("isHSEGuideline"), form.watch("hseguidelines")]);
+    form.setFieldsValue(formData);
+  }, [formData, form]);
 
   return (
-    <Form {...form}>
-      <div className="space-y-6">
-        <FormField
-          control={form.control}
-          name="isHSEGuideline"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Does This Product Have HSE Guidelines?</FormLabel>
-              <FormControl>
-                <Select
-                  value={String(field.value)}
-                  onValueChange={(value: string) => {
-                    const booleanValue = value === "true";
-                    field.onChange(booleanValue);
-                    handleIsHSEChange(booleanValue);
-                  }}
-                >
-                  <SelectTrigger className="w-full bg-[#fafafa]">
-                    <SelectValue placeholder="Please select an option" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    <SelectItem value={"true"}>Yes</SelectItem>
-                    <SelectItem value={"false"}>No</SelectItem>
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+    <div>
+      <Form
+        form={form}
+        layout="vertical"
+        className="space-y-4"
+        initialValues={{ ...formData }}
+      >
+        <div>
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Are you an inventor on this product?
+          </h3>
+          <Item
+            name="isHSEGuideline"
+            rules={[{ required: true, message: "Please Select an Option" }]}
+          >
+            <Select size="large" onChange={handleSelectChange}>
+              <Option value={true}>Yes</Option>
+              <Option value={false}>No</Option>
+            </Select>
+          </Item>
+          <h2 className="text-muted-foreground text-[14px] leading-[20px]">
+            Please provide details below.
+          </h2>
+        </div>
 
-        {form.watch("isHSEGuideline") &&
-          fields.map((field, index) => (
-            <div key={field.id} className="space-y-4">
-              {index > 0 && (
-                <Button
-                  type="button"
-                  variant="destructive"
-                  className="p-1"
-                  onClick={() => remove(index)}
-                >
-                  <IoTrashBin />
-                </Button>
-              )}
+        {selectValue && (
+          <div>
+            {guidelines.map((guideline, index) => (
+              <div key={index}>
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Does this product Have HSE Guidelines?
+                  </h3>
 
-              <FormField
-                control={form.control}
-                name={`hseguidelines.${index}.name`}
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{index + 1}</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        placeholder="Please Enter Info"
-                        type="text"
-                        className="bg-[#fafafa]"
-                      />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
+                  <Item
+                    className="w-full"
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <Input
+                      value={guideline.name}
+                      placeholder="Please ENter Info"
+                      size="large"
+                      onChange={(e) =>
+                        handleGuidelineChange(index, "name", e.target.value)
+                      }
+                      required
+                    />
+                  </Item>
+                  <h2 className="text-muted-foreground text-[14px] leading-[20px]">
+                    please Provide all Necessary HSE Guidelines
+                  </h2>
+                </div>
+
+                {index > 0 && (
+                  <Button
+                    type="dashed"
+                    style={{ color: "red" }}
+                    onClick={() => removeGuideline(index)}
+                    icon={<DeleteOutlined />}
+                  />
                 )}
-              />
+              </div>
+            ))}
+            <div className="w-full flex justify-center items-center">
+              <Form.Item>
+                <Button
+                  type="text"
+                  style={{ color: "#329632" }}
+                  onClick={addGuideline}
+                  icon={<PlusOutlined />}
+                >
+                  Add Instance
+                </Button>
+              </Form.Item>
             </div>
-          ))}
-
-        {form.watch("isHSEGuideline") && (
-          <div className="w-full flex justify-center">
-            <Button
-              type="button"
-              variant="ghost"
-              className="text-[#329632]"
-              onClick={() => append({ name: "" })}
-            >
-              Add guideline +
-            </Button>
           </div>
         )}
-      </div>
 
-      <div className="mt-10 flex flex-col gap-y-4">
-        <button
-          type="button"
-          className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
-          onClick={prevStep}
-          disabled={currentStep < 1}
-        >
-          Go Back
-        </button>
-        <Button
-          size="lg"
-          variant="default"
-          className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
-          onClick={form.handleSubmit(nextStep)}
-          disabled={!(currentStep < mySteps - 1)}
-        >
-          Continue
-        </Button>
-        <Button
-          type="button"
-          size="lg"
-          variant="outline"
-          className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-          onClick={form.handleSubmit(saveStep)}
-        >
-          Save Progress
-        </Button>
-      </div>
-    </Form>
+        <div className="mt-10 flex flex-col gap-y-4">
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="text"
+            onClick={prevStep}
+            disabled={currentStep < 1}
+          >
+            Go Back
+          </Button>
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="primary"
+            onClick={handleNextStep}
+          >
+            Continue
+          </Button>
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="default"
+            onClick={handleSaveStep}
+          >
+            Save Progress
+          </Button>
+        </div>
+      </Form>
+    </div>
   );
 };
 

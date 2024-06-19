@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { Toaster } from "@/components/ui/sonner";
+import { AntdRegistry } from "@ant-design/nextjs-registry";
+import { ConfigProvider } from "antd";
 
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
@@ -21,8 +23,18 @@ export default function RootLayout({
       </head>
       <body className={`font-open-sans bg-white w-screen overflow-x-hidden`}>
         <SessionProvider>
-          {children}
-          <Toaster position="top-right" richColors />
+          <AntdRegistry>
+            <ConfigProvider
+              theme={{
+                token: {
+                  colorPrimary: "#329632",
+                },
+              }}
+            >
+              {children}
+            </ConfigProvider>
+          </AntdRegistry>
+          {/* <Toaster position="top-right" richColors /> */}
         </SessionProvider>
       </body>
     </html>

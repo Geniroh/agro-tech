@@ -1,60 +1,34 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import React, { useEffect } from "react";
 import { useFormContext } from "@/context/FormContext";
-import {
-  Form,
-  FormControl,
-  FormMessage,
-  FormItem,
-  FormField,
-  FormLabel,
-} from "@/components/ui/form";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { countriesData } from "@/data/country-region";
+import { Input, Form, Select, Button } from "antd";
+import { countriesData, ICountry } from "@/data/country-region";
+import { toast } from "sonner";
 
-const formSchema = z.object({
-  innovation_name: z.string().min(3, { message: "Name is required" }),
-  innovation_year: z.string().min(3, { message: "Please select a year" }),
-  innovation_country: z.string().min(3, { message: "Country is required" }),
-  innovation_cost: z
-    .string()
-    .regex(/^\d+$/, { message: "Cost must be a number" }),
-  innovation_value_chain: z
-    .string()
-    .min(2, { message: "Value chain is required" }),
-});
+const { Item } = Form;
 
 const Step1: React.FC = () => {
-  const [years, setYears] = useState<number[]>([]);
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
 
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: formData,
-    mode: "onChange",
-  });
+  const [form] = Form.useForm();
 
-  const saveData = (values: z.infer<typeof formSchema>) => {
-    setFormData({ ...formData, ...values });
+  useEffect(() => {
+    form.setFieldsValue(formData);
+  }, [formData, form]);
+
+  const handleNextStep = async () => {
+    try {
+      const values = await form.validateFields();
+      saveData(values);
+      setCurrentStep(currentStep + 1);
+    } catch (error) {
+      toast.error("Please fill in all required fields");
+    }
   };
 
-  const nextStep = () => {
-    if (currentStep < mySteps - 1) {
-      form.handleSubmit(saveData)();
-      setCurrentStep(currentStep + 1);
-    }
+  const saveData = (values: any) => {
+    setFormData({ ...formData, ...values });
   };
 
   const prevStep = () => {
@@ -63,166 +37,187 @@ const Step1: React.FC = () => {
     }
   };
 
-  const saveStep = () => {
-    form.handleSubmit(saveData)();
+  const handleSaveStep = async () => {
+    try {
+      const values = await form.validateFields();
+      if (values && typeof window !== "undefined") {
+        localStorage.setItem(
+          "formData",
+          JSON.stringify({ ...formData, ...values })
+        );
+        localStorage.setItem("currentStep", currentStep.toString());
+        localStorage.setItem("totalSteps", mySteps.toString());
+      }
+      toast.success("Your progress has been saved");
+    } catch (error) {
+      toast.error("Please fill in all required fields");
+    }
   };
 
-  const getYears = () => {
+  const valueChainOptions = [
+    { value: "Input Supply", label: "Input Supply" },
+    { value: "Production", label: "Production" },
+    { value: "Harvesting", label: "Harvesting" },
+    { value: "Processing", label: "Processing" },
+    { value: "Logistics", label: "Logistics" },
+    { value: "Export", label: "Export" },
+  ];
+
+  const generateYearOptions = () => {
     const currentYear = new Date().getFullYear();
-    const yearsArray = Array.from(
-      { length: currentYear - 1970 + 1 },
-      (_, index) => 1970 + index
-    );
-    yearsArray.sort((a, b) => b - a);
-    setYears(yearsArray);
+    const years = [];
+    for (let year = currentYear; year >= 1900; year--) {
+      years.push({ value: year, label: year.toString() });
+    }
+    return years;
   };
 
-  useEffect(() => {
-    getYears();
-  }, []);
+  const generateCountryOptions = (countries: ICountry[]) => {
+    return countries.map((country) => ({
+      value: country.countryName,
+      label: country.countryName,
+    }));
+  };
 
   return (
-    <Form {...form}>
-      <div className="space-y-6">
-        <FormField
-          control={form.control}
+    <Form
+      form={form}
+      layout="vertical"
+      className="space-y-4"
+      initialValues={{ ...formData }}
+    >
+      <div>
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          Innovation Name
+        </h3>
+        <Item
           name="innovation_name"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Innovation Name</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="Please Enter the Name Of the Innovation Here"
-                  type="text"
-                  className="bg-[#fafafa]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          rules={[
+            { required: true, message: "Please enter the Innovation name" },
+          ]}
+        >
+          <Input
+            size="large"
+            placeholder="Please Enter the Name of the Innovation Here"
+          />
+        </Item>
+      </div>
 
-        <FormField
-          control={form.control}
+      <div>
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          Year Invented
+        </h3>
+        <Item
           name="innovation_year"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Year Invented</FormLabel>
-              <FormControl>
-                <Select
-                  value={field.value}
-                  onValueChange={(value: string) => field.onChange(value)}
-                >
-                  <SelectTrigger className="w-full bg-[#fafafa]">
-                    <SelectValue placeholder="Select a year" />
-                  </SelectTrigger>
-                  <SelectContent position="item-aligned">
-                    {years.map((year) => (
-                      <SelectItem key={year} value={year.toString()}>
-                        {year}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          rules={[
+            { required: true, message: "Please select the Innovation year" },
+          ]}
+        >
+          <Select
+            showSearch
+            placeholder="Select Innovation Year"
+            optionFilterProp="label"
+            className="w-full"
+            size="large"
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={generateYearOptions()}
+          />
+        </Item>
+      </div>
 
-        <FormField
-          control={form.control}
+      <div>
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          Country
+        </h3>
+        <Item
           name="innovation_country"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Country</FormLabel>
-              <FormControl>
-                <Select
-                  value={field.value}
-                  onValueChange={(value: string) => field.onChange(value)}
-                >
-                  <SelectTrigger className="w-full bg-[#fafafa]">
-                    <SelectValue placeholder="Select a country" />
-                  </SelectTrigger>
-                  <SelectContent position="popper">
-                    {countriesData.map((country) => (
-                      <SelectItem
-                        key={country.countryName}
-                        value={country.countryName}
-                      >
-                        {country.countryName}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          rules={[{ required: true, message: "Please select a country" }]}
+        >
+          <Select
+            showSearch
+            placeholder="Select A Country"
+            optionFilterProp="label"
+            className="w-full"
+            size="large"
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={generateCountryOptions(countriesData)}
+          />
+        </Item>
+      </div>
 
-        <FormField
-          control={form.control}
+      <div>
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          Cost (Naira)
+        </h3>
+
+        <Item
           name="innovation_cost"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Cost (Naira)</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder="How Much Does This Innovation Cost"
-                  type="number"
-                  className="bg-[#fafafa]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          rules={[{ required: true, message: "Please Enter Product Cost" }]}
+        >
+          <Input
+            size="large"
+            type="number"
+            placeholder="How Much Does This Innovation Cost"
+          />
+        </Item>
+      </div>
 
-        <FormField
-          control={form.control}
+      <div>
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          Value Chains
+        </h3>
+        <Item
           name="innovation_value_chain"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Value Chain</FormLabel>
-              <FormControl>
-                <Input
-                  {...field}
-                  placeholder=""
-                  type="text"
-                  className="bg-[#fafafa]"
-                />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
+          rules={[{ required: true, message: "Please select a Value Chain" }]}
+        >
+          <Select
+            mode="tags"
+            allowClear
+            size="large"
+            className="w-full"
+            placeholder="Select a Value Chain"
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
+            options={valueChainOptions}
+          />
+        </Item>
+      </div>
 
+      <div>
         <div className="mt-10 flex flex-col gap-y-4">
-          <button
-            className="disabled:cursor-not-allowed text-[16px] leading-[22px] font-semibold mt-10"
+          <Button
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="text"
             onClick={prevStep}
             disabled={currentStep < 1}
           >
             Go Back
-          </button>
+          </Button>
           <Button
-            size="lg"
-            variant="default"
-            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-semibold disabled:cursor-not-allowed"
-            onClick={form.handleSubmit(nextStep)}
-            disabled={!(currentStep < mySteps - 1)}
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="primary"
+            onClick={handleNextStep}
           >
             Continue
           </Button>
           <Button
-            size="lg"
-            variant="outline"
-            type="button"
-            className="text-[16px] leading-[22px] rounded-xl font-semibold border-[#242424]"
-            onClick={form.handleSubmit(saveStep)}
+            className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
+            size="large"
+            type="default"
+            onClick={handleSaveStep}
           >
             Save Progress
           </Button>

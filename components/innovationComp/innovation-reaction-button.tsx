@@ -99,28 +99,28 @@ export const InnovationReactions = ({
   const handleReaction = async (reaction: "like" | "dislike") => {
     setClickedIcon(reaction);
     setTimeout(() => setClickedIcon(null), 500);
-    if (innovationId) {
-      try {
-        const { data } = await axios.post<IInnovationType>(
-          `/api/v1/innovation/reactions/${innovationId}`,
-          { reaction }
-        );
-        toast.success(`${reaction}d ${data.productName}`);
-        fetchReactions();
-        console.log(data);
-      } catch (error) {
-        setIsError(true);
-      }
-    }
+    // if (innovationId) {
+    //   try {
+    //     const { data } = await axios.post<IInnovationType>(
+    //       `/api/v1/innovation/reactions/${innovationId}`,
+    //       { reaction }
+    //     );
+    //     toast.success(`${reaction}d ${data.productName}`);
+    //     fetchReactions();
+    //     console.log(data);
+    //   } catch (error) {
+    //     setIsError(true);
+    //   }
+    // }
   };
 
   const fetchReactions = async () => {
     setLoading(true);
     try {
-      const { data } = await axios.get(
-        `/api/v1/innovation/reactions/${innovationId}`
-      );
-      setReactions(data);
+      // const { data } = await axios.get(
+      //   `/api/v1/innovation/reactions/${innovationId}`
+      // );
+      // setReactions(data);
     } catch (error) {
       setIsError(true);
     }
