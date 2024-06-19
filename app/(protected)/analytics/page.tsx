@@ -10,12 +10,52 @@ import { DonutChartCard } from "@/components/data/charts/DonutChartCard";
 // import { ChloropethMap } from "@/components/data/charts/ChloropethMap";
 import DynamicChloropethMap from "@/components/data/charts/DynamicChloropethMap";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
+import axios from "axios";
+import { message } from "antd";
+import { useEffect, useState } from "react";
+import { WhiteLoaderWithoutText } from "@/components/loaders/white-loader";
+import { transformInnovationsToChartData } from "@/utils/function";
 
 export default function AnalyticsPage() {
+  const [query, setQuery] = useState<{}>();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [innovation, setInnovations] = useState<IInnovationType[]>([]);
+  const [count, setCount] = useState<number>(0);
+  const [barChartData, setBarChartData] = useState<ChartData[]>([]);
+
+  const fetchInnovation = async () => {
+    setLoading(true);
+    try {
+      const { data } = await axios.get<{
+        data: IInnovationType[];
+        totalCount: number;
+      }>("/api/v1/analytics/innovation");
+      console.log(data);
+      setInnovations(data.data);
+      setCount(data.totalCount);
+      const res = transformInnovationsToChartData(data.data);
+      setBarChartData(res);
+      console.log(res);
+
+      // setBarChartData(res);
+    } catch (error) {
+      console.log(error);
+      message.error("Network Error");
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    fetchInnovation();
+  }, [query]);
+
+  if (loading) {
+    return <WhiteLoaderWithoutText />;
+  }
   return (
     <main className="lg:max-h-screen">
       <Navbar />
-      <div className="flex justify-center items-center">
+      {/* <div className="flex justify-center items-center">
         <BreadcrumbP
           fromHref="/"
           fromTitle="Back to Home page"
@@ -26,7 +66,11 @@ export default function AnalyticsPage() {
         <h1 className="text-[16px] leading-[24px] font-semibold text-center md:hidden my-10">
           Analytics
         </h1>
-      </div>
+      </div> */}
+
+      <h1 className="text-[16px] leading-[24px] font-semibold text-center md:hidden my-10">
+        Analytics
+      </h1>
 
       <div className="w-full h-full container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -34,7 +78,7 @@ export default function AnalyticsPage() {
             <DynamicChloropethMap />
           </div>
           <div className="col-span-2 flex flex-col gap-y-4 mb-10 md:h-[calc(95vh-170px)">
-            <InnovationBar />
+            <InnovationBar innovations={innovation} count={count} />
             <div className="flex flex-col md:flex-row gap-4">
               <div className="md:w-[40%]">
                 <DonutChartCard />
@@ -43,7 +87,7 @@ export default function AnalyticsPage() {
                 <BarChartCard
                   title="Innovation per year"
                   subtitle="Keep track of revenue performance for the beach house for the last 12 month"
-                  data={RevenueMock}
+                  data={barChartData}
                   dataKey="value"
                   height={250}
                   cellFill="#9E77ED"
