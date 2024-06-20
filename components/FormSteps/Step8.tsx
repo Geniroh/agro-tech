@@ -9,7 +9,7 @@ const { TextArea } = Input;
 const { Option } = Select;
 const { Item } = Form;
 
-const Step7: React.FC = () => {
+const Step8: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
   const { handleSubmit } = useFormSubmit();
@@ -19,6 +19,7 @@ const Step7: React.FC = () => {
 
   const handleSelectChange = (value: boolean) => {
     setSelectValue(value);
+    setFormData({ ...formData, value });
   };
 
   const handleNextStep = async () => {
@@ -96,7 +97,13 @@ const Step7: React.FC = () => {
                 gender.
               </h3>
 
-              <Item className="w-full" name="gender_description">
+              <Item
+                className="w-full"
+                name="gender_description"
+                rules={[
+                  { required: true, message: "Please provide some details" },
+                ]}
+              >
                 <TextArea
                   placeholder="Please enter brief description to support image"
                   size="large"
@@ -133,4 +140,4 @@ const Step7: React.FC = () => {
   );
 };
 
-export default Step7;
+export default Step8;

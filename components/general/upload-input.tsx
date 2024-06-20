@@ -135,7 +135,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
           <span className="flex gap-x-2 items-center text-muted-foreground text-[14px] leading-[24px]">
             {Array.isArray(defaultValue)
               ? defaultValue.map((value) => `${value.name}, `)
-              : "hgjhgjhg" ||
+              : defaultValue ||
                 fileNames.join(", ") ||
                 placeholder ||
                 "Upload files"}{" "}

@@ -12,9 +12,21 @@ import DynamicChloropethMap from "@/components/data/charts/DynamicChloropethMap"
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import axios from "axios";
 import { message } from "antd";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { WhiteLoaderWithoutText } from "@/components/loaders/white-loader";
 import { transformInnovationsToChartData } from "@/utils/function";
+import {
+  PRODUCT_PHASE_OPTIONS,
+  VALUE_CHAIN_OPTIONS,
+} from "@/constants/options";
+import { TagSelect2 } from "@/components/general/tag-select";
 
 export default function AnalyticsPage() {
   const [query, setQuery] = useState<{}>();
@@ -22,6 +34,8 @@ export default function AnalyticsPage() {
   const [innovation, setInnovations] = useState<IInnovationType[]>([]);
   const [count, setCount] = useState<number>(0);
   const [barChartData, setBarChartData] = useState<ChartData[]>([]);
+
+  const phaseOptions = PRODUCT_PHASE_OPTIONS.map((phase) => phase.value);
 
   const fetchInnovation = async () => {
     setLoading(true);
@@ -68,13 +82,30 @@ export default function AnalyticsPage() {
         </h1>
       </div> */}
 
-      <h1 className="text-[16px] leading-[24px] font-semibold text-center my-10">
+      <h1 className="text-[16px] leading-[24px] font-semibold text-center my-5">
         Analytics
       </h1>
 
       <div className="w-full h-full container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="w-full h-[calc(95vh-170px)] border mb-10">
+          <div className="w-full h-[calc(95vh-170px)] ">
+            <div className="w-full h-[70px] flex justify-between px-[10px] mb-5 gap-x-3">
+              <TagSelect2
+                name="Filter By"
+                optionsName="Date"
+                options={phaseOptions}
+              />
+              <TagSelect2
+                name="Filter By"
+                optionsName="Value Chain"
+                options={phaseOptions}
+              />
+              <TagSelect2
+                name="Filter By"
+                optionsName="Location"
+                options={phaseOptions}
+              />
+            </div>
             <DynamicChloropethMap innovations={innovation} />
           </div>
           <div className="col-span-2 flex flex-col gap-y-4 mb-10 md:h-[calc(95vh-170px)">
@@ -89,14 +120,14 @@ export default function AnalyticsPage() {
                   subtitle="Keep track of revenue performance for the beach house for the last 12 month"
                   data={barChartData}
                   dataKey="value"
-                  height={250}
+                  height={500}
                   cellFill="#9E77ED"
                   XdataKey="name"
                   fill="#475467"
                   Ylabel="Revenue (N)"
                   key={1}
                   barWidth={32}
-                  // className="h-full max-h-[523px]"
+                  className="h-fit"
                 />
               </div>
             </div>

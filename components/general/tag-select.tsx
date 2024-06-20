@@ -24,13 +24,54 @@ export function TagSelect({
   value?: string;
 }) {
   return (
-    <div className="bg-[#fafafa] rounded-xl flex gap-x-1 items-center px-2 w-fit overflow-hidde">
+    <div className="bg-[#fafafa] rounded-xl flex gap-x-1 items-center px-2 w-fit overflow-hidden">
       <span className="text-[12px] lowercase text-muted-foreground">
         {name} :
       </span>
       <Select onValueChange={onValueChange} value={value}>
         <SelectTrigger className="w-fit shadow-none focus-visible:ring-0 border-none">
           <SelectValue placeholder="All" className="mr-2" />
+        </SelectTrigger>
+        <SelectContent>
+          <SelectGroup>
+            <SelectLabel className="text-muted-foreground text-sm">
+              {optionsName || name}
+            </SelectLabel>
+            {options.map((option, i) => (
+              <SelectItem
+                value={option.toString()}
+                key={i}
+                className="capitalize"
+              >
+                {option}
+              </SelectItem>
+            ))}
+          </SelectGroup>
+        </SelectContent>
+      </Select>
+    </div>
+  );
+}
+
+export function TagSelect2({
+  name,
+  options,
+  optionsName,
+  onValueChange,
+  value,
+}: {
+  name: string;
+  optionsName?: string;
+  options: (string | number)[];
+  onValueChange?: ((value: string) => void) | undefined;
+  value?: string;
+}) {
+  return (
+    <div className="bg-[#fafafa] rounded-xl flex flex-col justify-between items-center px-4 w-fit overflow-hidden py-2">
+      <span className="text-[14px] text-muted-foreground">{name} :</span>
+      <Select onValueChange={onValueChange} value={value}>
+        <SelectTrigger className="w-fit shadow-none focus-visible:ring-0 border-none">
+          <SelectValue placeholder={optionsName} className="mr-2 text-[12px]" />
         </SelectTrigger>
         <SelectContent>
           <SelectGroup>

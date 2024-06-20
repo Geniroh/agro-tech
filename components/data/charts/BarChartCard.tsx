@@ -242,7 +242,7 @@ const BarChartCard = ({
 
   return (
     <div
-      className={`bg-myoffwhie shadow-[15px] border-border border-2 rounded-lg border-slate-100 w-full p-5 ${className}`}
+      className={`bg-myoffwhie shadow-[15px] rounded-lg  w-full p-5 ${className}`}
     >
       <span className="text-[#101828] text-[14px] font-semibold">{title}</span>
 
@@ -255,8 +255,8 @@ const BarChartCard = ({
           {Ylabel}
         </div> */}
 
-        <div style={{ width: "100%", height: "200px" }}>
-          <ResponsiveContainer width="100%" height={"90%"}>
+        <div style={{ width: "100%", height: "290px" }}>
+          <ResponsiveContainer width="100%" height={"100%"}>
             <BarChart data={data} margin={{ top: 5, left: -22, bottom: 5 }}>
               <ReferenceLine y={0} stroke="#77808e" />
               <XAxis
