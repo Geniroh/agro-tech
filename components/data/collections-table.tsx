@@ -20,7 +20,8 @@ const columns2: ColumnProps[] = [
     render: (name, record) => {
       return (
         <Link href={`innovations/${record.id}`}>
-          <ImageList text={name} imgUrl={record?.productMedia[0]?.url} />{" "}
+          {name}
+          {/* <ImageList text={name} imgUrl={record?.productMedia[0]?.url} />{" "} */}
         </Link>
       );
     },

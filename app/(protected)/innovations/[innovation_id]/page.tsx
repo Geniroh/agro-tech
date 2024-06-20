@@ -227,9 +227,9 @@ const InnovationPage = () => {
               <div className="flex items-center">
                 <span className="text-muted-foreground mr-2">Usage:</span>
                 <span className="flex gap-x-2">
-                  {data?.productUse.split(",").map((use, index) => (
+                  {/* {data?.productUse.split(",").map((use, index) => (
                     <Capsule key={index}>{use}</Capsule>
-                  ))}
+                  ))} */}
                 </span>
               </div>
             </div>
@@ -254,7 +254,8 @@ const InnovationPage = () => {
           </div>
 
           <div className="mt-16">
-            {!data?.productMedia[0].url ? (
+            {/* <IoPlay className="text-4xl cursor-pointer text-center" /> */}
+            {/* {!data?.productMedia[0].url ? (
               <div className="w-full h-[380px] bg-[#f2f2f2] flex justify-center items-center">
                 <IoPlay className="text-4xl cursor-pointer" />
               </div>
@@ -264,18 +265,18 @@ const InnovationPage = () => {
                 className="w-full h-[380px]"
                 key={data?.productMedia[0].name}
               />
-            )}
+            )} */}
           </div>
 
           <div>
             <div className="grid grid-cols-4 gap-6 mt-10">
-              {data?.productMedia.map((media, i) => (
+              {/* {data?.productMedia.map((media, i) => (
                 <RenderMedia
                   media={media}
                   key={i}
                   className="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
                 />
-              ))}
+              ))} */}
             </div>
 
             <div className="mt-10">
@@ -294,9 +295,9 @@ const InnovationPage = () => {
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
                     <ul>
-                      {data?.productUse.split(",").map((use, i) => (
+                      {/* {data?.productUse.split(",").map((use, i) => (
                         <li key={i}>{use}</li>
-                      ))}
+                      ))} */}
                     </ul>
                   </AccordionContent>
                 </AccordionItem>
