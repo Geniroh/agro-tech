@@ -5,6 +5,8 @@ import { Input, Form, Select, Button, Upload, message } from "antd";
 import { toast } from "sonner";
 import { UploadOutlined } from "@ant-design/icons";
 import type { UploadProps } from "antd";
+import { StyledFileInput } from "@/components/general/upload-input";
+import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -17,12 +19,36 @@ const Step2: React.FC = () => {
   const [fileList, setFileList] = useState<any[]>(
     formData.product_media ? [formData.product_media] : []
   );
+  const [mediaFileList, setMediaFileList] = useState<any[]>(
+    formData.product_media ? formData.product_media : []
+  );
 
   const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     form.setFieldsValue(formData);
   }, [formData, form]);
+
+  console.log(formData);
+
+  const handleFileChange = (
+    fileDataArray: {
+      url: string | null;
+      name: string | null;
+      size: number | null;
+      type: string | null;
+    }[]
+  ) => {
+    setMediaFileList((prev) => [...prev, ...fileDataArray]);
+    // form.setFieldsValue({ product_media: fileDataArray });
+    console.log(fileList);
+    if (fileDataArray.some((file) => file.url === null)) {
+      message.error("Some files failed to upload.");
+    } else {
+      message.success("Files uploaded successfully.");
+      setFormData({ ...formData, product_media: mediaFileList });
+    }
+  };
 
   const uploadFileProps: UploadProps = {
     name: "file",
@@ -103,15 +129,6 @@ const Step2: React.FC = () => {
     }
   };
 
-  const implementationPhaseOptions = [
-    { value: "Concept", label: "Concept" },
-    { value: "Prototype", label: "Prototype" },
-    { value: "Commercial", label: "Commercial" },
-    { value: "In Wide Use", label: "In Wide Use" },
-    { value: "Upgraded", label: "Upgraded" },
-    { value: "Phased Out", label: "Phased Out" },
-  ];
-
   return (
     <Form
       form={form}
@@ -134,7 +151,7 @@ const Step2: React.FC = () => {
             placeholder="Select Implementation Phase"
             className="w-full"
             size="large"
-            options={implementationPhaseOptions}
+            options={PRODUCT_PHASE_OPTIONS}
           />
         </Item>
       </div>
@@ -180,11 +197,18 @@ const Step2: React.FC = () => {
           name="product_media"
           rules={[{ required: true, message: "Please upload a file" }]}
         >
-          <Upload {...uploadFileProps}>
+          {/* <Upload {...uploadFileProps}>
             <Button icon={<UploadOutlined />} className="w-full">
               Click to add images/videos of product
             </Button>
-          </Upload>
+          </Upload> */}
+          <StyledFileInput
+            id={"product_media"}
+            name={"product_media"}
+            placeholder="Click to add images/videos of product"
+            defaultValue={formData.product_media}
+            onChange={handleFileChange}
+          />
         </Item>
       </div>
 

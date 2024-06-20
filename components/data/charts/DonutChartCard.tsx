@@ -1,14 +1,7 @@
 import React from "react";
 import { PieChart, ResponsiveContainer, Pie, Cell, Tooltip } from "recharts";
-
-const valueChainOptions = [
-  "Input Supply",
-  "Production",
-  "Harvesting",
-  "Processing",
-  "Logistics",
-  "Export",
-];
+import { VALUE_CHAIN_OPTIONS } from "@/constants/options";
+import { countValueChainOccurrences } from "@/utils/function";
 
 const data = [
   { name: "Group A", value: 400 },
@@ -36,7 +29,17 @@ const CustomTooltip = ({
   }
 };
 
-export const DonutChartCard = () => {
+export const DonutChartCard = ({
+  innovations,
+}: {
+  innovations: IInnovationType[];
+}) => {
+  const valueChainOptions = VALUE_CHAIN_OPTIONS.map((option) => option.value);
+  const InnovationData = countValueChainOccurrences(
+    innovations,
+    valueChainOptions
+  );
+
   return (
     <div className="bg-[#fafafa] rounded-lg h-full max-h-[523px] flex flex-col gap-y-4 p-5">
       <h1 className="text-[14px]  font-semibold self-start">Value Chain</h1>
@@ -50,13 +53,13 @@ export const DonutChartCard = () => {
             cursor={{ fill: "transparent" }}
           />
           <Pie
-            data={data}
+            data={InnovationData}
             dataKey="value"
             outerRadius={100}
             innerRadius={50}
             fill="green"
           >
-            {data.map((entry, index) => (
+            {InnovationData.map((entry, index) => (
               <Cell
                 key={`cell-${index}`}
                 fill={COLORS[index % COLORS.length]}
@@ -67,7 +70,7 @@ export const DonutChartCard = () => {
         </PieChart>
       </div>
       <div className="flex mt-5 flex-col md:flex-row gap-y-4 justify-center items-center gap-x-2 md:flex-wrap md:mt-[-10px]">
-        {data.map((item, i) => (
+        {InnovationData.map((item, i) => (
           <div className="flex gap-x-4 md:gap-x-1" key={i}>
             <span
               className={`w-[18px] h-[18px] rounded-md `}

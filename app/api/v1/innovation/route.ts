@@ -25,7 +25,7 @@ const innovationSchema = Joi.object({
   innovation_phase: Joi.string().required(),
   product_usage: Joi.string().required(),
   product_description: Joi.string().required(),
-  product_media: Joi.object().optional(),
+  product_media: Joi.array(),
   isUsageExample: Joi.boolean().required(),
   isInventor: Joi.boolean().optional(),
   isSupplier: Joi.boolean().optional(),

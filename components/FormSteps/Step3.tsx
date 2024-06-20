@@ -35,6 +35,8 @@ const Step3: React.FC = () => {
   const [isUploading, setIsUploading] = useState<boolean>(false);
   const [form] = Form.useForm();
 
+  console.log(formData);
+
   useEffect(() => {
     if (selectValue === true && exampleInstances.length === 0) {
       setExampleInstances([{ instance_description: "", instance_media: [] }]);

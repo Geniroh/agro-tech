@@ -1,9 +1,9 @@
 "use client";
 import React, { useEffect } from "react";
 import { useFormContext } from "@/context/FormContext";
-import { Input, Form, Select, Button } from "antd";
+import { Input, Form, Select, Button, message } from "antd";
 import { countriesData, ICountry } from "@/data/country-region";
-import { toast } from "sonner";
+import { MONTH_OPTIONS, VALUE_CHAIN_OPTIONS } from "@/constants/options";
 
 const { Item } = Form;
 
@@ -23,7 +23,7 @@ const Step1: React.FC = () => {
       saveData(values);
       setCurrentStep(currentStep + 1);
     } catch (error) {
-      toast.error("Please fill in all required fields");
+      message.error("Please fill in all required fields");
     }
   };
 
@@ -48,35 +48,11 @@ const Step1: React.FC = () => {
         localStorage.setItem("currentStep", currentStep.toString());
         localStorage.setItem("totalSteps", mySteps.toString());
       }
-      toast.success("Your progress has been saved");
+      message.success("Your progress has been saved");
     } catch (error) {
-      toast.error("Please fill in all required fields");
+      message.error("Please fill in all required fields");
     }
   };
-
-  const valueChainOptions = [
-    { value: "Input Supply", label: "Input Supply" },
-    { value: "Production", label: "Production" },
-    { value: "Harvesting", label: "Harvesting" },
-    { value: "Processing", label: "Processing" },
-    { value: "Logistics", label: "Logistics" },
-    { value: "Export", label: "Export" },
-  ];
-
-  const monthOptions = [
-    { value: "January", label: "January" },
-    { value: "February", label: "February" },
-    { value: "March", label: "March" },
-    { value: "April", label: "April" },
-    { value: "May", label: "May" },
-    { value: "June", label: "June" },
-    { value: "July", label: "July" },
-    { value: "August", label: "August" },
-    { value: "September", label: "September" },
-    { value: "October", label: "October" },
-    { value: "November", label: "November" },
-    { value: "December", label: "December" },
-  ];
 
   const generateYearOptions = () => {
     const currentYear = new Date().getFullYear();
@@ -156,7 +132,7 @@ const Step1: React.FC = () => {
             placeholder="Select Innovation Month"
             className="w-full"
             size="large"
-            options={monthOptions}
+            options={MONTH_OPTIONS}
           />
         </Item>
       </div>
@@ -221,7 +197,7 @@ const Step1: React.FC = () => {
                 .toLowerCase()
                 .localeCompare((optionB?.label ?? "").toLowerCase())
             }
-            options={valueChainOptions}
+            options={VALUE_CHAIN_OPTIONS}
           />
         </Item>
       </div>

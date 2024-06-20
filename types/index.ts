@@ -7,6 +7,8 @@ interface Media {
 interface InstanceMedia {
   name: string;
   url: string;
+  size?: number;
+  type: string;
 }
 
 interface ProductExample {
@@ -42,9 +44,9 @@ interface IInnovationType {
   likes: number;
   status?: string;
   dislikes: number;
-  productChain: string;
+  productChain: string[];
   productPhase: string;
-  productUse: string[];
+  productUse: string;
   productDescription: string;
   productMedia: Media[];
   isExample: boolean;
@@ -160,9 +162,9 @@ const data: IInnovationType[] = [
     cost: 2000,
     likes: 0,
     dislikes: 0,
-    productChain: "Farm supply",
+    productChain: ["Farm supply"],
     productPhase: "testing",
-    productUse: ["For automatically clearing weeds and land cultivation"],
+    productUse: "For automatically clearing weeds and land cultivation",
     productDescription: "Null",
     productMedia: [
       {
@@ -177,6 +179,8 @@ const data: IInnovationType[] = [
         instance_media: {
           name: "download__1_-removebg-preview.png",
           url: "https://stavmia-bucket.https://nyc3.digitaloceanspaces.com/download__1_-removebg-preview.png",
+          type: "image/jpeg",
+          size: 11277,
         },
       },
     ],

@@ -1,7 +1,11 @@
 import React from "react";
 import { StackedProgressBar } from "@/components/data/charts/StackedProgressBar";
 import { ProgressLineP } from "@/components/data/charts/ProgressLineP";
-import { knumberformatter } from "@/utils/function";
+import {
+  countProductPhaseOccurrences,
+  knumberformatter,
+} from "@/utils/function";
+import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
 
 const data = [
   { title: "Proposed", value: 2000, color: "#9430e3" },
@@ -20,6 +24,12 @@ export const InnovationBar = ({
 }) => {
   const values = [20, 30, 60, 25]; // Example values
   const colors = ["#9430E3", "#D19FF9", "#ECDAFB", "#DBB3C2"]; // Example colors
+  const options = PRODUCT_PHASE_OPTIONS.map((option) => option.value);
+  const productPhaseData = countProductPhaseOccurrences(
+    innovations,
+    options,
+    colors
+  );
   return (
     <div className="w-full bg-myoffwhie h-fit md:max-h-[141px] rounded-lg p-3 flex flex-col gap-y-3">
       <h1 className="text-black text-[12px] font-semibold leading-[18px]">
@@ -36,7 +46,7 @@ export const InnovationBar = ({
 
         <div className="w-full">
           {/* <StackedProgressBar values={values} colors={colors} /> */}
-          <ProgressLineP data={data} />
+          <ProgressLineP data={productPhaseData} />
         </div>
       </div>
     </div>
