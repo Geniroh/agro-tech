@@ -1,35 +1,18 @@
 "use client";
-import { BarChartP } from "@/components/data/charts/BarChartP";
-import { PieChartP } from "@/components/data/charts/PieChartP";
 import { InnovationBar } from "@/components/data/innovation-bar";
 import { Navbar } from "@/components/general/navbar";
-import Link from "next/link";
-import { RevenueMock } from "@/mocks/data";
 import BarChartCard from "@/components/data/charts/BarChartCard";
 import { DonutChartCard } from "@/components/data/charts/DonutChartCard";
-// import { ChloropethMap } from "@/components/data/charts/ChloropethMap";
 import DynamicChloropethMap from "@/components/data/charts/DynamicChloropethMap";
-import BreadcrumbP from "@/components/general/my-breadcrumb";
 import axios from "axios";
 import { message } from "antd";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { useEffect, useState } from "react";
 import { WhiteLoaderWithoutText } from "@/components/loaders/white-loader";
 import { transformInnovationsToChartData } from "@/utils/function";
-import {
-  PRODUCT_PHASE_OPTIONS,
-  VALUE_CHAIN_OPTIONS,
-} from "@/constants/options";
+import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
 import { TagSelect2 } from "@/components/general/tag-select";
 
 export default function AnalyticsPage() {
-  const [query, setQuery] = useState<{}>();
   const [loading, setLoading] = useState<boolean>(false);
   const [innovation, setInnovations] = useState<IInnovationType[]>([]);
   const [count, setCount] = useState<number>(0);
@@ -44,14 +27,10 @@ export default function AnalyticsPage() {
         data: IInnovationType[];
         totalCount: number;
       }>("/api/v1/analytics/innovation");
-      console.log(data);
       setInnovations(data.data);
       setCount(data.totalCount);
       const res = transformInnovationsToChartData(data.data);
       setBarChartData(res);
-      console.log(res);
-
-      // setBarChartData(res);
     } catch (error) {
       console.log(error);
       message.error("Network Error");
@@ -61,7 +40,7 @@ export default function AnalyticsPage() {
 
   useEffect(() => {
     fetchInnovation();
-  }, [query]);
+  }, []);
 
   if (loading) {
     return <WhiteLoaderWithoutText />;
@@ -89,7 +68,7 @@ export default function AnalyticsPage() {
       <div className="w-full h-full container">
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="w-full h-[calc(95vh-170px)] ">
-            <div className="w-full h-[70px] flex justify-between px-[10px] mb-5 gap-x-3">
+            <div className="w-full h-[70px] md:flex justify-between md:px-[10px] mb-5 gap-x- hidden">
               <TagSelect2
                 name="Filter By"
                 optionsName="Date"
@@ -134,47 +113,6 @@ export default function AnalyticsPage() {
           </div>
         </div>
       </div>
-      {/* <div className="flex justify-center items-center text-sm gap-x-2 my-10 font-semibold">
-        <span className="text-[#888888]">Back to HomePage</span>/
-        <span>
-          <Link href="/upload">Upload Innovation</Link>
-        </span>
-      </div>
-
-      <div className="gap-x-6 container lg:grid lg:grid-cols-3">
-        <div className="">
-          <DynamicChloropethMap />
-        </div>
-
-        <div className="w-full flex flex-col gap-y-10 lg:col-span-2">
-          <div className="">
-            <InnovationBar />
-          </div>
-          <div className="flex gap-6">
-            <div className="lg:w-[40%] ">
-              <div className="">
-                <DonutChartCard />
-              </div>
-            </div>
-            <div className="lg:w-[60%] rounded-lg min-h-[350px] h-full">
-              <BarChartCard
-                title="Revenue Performance"
-                subtitle="Keep track of revenue performance for the beach house for the last 12 month"
-                data={RevenueMock}
-                dataKey="value"
-                height={400}
-                cellFill="#9E77ED"
-                XdataKey="name"
-                fill="#475467"
-                Ylabel="Revenue (N)"
-                key={1}
-                barWidth={32}
-                className="h-full max-h-[523px]"
-              />
-            </div>
-          </div>
-        </div>
-      </div> */}
     </main>
   );
 }
