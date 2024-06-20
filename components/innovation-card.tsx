@@ -11,21 +11,19 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
     <div>
       <Link href={`/innovation/${innovation.id}`}>
         <div
-          className={`w-full max-w-[378px] mx-auto h-[230px] md:h-[250px] bg-no-repeat bg-cover bg-center rounded-2xl p-8 relative ${
-            !innovation.productMedia[0].url && "bg-[#a8cda1]"
-          }`}
+          className={`w-full max-w-[378px] mx-auto h-[230px] md:h-[250px] bg-no-repeat bg-cover bg-center rounded-2xl p-8 relative bg-[#a8cda1]`}
           // style={{ backgroundImage: `url(${innovation.productMedia[0].url})` }}
         >
           <div className="flex flex-col justify-end w-full h-full relative z-20">
             <div className="flex items-center gap-3 flex-wrap">
-              {/* {innovation.productUse.split(",").map((use, i) => (
+              {innovation.productUse.split(",").map((use, i) => (
                 <span
                   key={i}
                   className="bg-white text-[12px] md:text-[14px] leading-[16px] md:leading-[19px] py-[3px] px-[8px] rounded-md text-center"
                 >
                   {use}
                 </span>
-              ))} */}
+              ))}
             </div>
           </div>
 
@@ -45,11 +43,13 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
         </div>
         <div>
           <h2>Value Chain</h2>
-          {innovation.productChain.map((chain, i) => (
-            <p key={i}>
-              <ColorTag type="purple" key={i} name={chain} />
-            </p>
-          ))}
+          <div className="flex gapx-2">
+            {innovation.productChain.map((chain, i) => (
+              <p key={i}>
+                <ColorTag type="green" key={i} name={chain} />
+              </p>
+            ))}
+          </div>
         </div>
       </div>
     </div>

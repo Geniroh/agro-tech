@@ -24,7 +24,7 @@ const ImageCard = ({ id, imageUrl, title, tags }: ImageCardProps) => {
 
         <div>
           <Link
-            href={`/innovations/${id}`}
+            href={`/innovations`}
             className="bg-white text-mygreen text-[12px] md:text-[16px] px-[10px] md:px-[24px] py-[5px] md:py-[12px] rounded-md hover:bg-mygreen hover:text-white "
           >
             View More

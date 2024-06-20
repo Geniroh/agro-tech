@@ -12,6 +12,7 @@ import axios from "axios";
 import { toast } from "sonner";
 import { countriesData } from "@/data/country-region";
 import { Skeleton } from "@/components/ui/skeleton";
+import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
 
 export const CollectionTable = () => {
   const [displayState, setDisplayState] = useState<number>(1);
@@ -37,7 +38,7 @@ export const CollectionTable = () => {
   const generateCountryArray = () => {
     return countriesData.map((country) => country.countryName);
   };
-  const phaseOptions = ["testing", "distribution"];
+  const phaseOptions = PRODUCT_PHASE_OPTIONS.map((phase) => phase.value);
   const yearOptions = generateYears();
   const countryOptions = generateCountryArray();
 
@@ -50,6 +51,7 @@ export const CollectionTable = () => {
           params: queryParams,
         }
       );
+
       setInnovations(data.data);
       setPageNo(data.page);
       setTotalPages(data.totalPages);

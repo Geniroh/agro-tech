@@ -34,7 +34,7 @@ const columns2: ColumnProps[] = [
       return (
         <div className="flex gap-x-1 w-full">
           {valueChainArray.map((item, i) => (
-            <ColorTag name={item} type="purple" key={i} />
+            <ColorTag name={item} type="blue" key={i} />
           ))}
         </div>
       );
@@ -76,6 +76,11 @@ export function CollectionDataImageGrid({
 }: CollectionTablesProps) {
   return (
     <div>
+      {innovations.length < 1 && (
+        <div className="w-full min-h-[200px] flex justify-center items-center text-muted-foreground">
+          ---No Data---
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {innovations.map((innovation, i) => (
           <InnovationCard innovation={innovation} key={i} />
