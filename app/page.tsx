@@ -78,11 +78,11 @@ const settings = {
 };
 
 export default function Home() {
-  useEffect(() => {
-    localStorage.removeItem("formData");
-    localStorage.removeItem("currentStep");
-    localStorage.removeItem("totalSteps");
-  });
+  // useEffect(() => {
+  //   localStorage.removeItem("formData");
+  //   localStorage.removeItem("currentStep");
+  //   localStorage.removeItem("totalSteps");
+  // });
   return (
     <div>
       <Navbar />

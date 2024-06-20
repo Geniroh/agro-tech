@@ -18,7 +18,7 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
         >
           <div className="flex flex-col justify-end w-full h-full relative z-20">
             <div className="flex items-center gap-3 flex-wrap">
-              {innovation.productUse.map((use, i) => (
+              {innovation.productUse.split(",").map((use, i) => (
                 <span
                   key={i}
                   className="bg-white text-[12px] md:text-[14px] leading-[16px] md:leading-[19px] py-[3px] px-[8px] rounded-md text-center"
@@ -45,9 +45,11 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
         </div>
         <div>
           <h2>Value Chain</h2>
-          <p>
-            <ColorTag type="purple" name={innovation.productChain} />
-          </p>
+          {innovation.productChain.map((chain, i) => (
+            <p key={i}>
+              <ColorTag type="purple" key={i} name={chain} />
+            </p>
+          ))}
         </div>
       </div>
     </div>

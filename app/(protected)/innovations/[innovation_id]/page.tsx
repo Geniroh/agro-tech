@@ -209,7 +209,7 @@ const InnovationPage = () => {
               <div className="flex items-center">
                 <span className="text-muted-foreground mr-2">Value Chain:</span>
                 <span className="flex gap-x-2">
-                  {data?.productChain.split(" ").map((chain, index) => (
+                  {data?.productChain.map((chain, index) => (
                     <Capsule key={index}>{chain}</Capsule>
                   ))}
                 </span>
@@ -227,7 +227,7 @@ const InnovationPage = () => {
               <div className="flex items-center">
                 <span className="text-muted-foreground mr-2">Usage:</span>
                 <span className="flex gap-x-2">
-                  {data?.productUse.map((use, index) => (
+                  {data?.productUse.split(",").map((use, index) => (
                     <Capsule key={index}>{use}</Capsule>
                   ))}
                 </span>
@@ -294,7 +294,7 @@ const InnovationPage = () => {
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
                     <ul>
-                      {data?.productUse.map((use, i) => (
+                      {data?.productUse.split(",").map((use, i) => (
                         <li key={i}>{use}</li>
                       ))}
                     </ul>
@@ -380,17 +380,19 @@ const InnovationPage = () => {
                     Usage Examples
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    <ul>
-                      {data?.productExample?.map((example, i) => (
-                        <li key={i}>
-                          <RenderMedia
-                            media={example.instance_media}
-                            className="w-[40px] h-[40px]"
-                          />
-                          {example.instance_description}
-                        </li>
-                      ))}
-                    </ul>
+                    {data?.productExample && (
+                      <ul>
+                        {data?.productExample?.map((example, i) => (
+                          <li key={i}>
+                            {/* <RenderMedia
+                              media={example.instance_media}
+                              className="w-[40px] h-[40px]"
+                            /> */}
+                            {example.instance_description}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
 

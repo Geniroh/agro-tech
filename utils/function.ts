@@ -102,3 +102,32 @@ export const countValueChainOccurrences = (
     value: count,
   }));
 };
+
+export function countProductPhaseOccurrences(
+  data: IInnovationType[],
+  productPhases: string[],
+  colors: string[]
+): { title: string; value: number; color: string }[] {
+  const result: { title: string; value: number; color: string }[] = [];
+
+  // Map product phases to their count
+  const phaseCounts = productPhases.reduce((acc, phase) => {
+    acc[phase] = 0;
+    return acc;
+  }, {} as Record<string, number>);
+
+  data.forEach((item) => {
+    phaseCounts[item.productPhase]++;
+  });
+
+  // Create result object for each product phase
+  productPhases.forEach((phase, index) => {
+    result.push({
+      title: phase,
+      value: phaseCounts[phase],
+      color: colors[index % colors.length],
+    });
+  });
+
+  return result;
+}

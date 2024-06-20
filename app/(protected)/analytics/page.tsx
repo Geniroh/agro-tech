@@ -81,7 +81,7 @@ export default function AnalyticsPage() {
             <InnovationBar innovations={innovation} count={count} />
             <div className="flex flex-col md:flex-row gap-4">
               <div className="md:w-[40%]">
-                <DonutChartCard />
+                <DonutChartCard innovations={innovation} />
               </div>
               <div className="h-[200px] md:w-[60%]">
                 <BarChartCard
