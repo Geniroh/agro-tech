@@ -19,7 +19,7 @@ const Step8: React.FC = () => {
 
   const handleSelectChange = (value: boolean) => {
     setSelectValue(value);
-    setFormData({ ...formData, isGenderFriendly: value });
+    setFormData({ ...formData, value });
   };
 
   const handleNextStep = async () => {

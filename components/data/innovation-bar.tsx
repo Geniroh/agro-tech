@@ -23,7 +23,7 @@ export const InnovationBar = ({
   count: number;
 }) => {
   const values = [20, 30, 60, 25]; // Example values
-  const colors = ["#9430E3", "#D19FF9", "#ECDAFB", "#DBB3C2"]; // Example colors
+  const colors = ["#9430E3", "#D19FF9", "#F1F5A3", "#FBFF2F", "#B8F5A3"]; // Example colors
   const options = PRODUCT_PHASE_OPTIONS.map((option) => option.value);
   const productPhaseData = countProductPhaseOccurrences(
     innovations,

@@ -124,6 +124,7 @@ export const Navbar = () => {
 
       {/* Mobile Menu */}
       <div
+        style={{ zIndex: 10 }}
         className={`fixed lg:hidden top-0 left-0 z-20 w-64 h-full transition-all duration-500 transform bg-white shadow-lg ${
           isOpen ? "translate-x-0" : "-translate-x-full"
         }`}

@@ -48,6 +48,7 @@ const InnovationPage = () => {
       }>(`/api/v1/innovation/${innovation_id}/discussion`);
 
       setData(data);
+      console.log(data);
       setComments(comments.comments);
     } catch (error) {
       setError("Network Error, please try again!");
@@ -227,9 +228,9 @@ const InnovationPage = () => {
               <div className="flex items-center">
                 <span className="text-muted-foreground mr-2">Usage:</span>
                 <span className="flex gap-x-2">
-                  {/* {data?.productUse.split(",").map((use, index) => (
+                  {data?.productUse.split(",").map((use, index) => (
                     <Capsule key={index}>{use}</Capsule>
-                  ))} */}
+                  ))}
                 </span>
               </div>
             </div>
@@ -255,7 +256,7 @@ const InnovationPage = () => {
 
           <div className="mt-16">
             {/* <IoPlay className="text-4xl cursor-pointer text-center" /> */}
-            {/* {!data?.productMedia[0].url ? (
+            {!data?.productMedia[0].url ? (
               <div className="w-full h-[380px] bg-[#f2f2f2] flex justify-center items-center">
                 <IoPlay className="text-4xl cursor-pointer" />
               </div>
@@ -265,7 +266,7 @@ const InnovationPage = () => {
                 className="w-full h-[380px]"
                 key={data?.productMedia[0].name}
               />
-            )} */}
+            )}
           </div>
 
           <div>
@@ -294,11 +295,17 @@ const InnovationPage = () => {
                     How to Use
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    <ul>
-                      {/* {data?.productUse.split(",").map((use, i) => (
-                        <li key={i}>{use}</li>
-                      ))} */}
-                    </ul>
+                    {data?.productUse ? (
+                      <ul>
+                        {data?.productUse.split(",").map((use, i) => (
+                          <li key={i}>{use}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        --- No data ----
+                      </div>
+                    )}
                   </AccordionContent>
                 </AccordionItem>
 
@@ -381,23 +388,52 @@ const InnovationPage = () => {
                     Usage Examples
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productExample && (
+                    {data?.productExample ? (
                       <ul>
                         {data?.productExample?.map((example, i) => (
                           <li key={i}>
-                            {/* <RenderMedia
-                              media={example.instance_media}
+                            {/* {example.instance_media.map((media, i) => (
+                              <RenderMedia
+                                media={media}
+                                className="w-[40px] h-[40px]"
+                              />
+                            ))} */}
+                            <RenderMedia
+                              media={example.instance_media[0]}
                               className="w-[40px] h-[40px]"
-                            /> */}
+                            />
                             {example.instance_description}
                           </li>
                         ))}
                       </ul>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        --- No data ----
+                      </div>
                     )}
                   </AccordionContent>
                 </AccordionItem>
 
                 <AccordionItem value="item-5">
+                  <AccordionTrigger className="px-3 font-semibold">
+                    HSE Guideline
+                  </AccordionTrigger>
+                  <AccordionContent className="mt-5 px-6">
+                    {data?.productGuidelines ? (
+                      <ul>
+                        {data?.productGuidelines?.map((guideline, i) => (
+                          <li key={i}>{guideline.name}</li>
+                        ))}
+                      </ul>
+                    ) : (
+                      <div className="text-center text-muted-foreground">
+                        --- No data ----
+                      </div>
+                    )}
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="item-6">
                   <AccordionTrigger className="px-3 font-semibold">
                     <div className="flex gap-2 items-center">
                       <span>Gender Friendly</span>
