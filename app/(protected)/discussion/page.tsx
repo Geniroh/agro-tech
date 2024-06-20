@@ -266,7 +266,7 @@ const DiscussionPage = () => {
             </div>
           </div>
 
-          {activeSection === 1 && (
+          {/* {activeSection === 1 && (
             <>
               {allDiscussion.map((discussion, i) => (
                 <CombinedReplyCard discussion={discussion} key={i} />
@@ -288,7 +288,7 @@ const DiscussionPage = () => {
                 <UserReplyCard discussion={discussion} key={i} />
               ))}
             </>
-          )}
+          )} */}
         </div>
 
         {/* <div className="my-[100px] flex items-center justify-center">
