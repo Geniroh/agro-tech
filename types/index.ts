@@ -32,6 +32,18 @@ interface ProductSupplier {
 interface ProductGuidelines {
   name: string;
 }
+
+interface IInnovationReaction {
+  id: string;
+  userId: string;
+  innovationId: string;
+  reaction: string;
+  User?: any;
+  Innovation?: any;
+  createdAt: string;
+  updatedAt: string;
+}
+
 interface IInnovationType {
   id: string;
   productName: string;
@@ -41,6 +53,7 @@ interface IInnovationType {
   likes: number;
   status?: string;
   dislikes: number;
+  reactions?: IInnovationReaction[];
   productChain: string[];
   productPhase: string;
   productUse: string;
@@ -57,7 +70,6 @@ interface IInnovationType {
   createdAt: string;
   updatedAt?: string;
   discussion?: IInnovationDiscussion[];
-  reactions?: any[];
 }
 
 interface IInnovationComment {

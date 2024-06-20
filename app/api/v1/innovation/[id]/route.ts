@@ -29,7 +29,10 @@ export async function GET(
 
     const { id } = value;
 
-    const innovation = await db.innovation.findUnique({ where: { id } });
+    const innovation = await db.innovation.findUnique({
+      where: { id },
+      include: { reactions: true, discussions: true },
+    });
     if (!innovation) {
       return NextResponse.json(
         { error: "Innovation not found" },

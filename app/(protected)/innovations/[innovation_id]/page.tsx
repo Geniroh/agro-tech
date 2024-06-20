@@ -21,7 +21,8 @@ import { InnovationReactions } from "@/components/innovationComp/innovation-reac
 import { InnovationDiscussionForum } from "@/components/innovationComp/innovation-discussion-form";
 import { IoPlay } from "react-icons/io5";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
-import { Navbar } from "@/components/general/navbar";
+import NoContent from "@/components/loaders/no-content";
+import { ReactionButtons } from "@/components/general/reaction-buttons";
 
 const InnovationPage = () => {
   const router = useRouter();
@@ -36,19 +37,17 @@ const InnovationPage = () => {
   const fetchData = async (id: string) => {
     setLoading(true);
     setError(null);
-
     try {
       const { data } = await axios.get<IInnovationType>(
         `/api/v1/innovation/${id}`
       );
-
+      console.log({ data });
       const { data: comments } = await axios.get<{
         message: string;
         comments: IInnovationComment[];
       }>(`/api/v1/innovation/${innovation_id}/discussion`);
 
       setData(data);
-      console.log(data);
       setComments(comments.comments);
     } catch (error) {
       setError("Network Error, please try again!");
@@ -62,7 +61,7 @@ const InnovationPage = () => {
 
   if (loading) {
     return (
-      <div className="flex flex-col space-y-3 w-full container">
+      <div className="flex flex-col space-y-3 w-full container mb-5">
         <Skeleton className="h-[300px] w-full mt-10" />
         <div className="space-y-2">
           <Skeleton className="h-4 w-full" />
@@ -74,90 +73,20 @@ const InnovationPage = () => {
 
   if (error) {
     return (
-      <section className="flex items-center h-full sm:p-16 dark:bg-gray-50 dark:text-gray-800">
-        <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8 space-y-8 text-center sm:max-w-md">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 512 512"
-            className="w-40 h-40 dark:text-gray-400"
-          >
-            <path
-              fill="currentColor"
-              d="M256,16C123.452,16,16,123.452,16,256S123.452,496,256,496,496,388.548,496,256,388.548,16,256,16ZM403.078,403.078a207.253,207.253,0,1,1,44.589-66.125A207.332,207.332,0,0,1,403.078,403.078Z"
-            ></path>
-            <rect
-              width="176"
-              height="32"
-              x="168"
-              y="320"
-              fill="currentColor"
-            ></rect>
-            <polygon
-              fill="currentColor"
-              points="210.63 228.042 186.588 206.671 207.958 182.63 184.042 161.37 162.671 185.412 138.63 164.042 117.37 187.958 141.412 209.329 120.042 233.37 143.958 254.63 165.329 230.588 189.37 251.958 210.63 228.042"
-            ></polygon>
-            <polygon
-              fill="currentColor"
-              points="383.958 182.63 360.042 161.37 338.671 185.412 314.63 164.042 293.37 187.958 317.412 209.329 296.042 233.37 319.958 254.63 341.329 230.588 365.37 251.958 386.63 228.042 362.588 206.671 383.958 182.63"
-            ></polygon>
-          </svg>
-          <p className="text-md">
-            Looks like there was a problem getting innovation. For more
-            information, please contact @help
-          </p>
-          <Link
-            href="/"
-            className="text-mygreen font-semibold hover:text-mygreen/70"
-          >
-            Back to home page
-          </Link>
-        </div>
-      </section>
+      <NoContent
+        message={` Looks like there was a problem getting innovation. For more
+        information, please contact @help`}
+      />
     );
   }
 
   return (
     <>
       {!data ? (
-        <section className="flex items-center h-full sm:p-16 dark:bg-gray-50 dark:text-gray-800">
-          <div className="container flex flex-col items-center justify-center px-5 mx-auto my-8 space-y-8 text-center sm:max-w-md">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 512 512"
-              className="w-40 h-40 dark:text-gray-400"
-            >
-              <path
-                fill="currentColor"
-                d="M256,16C123.452,16,16,123.452,16,256S123.452,496,256,496,496,388.548,496,256,388.548,16,256,16ZM403.078,403.078a207.253,207.253,0,1,1,44.589-66.125A207.332,207.332,0,0,1,403.078,403.078Z"
-              ></path>
-              <rect
-                width="176"
-                height="32"
-                x="168"
-                y="320"
-                fill="currentColor"
-              ></rect>
-              <polygon
-                fill="currentColor"
-                points="210.63 228.042 186.588 206.671 207.958 182.63 184.042 161.37 162.671 185.412 138.63 164.042 117.37 187.958 141.412 209.329 120.042 233.37 143.958 254.63 165.329 230.588 189.37 251.958 210.63 228.042"
-              ></polygon>
-              <polygon
-                fill="currentColor"
-                points="383.958 182.63 360.042 161.37 338.671 185.412 314.63 164.042 293.37 187.958 317.412 209.329 296.042 233.37 319.958 254.63 341.329 230.588 365.37 251.958 386.63 228.042 362.588 206.671 383.958 182.63"
-              ></polygon>
-            </svg>
-            <p className="text-md">
-              Looks like there was a problem getting innovation. For more
-              information, please contact @help
-            </p>
-            <Link
-              href="/"
-              className="text-mygreen font-semibold hover:text-mygreen/70"
-            >
-              Back to home page
-            </Link>
-          </div>
-        </section>
+        <NoContent
+          message={` Looks like there was a problem getting innovation. For more
+        information, please contact @help`}
+        />
       ) : (
         <div className="container pb-20">
           <BreadcrumbP
@@ -195,7 +124,7 @@ const InnovationPage = () => {
                 </span>
                 <span>{data?.yearInvented}</span>
               </div>
-              <div className="mx-4">|</div>
+              <div className="mx-4 hidden md:block">|</div>
               <div>
                 <span className="text-muted-foreground mr-2">Country:</span>
                 <span>{data?.country}</span>
@@ -206,7 +135,7 @@ const InnovationPage = () => {
                 <span>{data?.cost}</span>
               </div>
             </div>
-            <div className="flex flex-wrap items-center justify-center max-w-[900px] mt-6 md:mt-3 text-sm tracking-wide mx-auto gap-y-3">
+            <div className="flex flex-wrap items-center gap-x-2 justify-center max-w-[900px] mt-6 md:mt-3 text-sm tracking-wide mx-auto gap-y-3">
               <div className="flex items-center">
                 <span className="text-muted-foreground mr-2">Value Chain:</span>
                 <span className="flex gap-x-2">
@@ -237,9 +166,14 @@ const InnovationPage = () => {
           </div>
 
           <div className="w-full border shadow-sm rounded-md mt-5 max-w-[1000px] mx-auto h-[35px] flex items-center justify-between px-2">
-            <InnovationReactions innovationId={innovation_id} />
+            <ReactionButtons
+              likes={data?.likes}
+              dislikes={data?.dislikes}
+              replies={data?.discussion?.length || 0}
+              type="innovation"
+            />
 
-            <div className="flex gap-x-4">
+            <div className="flex gap-x-2 md:gap-x-4">
               <ShareButton link={`innovation/${innovation_id}`} />
 
               <button
@@ -247,7 +181,7 @@ const InnovationPage = () => {
                 onClick={() => router.push("/upload")}
               >
                 <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-                  <Upload size={13} />
+                  <Upload size={13} onClick={() => router.push("/upload")} />
                 </span>
                 <span>Upload Innovation</span>
               </button>
@@ -255,10 +189,9 @@ const InnovationPage = () => {
           </div>
 
           <div className="mt-16">
-            {/* <IoPlay className="text-4xl cursor-pointer text-center" /> */}
             {!data?.productMedia[0].url ? (
-              <div className="w-full h-[380px] bg-[#f2f2f2] flex justify-center items-center">
-                <IoPlay className="text-4xl cursor-pointer" />
+              <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
+                --- No data ----
               </div>
             ) : (
               <RenderMedia
@@ -271,13 +204,23 @@ const InnovationPage = () => {
 
           <div>
             <div className="grid grid-cols-4 gap-6 mt-10">
-              {/* {data?.productMedia.map((media, i) => (
-                <RenderMedia
-                  media={media}
-                  key={i}
-                  className="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
-                />
-              ))} */}
+              {data?.productMedia ? (
+                data.productMedia.map((media, i) => (
+                  <>
+                    {media.url && (
+                      <RenderMedia
+                        media={media}
+                        key={i}
+                        className="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
+                      />
+                    )}
+                  </>
+                ))
+              ) : (
+                <div className="text-center text-muted-foreground">
+                  --- No data ----
+                </div>
+              )}
             </div>
 
             <div className="mt-10">
@@ -339,7 +282,7 @@ const InnovationPage = () => {
                         ))}
                       </>
                     ) : (
-                      <div className="text-center text-muted-foreground">
+                      <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
                         --- No data ----
                       </div>
                     )}
@@ -392,14 +335,9 @@ const InnovationPage = () => {
                       <ul>
                         {data?.productExample?.map((example, i) => (
                           <li key={i}>
-                            {/* {example.instance_media.map((media, i) => (
-                              <RenderMedia
-                                media={media}
-                                className="w-[40px] h-[40px]"
-                              />
-                            ))} */}
                             <RenderMedia
                               media={example.instance_media[0]}
+                              key={i}
                               className="w-[40px] h-[40px]"
                             />
                             {example.instance_description}

@@ -47,9 +47,11 @@ export const Navbar = () => {
             <Menu />
           </Button>
           <div>
-            <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
-              STAVMiA
-            </div>
+            <Link href="/">
+              <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
+                STAVMiA
+              </div>
+            </Link>
           </div>
         </div>
 
@@ -153,6 +155,18 @@ export const Navbar = () => {
                 {link.name}
               </Link>
             ))}
+
+            <Link
+              key={12133}
+              href={"/innovations"}
+              className={`${
+                pathname === "/innovations"
+                  ? "text-mygreen font-open-sans font-semibold"
+                  : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+              } min-h-[15px] flex items-center py-3 justify-center w-full border-b border-b-mygreen`}
+            >
+              View Innovation
+            </Link>
 
             <Link
               key={12133}

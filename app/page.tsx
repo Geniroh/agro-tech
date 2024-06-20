@@ -8,9 +8,7 @@ import { Button } from "@/components/ui/button";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { CircleHelp } from "lucide-react";
 import { IoMdHelpCircle } from "react-icons/io";
-import { useEffect } from "react";
 
 const innovations = [
   {
@@ -78,11 +76,6 @@ const settings = {
 };
 
 export default function Home() {
-  // useEffect(() => {
-  //   localStorage.removeItem("formData");
-  //   localStorage.removeItem("currentStep");
-  //   localStorage.removeItem("totalSteps");
-  // });
   return (
     <div>
       <Navbar />
