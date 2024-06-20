@@ -25,7 +25,7 @@ const InnovationPage = () => {
             </h1>
           </div>
           <p className="text-center text-[12px] leading-[20px] text-muted">
-            your go-to source for agricultural innovations across Africa! Here,
+            {` your go-to source for agricultural innovations across Africa! Here,
             you'll find a wealth of information on useful technologies and
             methods that can help you, whether you're a farmer, processor, input
             supplier, business owner, consultant, or researcher. Our platform is
@@ -33,7 +33,7 @@ const InnovationPage = () => {
             share, discuss, and collaborate on technologies that improve
             operations and boost productivity. No matter your role or level of
             expertise, STAVMiA has something valuable to offer you. Join us in
-            transforming agriculture in Africa!
+            transforming agriculture in Africa! `}
           </p>
         </div>
       </div>
