@@ -20,8 +20,11 @@ const columns2: ColumnProps[] = [
     render: (name, record) => {
       return (
         <Link href={`innovations/${record.id}`}>
-          {name}
-          {/* <ImageList text={name} imgUrl={record?.productMedia[0]?.url} />{" "} */}
+          {record?.productMedia[0].type !== "video/mp4" ? (
+            <ImageList text={name} imgUrl={record?.productMedia[0]?.url} />
+          ) : (
+            <div>{name}</div>
+          )}
         </Link>
       );
     },
@@ -43,6 +46,7 @@ const columns2: ColumnProps[] = [
   {
     header: "Use",
     accessor: "productUse",
+    render: (value) => <div className="w-full">{value}</div>,
   },
   {
     header: "Implementation Phase",
