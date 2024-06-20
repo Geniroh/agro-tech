@@ -1,3 +1,67 @@
+// import { writeFile } from "fs/promises";
+// import { NextRequest, NextResponse } from "next/server";
+// import {
+//   S3Client,
+//   PutObjectCommand,
+//   PutObjectCommandInput,
+// } from "@aws-sdk/client-s3";
+// import { db } from "@/lib/db";
+
+// const s3Client = new S3Client({
+//   region: "nyc3",
+//   endpoint: "https://nyc3.digitaloceanspaces.com",
+//   credentials: {
+//     accessKeyId: process.env.DO_SPACE_KEY!,
+//     secretAccessKey: process.env.DO_SPACE_SECRET!,
+//   },
+// });
+
+// export async function POST(request: NextRequest): Promise<NextResponse> {
+//   const data = await request.formData();
+//   const file = data.get("file") as File | null;
+
+//   if (!file) {
+//     return NextResponse.json({ error: "No file uploaded" });
+//   }
+
+//   const bytes = await file.arrayBuffer();
+//   const buffer = Buffer.from(bytes);
+
+//   const bucketName = process.env.DO_BUCKET_NAME;
+
+//   if (!bucketName) {
+//     return NextResponse.json({ error: "Bucket name not defined" });
+//   }
+
+//   const params: PutObjectCommandInput = {
+//     Bucket: bucketName,
+//     Key: file.name,
+//     Body: buffer,
+//     ACL: "public-read",
+//   };
+
+//   try {
+//     const command = new PutObjectCommand(params);
+//     const result = await s3Client.send(command);
+
+//     const fileRecord = {
+//       filename: file.name,
+//       size: file.size.toString(),
+//       url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
+//     };
+
+//     await db.file.create({ data: fileRecord });
+
+//     return NextResponse.json({
+//       message: "File uploaded successfully",
+//       url: fileRecord.url,
+//     });
+//   } catch (err) {
+//     console.error(err);
+//     return NextResponse.json("File upload failed");
+//   }
+// }
+
 import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import {
@@ -18,14 +82,11 @@ const s3Client = new S3Client({
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const data = await request.formData();
-  const file = data.get("file") as File | null;
+  const files = data.getAll("file") as File[];
 
-  if (!file) {
-    return NextResponse.json({ error: "No file uploaded" });
+  if (!files.length) {
+    return NextResponse.json({ error: "No files uploaded" });
   }
-
-  const bytes = await file.arrayBuffer();
-  const buffer = Buffer.from(bytes);
 
   const bucketName = process.env.DO_BUCKET_NAME;
 
@@ -33,28 +94,42 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Bucket name not defined" });
   }
 
-  const params: PutObjectCommandInput = {
-    Bucket: bucketName,
-    Key: file.name,
-    Body: buffer,
-    ACL: "public-read",
-  };
+  console.log(files);
 
   try {
-    const command = new PutObjectCommand(params);
-    const result = await s3Client.send(command);
+    const uploadResults = await Promise.all(
+      files.map(async (file) => {
+        const bytes = await file.arrayBuffer();
+        const buffer = Buffer.from(bytes);
 
-    const fileRecord = {
-      filename: file.name,
-      size: file.size.toString(),
-      url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
-    };
+        const params: PutObjectCommandInput = {
+          Bucket: bucketName,
+          Key: file.name,
+          Body: buffer,
+          ACL: "public-read",
+        };
 
-    await db.file.create({ data: fileRecord });
+        const command = new PutObjectCommand(params);
+        await s3Client.send(command);
+
+        const fileRecord = {
+          filename: file.name,
+          size: file.size.toString(),
+          url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
+          // type: file.type,
+        };
+
+        console.log(fileRecord);
+
+        await db.file.create({ data: fileRecord });
+
+        return fileRecord;
+      })
+    );
 
     return NextResponse.json({
-      message: "File uploaded successfully",
-      url: fileRecord.url,
+      message: "Files uploaded successfully",
+      files: uploadResults,
     });
   } catch (err) {
     console.error(err);

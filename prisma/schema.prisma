@@ -84,7 +84,7 @@ model Innovation {
   dislikes                 Int?                   @default(0)
   productUse               String
   productDescription       String
-  productMedia             Json
+  productMedia             Json[]
   isExample                Boolean
   productExample           Json[]                 @default([])
   productInstruction       Json[]                 @default([])
