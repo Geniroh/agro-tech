@@ -13,27 +13,27 @@ import { IoMdHelpCircle } from "react-icons/io";
 const innovations = [
   {
     id: 1,
-    imgUrl: "/images/farm-automation.jpeg",
-    title: "Farm Automation",
-    tags: ["Self driving tractors", "Smart sprinklers"],
+    imgUrl: "/images/image1.jpg",
+    title: "Maize Thresher",
+    tags: ["Processing"],
   },
   {
     id: 2,
-    imgUrl: "/images/green-house.jpeg",
-    title: "Green House",
-    tags: ["Self driving tractors", "Smart sprinklers"],
+    imgUrl: "/images/image2.jpg",
+    title: "Locally Fabricated Maize Planter",
+    tags: ["Production"],
   },
   {
     id: 3,
-    imgUrl: "/images/animal-farm.jpeg",
-    title: "Farm Automation",
-    tags: ["Self driving tractors", "Smart sprinklers"],
+    imgUrl: "/images/image3.jpg",
+    title: "Yam Pounding Machine",
+    tags: ["Processing"],
   },
   {
     id: 4,
-    imgUrl: "/images/plantation.jpeg",
-    title: "Farm Automation",
-    tags: ["Self driving tractors", "Smart sprinklers"],
+    imgUrl: "/images/image4.jpg",
+    title: "Circular Maize Dryer",
+    tags: ["Processing"],
   },
 ];
 
@@ -94,18 +94,16 @@ export default function Home() {
           Africa!
         </h2>
 
-        {/* <div className="mt-10">
+        <div className="mt-10">
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="col-span-2">
               <ImageCard
                 id={1}
-                imageUrl="/images/farm-automation.jpeg"
-                title="Farm Automation"
+                imageUrl="/images/image1.jpg"
+                title="Mazie Thresher"
                 tags={
                   <div className="flex gap-4">
-                    {" "}
-                    <ColorTag type="blue" name="Self driving tractors" />{" "}
-                    <ColorTag type="yellow" name="Smart sprinklers" />
+                    <ColorTag type="blue" name="Processing" />
                   </div>
                 }
               />
@@ -113,13 +111,11 @@ export default function Home() {
             <div>
               <ImageCard
                 id={1}
-                imageUrl="/images/green-house.jpeg"
-                title="Green House"
+                imageUrl="/images/image2.jpg"
+                title="Locally Fabricated Maize Planter"
                 tags={
                   <div className="flex gap-4">
-                    {" "}
-                    <ColorTag type="blue" name="Pest control" />{" "}
-                    <ColorTag type="purple" name="Disease control" />
+                    <ColorTag type="purple" name="Production" />
                   </div>
                 }
               />
@@ -128,13 +124,11 @@ export default function Home() {
             <div>
               <ImageCard
                 id={2}
-                imageUrl="/images/animal-farm.jpeg"
-                title="Green House"
+                imageUrl="/images/image3.jpg"
+                title="Yam Pounding Machine"
                 tags={
                   <div className="flex gap-4">
-                    {" "}
-                    <ColorTag type="purple" name="Economy" />{" "}
-                    <ColorTag type="yellow" name="Dairy processor" />
+                    <ColorTag type="purple" name="Processing" />
                   </div>
                 }
               />
@@ -143,13 +137,12 @@ export default function Home() {
             <div className="col-span-2">
               <ImageCard
                 id={3}
-                imageUrl="/images/plantation.jpeg"
+                imageUrl="/images/image4.jpg"
                 title="Green House"
                 tags={
                   <div className="flex gap-4">
                     {" "}
-                    <ColorTag type="blue" name="Sustainable" />{" "}
-                    <ColorTag type="yellow" name="Food security" />
+                    <ColorTag type="purple" name="Processing" />
                   </div>
                 }
               />
@@ -179,7 +172,7 @@ export default function Home() {
               ))}
             </Slider>
           </div>
-        </div> */}
+        </div>
 
         <div className="mt-[100px]">
           <CollectionTable />

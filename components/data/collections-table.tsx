@@ -35,7 +35,7 @@ const columns2: ColumnProps[] = [
     render: (value: string | string[], record) => {
       const valueChainArray = Array.isArray(value) ? value : [value];
       return (
-        <div className="flex gap-x-1 w-full">
+        <div className="flex gap-x-1 md:gap-x-2 w-full">
           {valueChainArray.map((item, i) => (
             <ColorTag name={item} type="blue" key={i} />
           ))}
