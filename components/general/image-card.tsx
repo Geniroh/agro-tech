@@ -11,7 +11,7 @@ export interface ImageCardProps {
 const ImageCard = ({ id, imageUrl, title, tags }: ImageCardProps) => {
   return (
     <div
-      className="w-full h-[264px] md:h-[370px] bg-no-repeat bg-cover bg-center rounded-2xl p-8 relative object-cover"
+      className="w-full h-[264px] md:h-[370px] bg-no-repeat bg-cover rounded-2xl p-8 relative object-cover"
       style={{ backgroundImage: `url(${imageUrl})` }}
     >
       <div className="flex flex-col justify-between w-full h-full relative z-20">

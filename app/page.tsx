@@ -25,7 +25,7 @@ const innovations = [
   },
   {
     id: 3,
-    imgUrl: "/images/image3.jpg",
+    imgUrl: "/images/Image3.jpg",
     title: "Yam Pounding Machine",
     tags: ["Processing"],
   },
@@ -124,7 +124,7 @@ export default function Home() {
             <div>
               <ImageCard
                 id={2}
-                imageUrl="/images/image3.jpg"
+                imageUrl="/images/Image3.jpg"
                 title="Yam Pounding Machine"
                 tags={
                   <div className="flex gap-4">
@@ -138,7 +138,7 @@ export default function Home() {
               <ImageCard
                 id={3}
                 imageUrl="/images/image4.jpg"
-                title="Green House"
+                title="Circular Maize Dryer"
                 tags={
                   <div className="flex gap-4">
                     {" "}
