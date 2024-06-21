@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { Capsule } from "@/components/general/capsule";
-import { Upload } from "lucide-react";
+import { Upload, X } from "lucide-react";
 import { VideoPlayer } from "@/components/general/video-player";
 import { FaCheckCircle, FaPhone } from "react-icons/fa";
 import axios from "axios";
@@ -41,7 +41,6 @@ const InnovationPage = () => {
       const { data } = await axios.get<IInnovationType>(
         `/api/v1/innovation/${id}`
       );
-      // console.log({ data });
       const { data: comments } = await axios.get<{
         message: string;
         comments: IInnovationComment[];
@@ -196,7 +195,7 @@ const InnovationPage = () => {
             ) : (
               <RenderMedia
                 media={data?.productMedia[0]}
-                className="w-full h-[380px]"
+                className="w-full max-w-[1000px] mx-auto h-[450px] object-cover"
                 key={data?.productMedia[0].name}
               />
             )}
@@ -381,8 +380,10 @@ const InnovationPage = () => {
                   <AccordionTrigger className="px-3 font-semibold">
                     <div className="flex gap-2 items-center">
                       <span>Gender Friendly</span>
-                      {data?.isGenderFriendly && (
+                      {data?.isGenderFriendly ? (
                         <FaCheckCircle className="text-mygreen" />
+                      ) : (
+                        <X color="red" />
                       )}
                     </div>
                   </AccordionTrigger>
@@ -398,19 +399,6 @@ const InnovationPage = () => {
                 </AccordionItem>
               </Accordion>
             </div>
-
-            {data?.isGenderFriendly ? (
-              <div className="mt-10">
-                <h2 className="text-2xl text-muted-foreground">
-                  Gender Friendly
-                </h2>
-                <button className="flex gap-x-1 items-center text-sm">
-                  Yes <FaCheckCircle />
-                </button>
-              </div>
-            ) : (
-              <div className="mt-10"></div>
-            )}
 
             {/* <div className="w-full border shadow-sm rounded-md mt-5 h-[35px] flex items-center justify-between px-2">
               <InnovationReactions innovationId={innovation_id} key={2} />

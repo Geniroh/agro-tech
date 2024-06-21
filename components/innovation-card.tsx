@@ -12,7 +12,7 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
       <Link href={`/innovation/${innovation.id}`}>
         <div
           className={`w-full max-w-[378px] mx-auto h-[230px] md:h-[250px] bg-no-repeat bg-cover bg-center rounded-2xl p-8 relative bg-[#a8cda1]`}
-          // style={{ backgroundImage: `url(${innovation.productMedia[0].url})` }}
+          style={{ backgroundImage: `url(${innovation.productMedia[0].url})` }}
         >
           <div className="flex flex-col justify-end w-full h-full relative z-20">
             <div className="flex items-center gap-3 flex-wrap">
