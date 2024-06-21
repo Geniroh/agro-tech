@@ -12,15 +12,11 @@ export const useFormSubmit = () => {
 
   const handleSubmit = async (data: FormData) => {
     try {
-      console.log({ data });
-
       const { data: res } = await axios.post("/api/v1/innovation", data);
 
       if (res.error) {
         throw new Error("There was an error in creating an innovation");
       }
-
-      console.log(res);
 
       // Clear local storage
       localStorage.removeItem("formData");

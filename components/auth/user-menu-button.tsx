@@ -1,8 +1,4 @@
-import {
-  LogOut,
-  Settings,
-  User,
-} from "lucide-react";
+import { LogOut, Settings, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -38,22 +34,18 @@ export const UserDropdownMenu = () => {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <Link href="/profile" className="w-full">
-              <DropdownMenuItem>
-                <User className="mr-2 h-4 w-4" />
-                <span>Profile</span>
-              </DropdownMenuItem>
+                <DropdownMenuItem>
+                  <User className="mr-2 h-4 w-4" />
+                  <span>Profile</span>
+                </DropdownMenuItem>
               </Link>
-              <DropdownMenuItem>
-                <Settings className="mr-2 h-4 w-4" />
-                <span>Settings</span>
-              </DropdownMenuItem>
             </DropdownMenuGroup>
-              <LogoutButton className="w-full">
-            <DropdownMenuItem>
+            <LogoutButton className="w-full">
+              <DropdownMenuItem>
                 <LogOut className="mr-2 h-4 w-4" />
                 <span>Log out</span>
-            </DropdownMenuItem>
-              </LogoutButton>
+              </DropdownMenuItem>
+            </LogoutButton>
           </DropdownMenuContent>
         </DropdownMenu>
       ) : (
@@ -66,4 +58,3 @@ export const UserDropdownMenu = () => {
     </>
   );
 };
-

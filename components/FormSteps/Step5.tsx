@@ -1,96 +1,55 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Select, Button, Input, Form, Upload, message } from "antd";
+import { Select, Button, Input, Form, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  convertObjectToInventorArray,
+  reverseArrayToInventorObject,
+} from "@/utils/multi-step";
 import { validateEmail, validatePhoneNumber } from "@/utils/function";
 
 const { TextArea } = Input;
-
 const { Option } = Select;
 const { Item } = Form;
-
-interface IInventor {
-  inventor_email: string;
-  inventor_name: string;
-  inventor_contact: string;
-}
 
 const Step5: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
-  const [selectValue, setSelectValue] = useState<boolean | null>(null);
-  const [inventors, setInventors] = useState<IInventor[]>([]);
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    if (selectValue === true && inventors.length === 0) {
-      setInventors([
-        { inventor_contact: "", inventor_email: "", inventor_name: "" },
-      ]);
-    } else if (selectValue === false) {
-      setInventors([]);
-    } else if (selectValue === null && formData.isInventor !== undefined) {
-      setSelectValue(formData.isInventor);
-      setInventors(formData.inventor || []);
-    }
-  }, [selectValue]);
+  const [showInputs, setShowInputs] = useState<boolean>(false);
+  const [inputGroups, setInputGroups] = useState<number[]>([]);
 
   const handleSelectChange = (value: boolean) => {
-    setSelectValue(value);
-    if (!value) {
-      setInventors([]);
-    }
-    setFormData({ ...formData, isInventor: value });
+    setShowInputs(value);
+    setInputGroups(value ? [0] : []);
   };
 
-  const addInventor = () => {
-    setInventors([
-      ...inventors,
-      { inventor_contact: "", inventor_email: "", inventor_name: "" },
-    ]);
+  const addInputGroup = () => {
+    setInputGroups([...inputGroups, inputGroups.length]);
   };
 
-  const removeInventor = (index: number) => {
-    if (index === 0) return;
-    setInventors(inventors.filter((_, i) => i !== index));
-  };
-
-  const handleInventorChange = (
-    index: number,
-    field: keyof IInventor,
-    value: any
-  ) => {
-    const updatedInstance = [...inventors];
-    updatedInstance[index][field] = value;
-    setInventors(updatedInstance);
+  const removeInputGroup = () => {
+    setInputGroups(inputGroups.slice(0, -1));
   };
 
   const handleNextStep = async () => {
     try {
       const values = await form.validateFields();
-      if (selectValue) {
-        for (const inventor of inventors) {
-          if (
-            !inventor.inventor_contact ||
-            !inventor.inventor_email ||
-            !inventor.inventor_name
-          ) {
-            throw new Error(
-              "Please fill in all required fields for each instance"
-            );
-          }
-        }
+      const { isInventor, ...fields } = values;
+
+      if (isInventor) {
+        const newInventor = convertObjectToInventorArray(fields);
+        setFormData({ ...formData, isInventor, inventor: newInventor });
+      } else {
+        setFormData({ ...formData, isInventor, inventor: [] });
       }
-      saveData(values);
       setCurrentStep(currentStep + 1);
     } catch (error) {
-      message.error("Please fill in all required fields for each inventor");
+      message.error(
+        "Please fill in correctly all required fields for each inventor"
+      );
     }
-  };
-
-  const saveData = (values: any) => {
-    setFormData({ ...formData, ...values, inventor: inventors });
   };
 
   const prevStep = () => {
@@ -102,11 +61,30 @@ const Step5: React.FC = () => {
   const handleSaveStep = async () => {
     try {
       const values = await form.validateFields();
+
       if (values && typeof window !== "undefined") {
-        localStorage.setItem(
-          "formData",
-          JSON.stringify({ ...formData, ...values, inventor: inventors })
-        );
+        const { isInventor, ...inventors } = values;
+
+        if (isInventor) {
+          const newInventor = convertObjectToInventorArray(inventors);
+          localStorage.setItem(
+            "formData",
+            JSON.stringify({
+              ...formData,
+              isInventor,
+              inventor: newInventor,
+            })
+          );
+        } else {
+          localStorage.setItem(
+            "formData",
+            JSON.stringify({
+              ...formData,
+              isInventor,
+              inventor: [],
+            })
+          );
+        }
         localStorage.setItem("currentStep", currentStep.toString());
         localStorage.setItem("totalSteps", mySteps.toString());
       }
@@ -117,8 +95,17 @@ const Step5: React.FC = () => {
   };
 
   useEffect(() => {
-    form.setFieldsValue(formData);
-  }, [formData, form]);
+    if (formData.isInventor) {
+      setShowInputs(formData.isInventor);
+    }
+    if (formData.inventor && formData.inventor.length > 0) {
+      const instanceCount = formData.inventor.length;
+      setInputGroups(Array.from({ length: instanceCount }, (_, i) => i));
+    }
+
+    const prev = reverseArrayToInventorObject(formData.inventor || []);
+    form.setFieldsValue({ ...formData, ...prev });
+  }, [formData]);
 
   return (
     <div>
@@ -130,133 +117,121 @@ const Step5: React.FC = () => {
       >
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Are you an inventor on this product?
+            Are you an Inventor on this Product?
           </h3>
           <Item
             name="isInventor"
             rules={[{ required: true, message: "Please Select an Option" }]}
           >
-            <Select size="large" onChange={handleSelectChange}>
+            <Select
+              size="large"
+              onChange={(value) => handleSelectChange(value)}
+              variant="filled"
+            >
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Item>
         </div>
 
-        {selectValue && (
-          <div>
-            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
-              Please provide details below.
-            </h2>
-            {inventors.map((inventor, index) => (
-              <div key={index}>
-                <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Name
-                  </h3>
+        {showInputs && (
+          <>
+            <div>
+              <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+                Please provide details below.
+              </h2>
+              {inputGroups.map((group, index) => (
+                <div key={index}>
+                  <div>
+                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                      Name
+                    </h3>
 
-                  <Item
-                    className="w-full"
-                    rules={[{ required: true, message: "Required" }]}
-                  >
-                    <Input
-                      value={inventor.inventor_name}
-                      placeholder="Please Enter Your Name"
-                      size="large"
-                      onChange={(e) =>
-                        handleInventorChange(
-                          index,
-                          "inventor_name",
-                          e.target.value
-                        )
-                      }
-                      required
+                    <Item
+                      className="w-full"
+                      name={`inventor_${index + 1}_name`}
+                      rules={[{ required: true, message: "Required" }]}
+                    >
+                      <Input
+                        variant="filled"
+                        placeholder="Please Enter Your Name"
+                        size="large"
+                      />
+                    </Item>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                      Email
+                    </h3>
+
+                    <Item
+                      className="w-full"
+                      name={`inventor_${index + 1}_email`}
+                      rules={[
+                        { required: true, message: "Required" },
+                        {
+                          validator: validateEmail,
+                          message: "Please enter a valid email address",
+                        },
+                      ]}
+                    >
+                      <Input
+                        variant="filled"
+                        placeholder="Please Enter Your Email"
+                        size="large"
+                      />
+                    </Item>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                      Phone
+                    </h3>
+
+                    <Item
+                      className="w-full"
+                      name={`inventor_${index + 1}_contact`}
+                      rules={[
+                        { required: true, message: "Required" },
+                        {
+                          validator: validatePhoneNumber,
+                          message: "Please enter a valid phone number",
+                        },
+                      ]}
+                    >
+                      <Input
+                        variant="filled"
+                        placeholder="Please Enter Your Contact"
+                        size="large"
+                      />
+                    </Item>
+                  </div>
+
+                  {index > 0 && (
+                    <Button
+                      type="dashed"
+                      style={{ color: "red" }}
+                      onClick={removeInputGroup}
+                      icon={<DeleteOutlined />}
                     />
-                  </Item>
+                  )}
                 </div>
-
-                <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Email
-                  </h3>
-
-                  <Item
-                    className="w-full"
-                    rules={[
-                      { required: true, message: "Required" },
-                      { validator: validateEmail },
-                    ]}
-                  >
-                    <Input
-                      value={inventor.inventor_email}
-                      placeholder="Please Enter Your Email"
-                      type="email"
-                      size="large"
-                      onChange={(e) =>
-                        handleInventorChange(
-                          index,
-                          "inventor_email",
-                          e.target.value
-                        )
-                      }
-                      required
-                    />
-                  </Item>
-                </div>
-
-                <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Contact
-                  </h3>
-
-                  <Item
-                    className="w-full"
-                    rules={[
-                      { required: true, message: "Required" },
-                      { validator: validatePhoneNumber },
-                    ]}
-                  >
-                    <Input
-                      value={inventor.inventor_contact}
-                      placeholder="Please Enter Your Contact"
-                      suffix="Nigeria"
-                      prefix="234"
-                      size="large"
-                      onChange={(e) =>
-                        handleInventorChange(
-                          index,
-                          "inventor_contact",
-                          e.target.value
-                        )
-                      }
-                      required
-                    />
-                  </Item>
-                </div>
-
-                {index > 0 && (
+              ))}
+              <div className="w-full flex justify-center items-center">
+                <Form.Item>
                   <Button
-                    type="dashed"
-                    style={{ color: "red" }}
-                    onClick={() => removeInventor(index)}
-                    icon={<DeleteOutlined />}
-                  />
-                )}
+                    type="text"
+                    style={{ color: "#329632" }}
+                    onClick={addInputGroup}
+                    icon={<PlusOutlined />}
+                  >
+                    Add Instance
+                  </Button>
+                </Form.Item>
               </div>
-            ))}
-            <div className="w-full flex justify-center items-center">
-              <Form.Item>
-                <Button
-                  type="text"
-                  style={{ color: "#329632" }}
-                  onClick={addInventor}
-                  icon={<PlusOutlined />}
-                >
-                  Add Instance
-                </Button>
-              </Form.Item>
             </div>
-          </div>
+          </>
         )}
 
         <div className="mt-10 flex flex-col gap-y-4">

@@ -18,6 +18,7 @@ interface StyledFileInputProps {
   placeholder?: string;
   className?: string;
   defaultValue?: string;
+  max?: number;
 }
 
 export const StyledFileInput: React.FC<StyledFileInputProps> = ({
@@ -27,6 +28,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
   placeholder,
   className,
   defaultValue,
+  max = 7,
 }) => {
   const [fileNames, setFileNames] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -40,7 +42,6 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
       const fileList = Array.from(files);
       setFileNames(fileList.map((file) => file.name));
       setIsLoading(true);
-
       const fileDataArray: {
         url: string | null;
         name: string | null;
@@ -48,8 +49,8 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
         type: string | null;
       }[] = [];
 
-      if (fileList.length > 7) {
-        message.error("Sorry but you cannot upload more than 7 files");
+      if (fileList.length > max) {
+        message.error(`Sorry but you cannot upload more than ${max} files`);
         fileDataArray.push({
           url: null,
           name: null,
@@ -73,16 +74,16 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
 
             if (response.ok) {
               const data = await response.json();
-              console.log(data.files);
-              const fileUrl = data.files[0].url;
-              fileDataArray.push({
-                url: fileUrl,
-                name: file.name,
-                size: file.size,
-                type: file.type,
+              data.files.map((file: any) => {
+                const fileUrl = file.url;
+                fileDataArray.push({
+                  url: fileUrl,
+                  name: file.name,
+                  size: file.size,
+                  type: file.type,
+                });
               });
             } else {
-              console.error("File upload failed.");
               fileDataArray.push({
                 url: null,
                 name: null,
@@ -95,6 +96,9 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
 
         onChange(fileDataArray);
       } catch (error) {
+        message.error(
+          "An error occurred while uploading the file(s): Please Check your network"
+        );
         console.error("An error occurred while uploading the file(s):", error);
         onChange(
           fileList.map((file) => ({
@@ -132,14 +136,18 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
             <BarLoader color="#53a350" />
           </span>
         ) : (
-          <span className="flex gap-x-2 items-center text-muted-foreground text-[14px] leading-[24px]">
-            {Array.isArray(defaultValue)
-              ? defaultValue.map((value) => `${value.name}, `)
-              : defaultValue ||
-                fileNames.join(", ") ||
-                placeholder ||
-                "Upload files"}{" "}
-            <CiImageOn />
+          <span className="flex gap-x-2 items-center justify-center text-muted-foreground text-[14px] leading-[24px]">
+            {defaultValue || fileNames.length > 1 ? (
+              <span className="max-w-[150px] mx-auto text-center">
+                {Array.isArray(defaultValue)
+                  ? defaultValue.flat().map((value) => `${value.name}, `)
+                  : defaultValue || fileNames.join(", ")}
+              </span>
+            ) : (
+              <span>
+                {placeholder || "Upload files"} <CiImageOn />
+              </span>
+            )}
           </span>
         )}
       </div>

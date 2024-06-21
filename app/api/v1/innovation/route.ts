@@ -47,7 +47,7 @@ export async function POST(request: Request) {
 
     // Validate the incoming payload
     const { error, value } = innovationSchema.validate(body, {
-      abortEarly: false,
+      allowUnknown: true,
     });
     if (error) {
       throw new Error(
