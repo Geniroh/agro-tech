@@ -135,6 +135,11 @@ const Step1: React.FC = () => {
             className="w-full"
             size="large"
             options={MONTH_OPTIONS}
+            filterSort={(optionA, optionB) =>
+              (optionA?.label ?? "")
+                .toLowerCase()
+                .localeCompare((optionB?.label ?? "").toLowerCase())
+            }
             variant="filled"
           />
         </Item>
