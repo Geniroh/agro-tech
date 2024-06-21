@@ -115,3 +115,16 @@ html,body,:root {
     transform: rotate(-90deg);
     transition: transform 0.5s;
   }
+
+  .btn-clear-filters {
+    background-color: #f5f5f5;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .btn-clear-filters:hover {
+    background-color: #e0e0e0;
+  }

@@ -9,7 +9,17 @@ const data = [
   { name: "Group C", value: 300 },
   { name: "Group D", value: 200 },
 ];
-const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
+const COLORS = [
+  "#0088FE",
+  "#00C49F",
+  "#FFBB28",
+  "#FF8042",
+  "#FFE9D0",
+  "#BBE9FF",
+  "#402E7A",
+  "#3DC2EC",
+  "#FFF455",
+];
 
 const CustomTooltip = ({
   active,
@@ -41,10 +51,10 @@ export const DonutChartCard = ({
   );
 
   return (
-    <div className="bg-[#fafafa] rounded-lg h-full max-h-[523px] flex flex-col gap-y-4 p-5">
+    <div className="bg-[#fafafa] rounded-lg h-full max-h-[523px]  flex flex-col gap-y-4 p-5">
       <h1 className="text-[14px]  font-semibold self-start">Value Chain</h1>
       <div
-        style={{ width: "100%" }}
+        style={{ width: "100%", height: "100%" }}
         className="flex justify-center items-center md:mt-[-20px]"
       >
         <PieChart width={219} height={219}>
