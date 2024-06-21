@@ -13,6 +13,8 @@ import { InnovationProfile } from "./_components/innovation-profile";
 const ProfilePage = () => {
   const user = useCurrentUser();
 
+  console.log(user);
+
   return (
     <div>
       <Navbar />
