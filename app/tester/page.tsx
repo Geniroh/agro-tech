@@ -63,16 +63,31 @@
 // export default page;
 
 "use client";
-import React, { useState } from "react";
-import { Form, Button, message } from "antd";
-import { StyledFileInput } from "@/components/general/upload-input"; // adjust the import path as needed
+import React, { useEffect, useState } from "react";
+import { Select, Input, Button, Space, Form } from "antd";
+import { StyledFileInput } from "@/components/general/upload-input";
 
+const { Option } = Select;
 const { Item } = Form;
+const { TextArea } = Input;
 
-const Step2: React.FC = () => {
+const DynamicFields: React.FC = () => {
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState<any[]>([]);
-  const [isUploading, setIsUploading] = useState(false);
+  const [showInputs, setShowInputs] = useState<boolean>();
+  const [inputGroups, setInputGroups] = useState<number[]>([]);
+
+  const handleSelectChange = (value: boolean) => {
+    setShowInputs(value);
+    setInputGroups(value ? [0] : []);
+  };
+
+  const addInputGroup = () => {
+    setInputGroups([...inputGroups, inputGroups.length]);
+  };
+
+  const removeInputGroup = () => {
+    setInputGroups(inputGroups.slice(0, -1));
+  };
 
   const handleFileChange = (
     fileDataArray: {
@@ -80,50 +95,122 @@ const Step2: React.FC = () => {
       name: string | null;
       size: number | null;
       type: string | null;
-    }[]
+    }[],
+    index: number
   ) => {
-    setFileList((prev) => [...prev, ...fileDataArray]);
-    console.log("CLIENT", fileDataArray);
-    form.setFieldsValue({ product_media: fileDataArray });
-    console.log(fileList);
-    if (fileDataArray.some((file) => file.url === null)) {
-      message.error("Some files failed to upload.");
-    } else {
-      message.success("Files uploaded successfully.");
-    }
+    console.log(fileDataArray, index);
+    // if (fileDataArray.some((file) => file.url === null)) {
+    //   message.error("Some files failed to upload.");
+    // } else {
+    //   message.success("Files uploaded successfully.");
+    //   setFormData({ ...formData, product_media: fileDataArray });
+    // }
   };
 
-  return (
-    <Form form={form} layout="vertical" className="space-y-4">
-      <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Product Media
-        </h3>
-        <Item
-          name="product_media"
-          rules={[{ required: true, message: "Please upload a file" }]}
-        >
-          <StyledFileInput
-            id="product_media"
-            name="product_media"
-            onChange={handleFileChange}
-            placeholder="Upload images/videos of product"
-            className="w-full"
-          />
-        </Item>
-        {fileList.map((file, i) => (
-          <span className="block mb-1" key={i}>
-            {file?.name}
-          </span>
-        ))}
-      </div>
+  useEffect(() => {
+    if (showInputs && inputGroups.length === 0) {
+      setInputGroups([0]);
+    }
+  }, [showInputs]);
 
-      <Button>Submit</Button>
-    </Form>
+  return (
+    <div className="max-w-[500px] mx-auto mt-[50px]">
+      <Form form={form} layout="vertical" className="space-y-4">
+        <div>
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Do you have Usage Example to Show?
+          </h3>
+          <Item
+            name="isUsageExample"
+            rules={[{ required: true, message: "Please Select an Option" }]}
+          >
+            <Select
+              size="large"
+              onChange={(value) => handleSelectChange(value)}
+              variant="filled"
+            >
+              <Option value={true}>Yes</Option>
+              <Option value={false}>No</Option>
+            </Select>
+          </Item>
+        </div>
+
+        {/* <Select
+        defaultValue={false}
+        onChange={handleSelectChange}
+        style={{ width: 120 }}
+      >
+        <Option value={false}>No</Option>
+        <Option value={true}>Yes</Option>
+      </Select> */}
+
+        {showInputs && (
+          <>
+            {inputGroups.map((group, index) => (
+              <Space key={index} direction="vertical" style={{ marginTop: 16 }}>
+                {/* <Input placeholder={`Input 1 - Group ${index + 1}`} />
+              <Input placeholder={`Input 2 - Group ${index + 1}`} />
+              <Input placeholder={`Input 3 - Group ${index + 1}`} /> */}
+
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Instance Media Upload
+                  </h3>
+
+                  <Item
+                    className="w-full"
+                    name={`instance_${index + 1}_media`}
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <StyledFileInput
+                      id={`instance_${index + 1}_media`}
+                      name={`instance_${index + 1}_media`}
+                      max={1}
+                      placeholder="Click to add images/videos of product"
+                      onChange={(e) => handleFileChange(e, index)}
+                    />
+                  </Item>
+                </div>
+
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Add very Brief Description
+                  </h3>
+
+                  <Item
+                    className="w-full"
+                    name={`instance_${index + 1}_description`}
+                    rules={[{ required: true, message: "Required" }]}
+                  >
+                    <TextArea
+                      placeholder="Please enter brief description to support image"
+                      size="large"
+                      variant="filled"
+                      rows={4}
+                    />
+                  </Item>
+                </div>
+              </Space>
+            ))}
+
+            <Space style={{ marginTop: 16 }}>
+              <Button type="dashed" onClick={addInputGroup}>
+                Add another set of inputs
+              </Button>
+              {inputGroups.length > 1 && (
+                <Button type="dashed" danger onClick={removeInputGroup}>
+                  Remove last set of inputs
+                </Button>
+              )}
+            </Space>
+          </>
+        )}
+      </Form>
+    </div>
   );
 };
 
-export default Step2;
+export default DynamicFields;
 
 // "use client";
 // import React, { useState, useEffect } from "react";

@@ -125,6 +125,7 @@ const Step4: React.FC = () => {
               size="large"
               value={selectValue}
               onChange={handleSelectChange}
+              variant="filled"
             >
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
@@ -151,6 +152,7 @@ const Step4: React.FC = () => {
                       value={instruction.instruction_step}
                       placeholder="Please Enter Info"
                       size="large"
+                      variant="filled"
                       onChange={(e) =>
                         handleInstructionChange(index, e.target.value)
                       }

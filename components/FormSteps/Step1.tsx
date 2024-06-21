@@ -90,6 +90,7 @@ const Step1: React.FC = () => {
           <Input
             size="large"
             placeholder="Please Enter the Name of the Innovation Here"
+            variant="filled"
           />
         </Item>
       </div>
@@ -109,6 +110,7 @@ const Step1: React.FC = () => {
             placeholder="Select Innovation Year"
             optionFilterProp="label"
             className="w-full"
+            variant="filled"
             size="large"
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
@@ -133,6 +135,7 @@ const Step1: React.FC = () => {
             className="w-full"
             size="large"
             options={MONTH_OPTIONS}
+            variant="filled"
           />
         </Item>
       </div>
@@ -151,6 +154,7 @@ const Step1: React.FC = () => {
             optionFilterProp="label"
             className="w-full"
             size="large"
+            variant="filled"
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
                 .toLowerCase()
@@ -173,6 +177,7 @@ const Step1: React.FC = () => {
           <Input
             size="large"
             type="number"
+            variant="filled"
             placeholder="How Much Does This Innovation Cost"
           />
         </Item>
@@ -191,6 +196,7 @@ const Step1: React.FC = () => {
             allowClear
             size="large"
             className="w-full"
+            variant="filled"
             placeholder="Select a Value Chain"
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")

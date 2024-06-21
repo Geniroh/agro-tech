@@ -41,7 +41,7 @@ const InnovationPage = () => {
       const { data } = await axios.get<IInnovationType>(
         `/api/v1/innovation/${id}`
       );
-      console.log({ data });
+      // console.log({ data });
       const { data: comments } = await axios.get<{
         message: string;
         comments: IInnovationComment[];
@@ -260,7 +260,10 @@ const InnovationPage = () => {
                     {data?.productSupplier ? (
                       <>
                         {data.productSupplier.map((supplier, i) => (
-                          <div key={i} className="text-[12px] leading-[22px]">
+                          <div
+                            key={i}
+                            className="text-[12px] leading-[22px] mb-3"
+                          >
                             <h2 className="text-[#888888] text-[14px] mb-2">
                               Contact {i + 1}
                             </h2>
@@ -297,7 +300,10 @@ const InnovationPage = () => {
                     {data?.productInventor ? (
                       <>
                         {data.productInventor.map((inventor, i) => (
-                          <div key={i} className="text-[12px] leading-[22px]">
+                          <div
+                            key={i}
+                            className="text-[12px] leading-[22px] mb-3"
+                          >
                             <h2 className="text-[#888888] text-[14px] mb-2">
                               Contact {i + 1}
                             </h2>

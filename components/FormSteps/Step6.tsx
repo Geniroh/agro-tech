@@ -1,96 +1,55 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { Select, Button, Input, Form, Upload, message } from "antd";
+import { Select, Button, Input, Form, message } from "antd";
 import { useFormContext } from "@/context/FormContext";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
+import {
+  convertObjectToSupplierArray,
+  reverseArrayToSupplierObject,
+} from "@/utils/multi-step";
 import { validateEmail, validatePhoneNumber } from "@/utils/function";
 
 const { TextArea } = Input;
-
 const { Option } = Select;
 const { Item } = Form;
-
-interface IISupplier {
-  supplier_email: string;
-  supplier_name: string;
-  supplier_contact: string;
-}
 
 const Step6: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
-  const [selectValue, setSelectValue] = useState<boolean | null>(null);
-  const [suppliers, setSuppliers] = useState<IISupplier[]>([]);
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    if (selectValue === true && suppliers.length === 0) {
-      setSuppliers([
-        { supplier_contact: "", supplier_email: "", supplier_name: "" },
-      ]);
-    } else if (selectValue === false) {
-      setSuppliers([]);
-    } else if (selectValue === null && formData.isSupplier !== undefined) {
-      setSelectValue(formData.isSupplier);
-      setSuppliers(formData.supplier || []);
-    }
-  }, [selectValue]);
+  const [showInputs, setShowInputs] = useState<boolean>(false);
+  const [inputGroups, setInputGroups] = useState<number[]>([]);
 
   const handleSelectChange = (value: boolean) => {
-    setSelectValue(value);
-    if (!value) {
-      setSuppliers([]);
-    }
-    setFormData({ ...formData, isSupplier: value });
+    setShowInputs(value);
+    setInputGroups(value ? [0] : []);
   };
 
-  const addSupplier = () => {
-    setSuppliers([
-      ...suppliers,
-      { supplier_contact: "", supplier_email: "", supplier_name: "" },
-    ]);
+  const addInputGroup = () => {
+    setInputGroups([...inputGroups, inputGroups.length]);
   };
 
-  const removeSupplier = (index: number) => {
-    if (index === 0) return;
-    setSuppliers(suppliers.filter((_, i) => i !== index));
-  };
-
-  const handleSupplierChange = (
-    index: number,
-    field: keyof IISupplier,
-    value: any
-  ) => {
-    const updatedInstance = [...suppliers];
-    updatedInstance[index][field] = value;
-    setSuppliers(updatedInstance);
+  const removeInputGroup = () => {
+    setInputGroups(inputGroups.slice(0, -1));
   };
 
   const handleNextStep = async () => {
     try {
       const values = await form.validateFields();
-      if (selectValue) {
-        for (const supplier of suppliers) {
-          if (
-            !supplier.supplier_contact ||
-            !supplier.supplier_email ||
-            !supplier.supplier_name
-          ) {
-            throw new Error(
-              "Please fill in all required fields for each instance"
-            );
-          }
-        }
+      const { isSupplier, ...fields } = values;
+
+      if (isSupplier) {
+        const newSupplier = convertObjectToSupplierArray(fields);
+        setFormData({ ...formData, isSupplier, supplier: newSupplier });
+      } else {
+        setFormData({ ...formData, isSupplier, supplier: [] });
       }
-      saveData(values);
       setCurrentStep(currentStep + 1);
     } catch (error) {
-      message.error("Please fill in all required fields for each supplier");
+      message.error(
+        "Please fill in correctly all required fields for each inventor"
+      );
     }
-  };
-
-  const saveData = (values: any) => {
-    setFormData({ ...formData, ...values, supplier: suppliers });
   };
 
   const prevStep = () => {
@@ -102,11 +61,30 @@ const Step6: React.FC = () => {
   const handleSaveStep = async () => {
     try {
       const values = await form.validateFields();
+
       if (values && typeof window !== "undefined") {
-        localStorage.setItem(
-          "formData",
-          JSON.stringify({ ...formData, ...values, supplier: suppliers })
-        );
+        const { isSupplier, ...suppliers } = values;
+
+        if (isSupplier) {
+          const newInventor = convertObjectToSupplierArray(suppliers);
+          localStorage.setItem(
+            "formData",
+            JSON.stringify({
+              ...formData,
+              isSupplier,
+              supplier: newInventor,
+            })
+          );
+        } else {
+          localStorage.setItem(
+            "formData",
+            JSON.stringify({
+              ...formData,
+              isSupplier,
+              supplier: [],
+            })
+          );
+        }
         localStorage.setItem("currentStep", currentStep.toString());
         localStorage.setItem("totalSteps", mySteps.toString());
       }
@@ -117,8 +95,17 @@ const Step6: React.FC = () => {
   };
 
   useEffect(() => {
-    form.setFieldsValue(formData);
-  }, [formData, form]);
+    if (formData.isSupplier) {
+      setShowInputs(formData.isSupplier);
+    }
+    if (formData.supplier && formData.supplier.length > 0) {
+      const instanceCount = formData.supplier.length;
+      setInputGroups(Array.from({ length: instanceCount }, (_, i) => i));
+    }
+
+    const prev = reverseArrayToSupplierObject(formData.supplier || []);
+    form.setFieldsValue({ ...formData, ...prev });
+  }, [formData]);
 
   return (
     <div>
@@ -130,133 +117,121 @@ const Step6: React.FC = () => {
       >
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Do you have a supplier?
+            Do you have a Supplier?
           </h3>
           <Item
             name="isSupplier"
             rules={[{ required: true, message: "Please Select an Option" }]}
           >
-            <Select size="large" onChange={handleSelectChange}>
+            <Select
+              size="large"
+              onChange={(value) => handleSelectChange(value)}
+              variant="filled"
+            >
               <Option value={true}>Yes</Option>
               <Option value={false}>No</Option>
             </Select>
           </Item>
         </div>
 
-        {selectValue && (
-          <div>
-            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
-              Please provide details below.
-            </h2>
-            {suppliers.map((supplier, index) => (
-              <div key={index}>
-                <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Name
-                  </h3>
+        {showInputs && (
+          <>
+            <div>
+              <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+                Please provide details below.
+              </h2>
+              {inputGroups.map((group, index) => (
+                <div key={index}>
+                  <div>
+                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                      Name
+                    </h3>
 
-                  <Item
-                    className="w-full"
-                    rules={[{ required: true, message: "Required" }]}
-                  >
-                    <Input
-                      value={supplier.supplier_name}
-                      placeholder="Please Enter Your Name"
-                      size="large"
-                      onChange={(e) =>
-                        handleSupplierChange(
-                          index,
-                          "supplier_name",
-                          e.target.value
-                        )
-                      }
-                      required
+                    <Item
+                      className="w-full"
+                      name={`supplier_${index + 1}_name`}
+                      rules={[{ required: true, message: "Required" }]}
+                    >
+                      <Input
+                        variant="filled"
+                        placeholder="Please Enter Your Name"
+                        size="large"
+                      />
+                    </Item>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                      Email
+                    </h3>
+
+                    <Item
+                      className="w-full"
+                      name={`supplier_${index + 1}_email`}
+                      rules={[
+                        { required: true, message: "Required" },
+                        {
+                          validator: validateEmail,
+                          message: "Please enter a valid email address",
+                        },
+                      ]}
+                    >
+                      <Input
+                        variant="filled"
+                        placeholder="Please Enter Your Email"
+                        size="large"
+                      />
+                    </Item>
+                  </div>
+
+                  <div>
+                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                      Phone
+                    </h3>
+
+                    <Item
+                      className="w-full"
+                      name={`supplier_${index + 1}_contact`}
+                      rules={[
+                        { required: true, message: "Required" },
+                        {
+                          validator: validatePhoneNumber,
+                          message: "Please enter a valid phone number",
+                        },
+                      ]}
+                    >
+                      <Input
+                        variant="filled"
+                        placeholder="Please Enter Your Contact"
+                        size="large"
+                      />
+                    </Item>
+                  </div>
+
+                  {index > 0 && (
+                    <Button
+                      type="dashed"
+                      style={{ color: "red" }}
+                      onClick={removeInputGroup}
+                      icon={<DeleteOutlined />}
                     />
-                  </Item>
+                  )}
                 </div>
-
-                <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Email
-                  </h3>
-
-                  <Item
-                    className="w-full"
-                    rules={[
-                      { required: true, message: "Required" },
-                      { validator: validateEmail },
-                    ]}
-                  >
-                    <Input
-                      value={supplier.supplier_email}
-                      placeholder="Please Enter Your Email"
-                      type="email"
-                      size="large"
-                      onChange={(e) =>
-                        handleSupplierChange(
-                          index,
-                          "supplier_email",
-                          e.target.value
-                        )
-                      }
-                      required
-                    />
-                  </Item>
-                </div>
-
-                <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    Contact
-                  </h3>
-
-                  <Item
-                    className="w-full"
-                    rules={[
-                      { required: true, message: "Required" },
-                      { validator: validatePhoneNumber },
-                    ]}
-                  >
-                    <Input
-                      value={supplier.supplier_contact}
-                      placeholder="Please Enter Your Contact"
-                      suffix="Nigeria"
-                      prefix="234"
-                      size="large"
-                      onChange={(e) =>
-                        handleSupplierChange(
-                          index,
-                          "supplier_contact",
-                          e.target.value
-                        )
-                      }
-                      required
-                    />
-                  </Item>
-                </div>
-
-                {index > 0 && (
+              ))}
+              <div className="w-full flex justify-center items-center">
+                <Form.Item>
                   <Button
-                    type="dashed"
-                    style={{ color: "red" }}
-                    onClick={() => removeSupplier(index)}
-                    icon={<DeleteOutlined />}
-                  />
-                )}
+                    type="text"
+                    style={{ color: "#329632" }}
+                    onClick={addInputGroup}
+                    icon={<PlusOutlined />}
+                  >
+                    Add Instance
+                  </Button>
+                </Form.Item>
               </div>
-            ))}
-            <div className="w-full flex justify-center items-center">
-              <Form.Item>
-                <Button
-                  type="text"
-                  style={{ color: "#329632" }}
-                  onClick={addSupplier}
-                  icon={<PlusOutlined />}
-                >
-                  Add Instance
-                </Button>
-              </Form.Item>
             </div>
-          </div>
+          </>
         )}
 
         <div className="mt-10 flex flex-col gap-y-4">

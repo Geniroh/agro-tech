@@ -113,15 +113,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         await s3Client.send(command);
 
         const fileRecord = {
-          filename: file.name,
+          name: file.name,
           size: file.size.toString(),
           url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
-          // type: file.type,
+          type: file.type,
         };
 
-        console.log(fileRecord);
-
-        await db.file.create({ data: fileRecord });
+        await db.file.create({
+          data: {
+            filename: fileRecord.name,
+            size: fileRecord.size,
+            url: fileRecord.url,
+          },
+        });
 
         return fileRecord;
       })

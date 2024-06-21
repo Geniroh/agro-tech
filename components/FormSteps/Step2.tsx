@@ -1,10 +1,8 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useFormContext } from "@/context/FormContext";
-import { Input, Form, Select, Button, Upload, message } from "antd";
+import { Input, Form, Select, Button, message } from "antd";
 import { toast } from "sonner";
-import { UploadOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
 import { StyledFileInput } from "@/components/general/upload-input";
 import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
 
@@ -16,20 +14,10 @@ const Step2: React.FC = () => {
     useFormContext();
 
   const [form] = Form.useForm();
-  const [fileList, setFileList] = useState<any[]>(
-    formData.product_media ? [formData.product_media] : []
-  );
-  const [mediaFileList, setMediaFileList] = useState<any[]>(
-    formData.product_media ? formData.product_media : []
-  );
-
-  const [isUploading, setIsUploading] = useState(false);
 
   useEffect(() => {
     form.setFieldsValue(formData);
   }, [formData, form]);
-
-  console.log(formData);
 
   const handleFileChange = (
     fileDataArray: {
@@ -39,57 +27,12 @@ const Step2: React.FC = () => {
       type: string | null;
     }[]
   ) => {
-    setMediaFileList((prev) => [...prev, ...fileDataArray]);
-    // form.setFieldsValue({ product_media: fileDataArray });
-    console.log(fileList);
     if (fileDataArray.some((file) => file.url === null)) {
       message.error("Some files failed to upload.");
     } else {
       message.success("Files uploaded successfully.");
-      setFormData({ ...formData, product_media: mediaFileList });
+      setFormData({ ...formData, product_media: fileDataArray });
     }
-  };
-
-  const uploadFileProps: UploadProps = {
-    name: "file",
-    action: "/api/v1/upload",
-    fileList: fileList,
-    onChange(info) {
-      const { status, name, response } = info.file;
-      if (status === "uploading") {
-        setFileList(info.fileList);
-        setIsUploading(true);
-      }
-      if (status === "done") {
-        setIsUploading(false);
-        message.success(`${info.file.name} file uploaded successfully`);
-        const { url } = info.file.response;
-
-        const uploadedFile = {
-          name: info.file.name,
-          url,
-          type: info.file.type,
-          size: info.file.size,
-        };
-        setFileList([uploadedFile]);
-        form.setFieldsValue({ product_media: uploadedFile });
-        setFormData({ ...formData, product_media: uploadedFile });
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
-    progress: {
-      strokeColor: {
-        "0%": "#108ee9",
-        "100%": "#87d068",
-      },
-      strokeWidth: 3,
-      format: (percent) => percent && `${parseFloat(percent.toFixed(2))}%`,
-    },
-    onRemove(file) {
-      setFileList([]);
-      setFormData({ ...formData, product_media: null });
-    },
   };
 
   const handleNextStep = async () => {
@@ -149,6 +92,7 @@ const Step2: React.FC = () => {
           <Select
             showSearch
             placeholder="Select Implementation Phase"
+            variant="filled"
             className="w-full"
             size="large"
             options={PRODUCT_PHASE_OPTIONS}
@@ -166,7 +110,11 @@ const Step2: React.FC = () => {
             { required: true, message: "Please Enter Product Description" },
           ]}
         >
-          <Input size="large" placeholder="Please Enter Product Use" />
+          <Input
+            size="large"
+            placeholder="Please Enter Product Use"
+            variant="filled"
+          />
         </Item>
       </div>
 
@@ -183,6 +131,7 @@ const Step2: React.FC = () => {
           <TextArea
             placeholder="Please Enter A Brief Description Of Product"
             className="bg-[#fafafa]"
+            variant="filled"
             size="large"
             rows={4}
           />
@@ -197,11 +146,6 @@ const Step2: React.FC = () => {
           name="product_media"
           rules={[{ required: true, message: "Please upload a file" }]}
         >
-          {/* <Upload {...uploadFileProps}>
-            <Button icon={<UploadOutlined />} className="w-full">
-              Click to add images/videos of product
-            </Button>
-          </Upload> */}
           <StyledFileInput
             id={"product_media"}
             name={"product_media"}
@@ -227,7 +171,6 @@ const Step2: React.FC = () => {
             className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
             size="large"
             type="primary"
-            disabled={isUploading}
             onClick={handleNextStep}
           >
             Continue
