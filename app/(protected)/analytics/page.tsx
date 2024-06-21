@@ -9,7 +9,10 @@ import { message } from "antd";
 import { useEffect, useState } from "react";
 import { WhiteLoaderWithoutText } from "@/components/loaders/white-loader";
 import { transformInnovationsToChartData } from "@/utils/function";
-import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
+import {
+  PRODUCT_PHASE_OPTIONS,
+  VALUE_CHAIN_OPTIONS,
+} from "@/constants/options";
 import { TagSelect2 } from "@/components/general/tag-select";
 import { countriesData } from "@/data/country-region";
 
@@ -29,6 +32,7 @@ export default function AnalyticsPage() {
   };
 
   const phaseOptions = PRODUCT_PHASE_OPTIONS.map((phase) => phase.value);
+  const valueOptions = VALUE_CHAIN_OPTIONS.map((chain) => chain.value);
   const countryOPtions = countriesData.map((country) => country.countryName);
   const yearOptions = generateYearOptions();
 
@@ -77,7 +81,7 @@ export default function AnalyticsPage() {
               <TagSelect2
                 name="Filter By"
                 optionsName="Value Chain"
-                options={phaseOptions}
+                options={valueOptions}
               />
               <TagSelect2
                 name="Filter By"

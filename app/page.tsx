@@ -94,7 +94,7 @@ export default function Home() {
           Africa!
         </h2>
 
-        <div className="mt-10">
+        {/* <div className="mt-10">
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="col-span-2">
               <ImageCard
@@ -179,7 +179,7 @@ export default function Home() {
               ))}
             </Slider>
           </div>
-        </div>
+        </div> */}
 
         <div className="mt-[100px]">
           <CollectionTable />
