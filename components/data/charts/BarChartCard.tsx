@@ -219,7 +219,7 @@ const knumberformatter = (num: number): string => {
 const BarChartCard = ({
   title,
   subtitle,
-  height = 400,
+  // height = 400,
   data,
   fill = "#000",
   XdataKey,
@@ -242,87 +242,72 @@ const BarChartCard = ({
 
   return (
     <div
-      className={`bg-myoffwhie shadow-[15px] rounded-lg  w-full p-5 ${className}`}
+      className={`bg-myoffwhie shadow-[15px] rounded-lg h-full flex flex-col justify-between  w-full p-5 ${className}`}
     >
       <span className="text-[#101828] text-[14px] font-semibold">{title}</span>
-
-      <div className="p-3 relative">
-        {/* <div
-          className={`${
-            totalKey ? "left-[2px]" : "left-[-10px]"
-          } top-[50%] absolute -rotate-90 text-[#475467] text-[12px]`}
-        >
-          {Ylabel}
-        </div> */}
-
-        <div style={{ width: "100%", height: "290px" }}>
-          <ResponsiveContainer width="100%" height={"100%"}>
-            <BarChart data={data} margin={{ top: 5, left: -22, bottom: 5 }}>
-              <ReferenceLine y={0} stroke="#77808e" />
-              <XAxis
-                className="text-[12px] text-dark-grey"
-                axisLine={false}
-                tickLine={false}
-                dataKey={XdataKey}
-                type="category"
-                tick={{ fill }}
-                label={Xlabel}
+      <ResponsiveContainer width="100%" height="90%">
+        <BarChart data={data} margin={{ top: 5, left: -22, bottom: 5 }}>
+          <ReferenceLine y={0} stroke="#77808e" />
+          <XAxis
+            className="text-[12px] text-dark-grey"
+            axisLine={false}
+            tickLine={false}
+            dataKey={XdataKey}
+            type="category"
+            tick={{ fill }}
+            label={Xlabel}
+          />
+          <YAxis
+            className="md:text-[12px] text-dark-grey"
+            type="number"
+            axisLine={false}
+            tickLine={false}
+            domain={yDomain}
+            tick={{ fill }}
+            tickFormatter={knumberformatter} // Use your custom number formatter
+          />
+          <Tooltip
+            content={<CustomTooltip active={true} payload={data} />}
+            cursor={{ fill: "transparent" }}
+          />
+          <Bar
+            dataKey={dataKey}
+            barSize={barWidth}
+            strokeWidth={1}
+            radius={[5, 5, 5, 5]}
+            stackId="a"
+          >
+            {data.map((entry, index) => (
+              <Cell
+                key={`cell-${index}`}
+                fill={entry[dataKey] < 0 ? "#FF002A" : cellFill}
               />
-              <YAxis
-                className="md:text-[12px] text-dark-grey"
-                type="number"
-                axisLine={false}
-                tickLine={false}
-                domain={yDomain}
-                tick={{ fill }}
-                tickFormatter={knumberformatter} // Use your custom number formatter
-              />
-              <Tooltip
-                content={<CustomTooltip active={true} payload={data} />}
-                cursor={{ fill: "transparent" }}
-              />
-              <Bar
-                dataKey={dataKey}
-                barSize={barWidth}
-                strokeWidth={1}
-                radius={[5, 5, 5, 5]}
-                stackId="a"
-              >
-                {data.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry[dataKey] < 0 ? "#FF002A" : cellFill}
-                  />
-                ))}
-                <LabelList
-                  dataKey={topLabelDataKey}
-                  position="top"
-                  fill="#050C1F6"
-                  style={{
-                    fontSize: "10px",
-                    fontWeight: "normal",
-                  }}
-                />
-              </Bar>
-              {totalKey && (
-                <Bar
-                  dataKey={(dataPoint) =>
-                    dataPoint[totalKey] - dataPoint[dataKey]
-                  }
-                  fill={topBarColor}
-                  barSize={barWidth}
-                  stackId="a"
-                  radius={[5, 5, 0, 0]}
-                >
-                  {data.map((entry, index) => (
-                    <Cell key={`cell-${index}`} fill={topBarColor} />
-                  ))}
-                </Bar>
-              )}
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
-      </div>
+            ))}
+            <LabelList
+              dataKey={topLabelDataKey}
+              position="top"
+              fill="#050C1F6"
+              style={{
+                fontSize: "10px",
+                fontWeight: "normal",
+              }}
+            />
+          </Bar>
+          {totalKey && (
+            <Bar
+              dataKey={(dataPoint) => dataPoint[totalKey] - dataPoint[dataKey]}
+              fill={topBarColor}
+              barSize={barWidth}
+              stackId="a"
+              radius={[5, 5, 0, 0]}
+            >
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={topBarColor} />
+              ))}
+            </Bar>
+          )}
+        </BarChart>
+      </ResponsiveContainer>
     </div>
   );
 };
