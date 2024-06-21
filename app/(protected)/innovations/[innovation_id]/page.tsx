@@ -47,6 +47,7 @@ const InnovationPage = () => {
       }>(`/api/v1/innovation/${innovation_id}/discussion`);
 
       setData(data);
+      console.log(data);
       setComments(comments.comments);
     } catch (error) {
       setError("Network Error, please try again!");

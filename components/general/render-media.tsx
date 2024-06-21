@@ -77,21 +77,21 @@ export const RenderMedia = ({ media, className }: RenderMediaProps) => {
     );
   }
 
-  // if (videoExtensions.includes(extension)) {
-  //   const videoThumbnail = `${media.url}#t=0.5`; // Attempt to get the video thumbnail
+  if (videoExtensions.includes(extension)) {
+    const videoThumbnail = `${media.url}#t=0.5`; // Attempt to get the video thumbnail
 
-  //   return (
-  //     <div className={`relative ${className}`}>
-  //       <ReactPlayer
-  //         url={media.url}
-  //         light={videoThumbnail}
-  //         controls
-  //         width="200px"
-  //         height="200px"
-  //       />
-  //     </div>
-  //   );
-  // }
+    return (
+      <div className={`relative ${className}`}>
+        <ReactPlayer
+          url={media.url}
+          light={videoThumbnail}
+          controls
+          width="200px"
+          height="200px"
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
