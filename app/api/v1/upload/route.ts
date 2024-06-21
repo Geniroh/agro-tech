@@ -18,14 +18,11 @@
 
 // export async function POST(request: NextRequest): Promise<NextResponse> {
 //   const data = await request.formData();
-//   const file = data.get("file") as File | null;
+//   const files = data.getAll("file") as File[];
 
-//   if (!file) {
-//     return NextResponse.json({ error: "No file uploaded" });
+//   if (!files.length) {
+//     return NextResponse.json({ error: "No files uploaded" });
 //   }
-
-//   const bytes = await file.arrayBuffer();
-//   const buffer = Buffer.from(bytes);
 
 //   const bucketName = process.env.DO_BUCKET_NAME;
 
@@ -33,28 +30,44 @@
 //     return NextResponse.json({ error: "Bucket name not defined" });
 //   }
 
-//   const params: PutObjectCommandInput = {
-//     Bucket: bucketName,
-//     Key: file.name,
-//     Body: buffer,
-//     ACL: "public-read",
-//   };
-
 //   try {
-//     const command = new PutObjectCommand(params);
-//     const result = await s3Client.send(command);
+//     const uploadResults = await Promise.all(
+//       files.map(async (file) => {
+//         const bytes = await file.arrayBuffer();
+//         const buffer = Buffer.from(bytes);
 
-//     const fileRecord = {
-//       filename: file.name,
-//       size: file.size.toString(),
-//       url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
-//     };
+//         const params: PutObjectCommandInput = {
+//           Bucket: bucketName,
+//           Key: file.name,
+//           Body: buffer,
+//           ACL: "public-read",
+//         };
 
-//     await db.file.create({ data: fileRecord });
+//         const command = new PutObjectCommand(params);
+//         await s3Client.send(command);
+
+//         const fileRecord = {
+//           name: file.name,
+//           size: file.size.toString(),
+//           url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
+//           type: file.type,
+//         };
+
+//         await db.file.create({
+//           data: {
+//             filename: fileRecord.name,
+//             size: fileRecord.size,
+//             url: fileRecord.url,
+//           },
+//         });
+
+//         return fileRecord;
+//       })
+//     );
 
 //     return NextResponse.json({
-//       message: "File uploaded successfully",
-//       url: fileRecord.url,
+//       message: "Files uploaded successfully",
+//       files: uploadResults,
 //     });
 //   } catch (err) {
 //     console.error(err);
@@ -62,7 +75,6 @@
 //   }
 // }
 
-import { writeFile } from "fs/promises";
 import { NextRequest, NextResponse } from "next/server";
 import {
   S3Client,
@@ -70,6 +82,7 @@ import {
   PutObjectCommandInput,
 } from "@aws-sdk/client-s3";
 import { db } from "@/lib/db";
+// import { v4 as uuidv4 } from "uuid";
 
 const s3Client = new S3Client({
   region: "nyc3",
@@ -79,6 +92,12 @@ const s3Client = new S3Client({
     secretAccessKey: process.env.DO_SPACE_SECRET!,
   },
 });
+
+// Function to sanitize file names
+function sanitizeFileName(fileName: string): string {
+  // Remove all characters that are not letters or numbers
+  return fileName.replace(/[^a-zA-Z0-9]/g, "");
+}
 
 export async function POST(request: NextRequest): Promise<NextResponse> {
   const data = await request.formData();
@@ -94,17 +113,19 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     return NextResponse.json({ error: "Bucket name not defined" });
   }
 
-  console.log(files);
-
   try {
     const uploadResults = await Promise.all(
       files.map(async (file) => {
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
 
+        // Sanitize file name and generate a unique file name
+        const sanitizedFileName = sanitizeFileName(file.name);
+        const uniqueFileName = `${sanitizedFileName}`;
+
         const params: PutObjectCommandInput = {
           Bucket: bucketName,
-          Key: file.name,
+          Key: uniqueFileName,
           Body: buffer,
           ACL: "public-read",
         };
@@ -113,9 +134,9 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         await s3Client.send(command);
 
         const fileRecord = {
-          name: file.name,
+          name: uniqueFileName,
           size: file.size.toString(),
-          url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${file.name}`,
+          url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${uniqueFileName}`,
           type: file.type,
         };
 
@@ -137,6 +158,6 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
     });
   } catch (err) {
     console.error(err);
-    return NextResponse.json("File upload failed");
+    return NextResponse.json({ error: "File upload failed" });
   }
 }
