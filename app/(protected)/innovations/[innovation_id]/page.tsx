@@ -47,7 +47,6 @@ const InnovationPage = () => {
       }>(`/api/v1/innovation/${innovation_id}/discussion`);
 
       setData(data);
-      console.log(data);
       setComments(comments.comments);
     } catch (error) {
       setError("Network Error, please try again!");
@@ -196,7 +195,7 @@ const InnovationPage = () => {
             ) : (
               <RenderMedia
                 media={data?.productMedia[0]}
-                className="w-full max-w-[1000px] mx-auto h-[450px] object-cover"
+                className="w-full  h-[450px] object-cover"
                 key={data?.productMedia[0].name}
               />
             )}
@@ -257,7 +256,7 @@ const InnovationPage = () => {
                     Contact Supplier
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6 space-y-4">
-                    {data?.productSupplier ? (
+                    {data?.isSupplier ? (
                       <>
                         {data.productSupplier.map((supplier, i) => (
                           <div
@@ -285,7 +284,7 @@ const InnovationPage = () => {
                         ))}
                       </>
                     ) : (
-                      <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
+                      <div className="text-center text-muted-foreground flex justify-center items-center">
                         --- No data ----
                       </div>
                     )}
@@ -297,7 +296,7 @@ const InnovationPage = () => {
                     Contact Inventor
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productInventor ? (
+                    {data?.isInventor ? (
                       <>
                         {data.productInventor.map((inventor, i) => (
                           <div
@@ -337,7 +336,7 @@ const InnovationPage = () => {
                     Usage Examples
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productExample ? (
+                    {data?.isExample ? (
                       <ul>
                         {data?.productExample?.map((example, i) => (
                           <li key={i}>
@@ -363,7 +362,7 @@ const InnovationPage = () => {
                     HSE Guideline
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productGuidelines ? (
+                    {data?.isHSEGuidelines ? (
                       <ul>
                         {data?.productGuidelines?.map((guideline, i) => (
                           <li key={i}>{guideline.name}</li>

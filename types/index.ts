@@ -60,10 +60,14 @@ interface IInnovationType {
   productDescription: string;
   productMedia: Media[];
   isExample: boolean;
+  isHSEGuidelines: boolean;
+  isInstruction: boolean;
+  isInventor: boolean;
+  isSupplier: boolean;
   productExample?: ProductExample[];
   productInstruction?: ProductInstruction[];
-  productInventor?: ProductInventor[];
-  productSupplier?: ProductSupplier[];
+  productInventor: ProductInventor[];
+  productSupplier: ProductSupplier[];
   productGuidelines?: ProductGuidelines[];
   isGenderFriendly?: boolean | null;
   productGenderDescription?: string | null;

@@ -86,8 +86,8 @@ export const RenderMedia = ({ media, className }: RenderMediaProps) => {
           url={media.url}
           light={videoThumbnail}
           controls
-          width="200px"
-          height="200px"
+          width="100%"
+          height="100%"
         />
       </div>
     );

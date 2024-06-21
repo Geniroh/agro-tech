@@ -28,6 +28,7 @@
     "@tanstack/react-table": "^8.17.3",
     "@types/recharts": "^1.8.29",
     "antd": "^5.18.1",
+    "antd-img-crop": "^4.22.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
