@@ -28,7 +28,7 @@ const Step8: React.FC = () => {
       const values = await form.validateFields();
       saveData(values);
 
-      await handleSubmit(formData);
+      await handleSubmit({ ...formData, ...values });
     } catch (error) {
       message.error("Please fill in all required fields");
     }
