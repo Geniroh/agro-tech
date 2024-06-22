@@ -9,6 +9,7 @@ import { useCurrentUser } from "@/hooks/current-user";
 import { LuTrash2, LuUpload } from "react-icons/lu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InnovationProfile } from "./_components/innovation-profile";
+import { UserDetailsForm } from "./_components/user-details-form";
 
 const ProfilePage = () => {
   const user = useCurrentUser();
@@ -16,7 +17,7 @@ const ProfilePage = () => {
   console.log(user);
 
   return (
-    <div>
+    <div className="pb-20">
       <Navbar />
       <BreadcrumbP
         fromHref="/"
@@ -51,12 +52,16 @@ const ProfilePage = () => {
             <TabsTrigger value="about">About</TabsTrigger>
           </TabsList>
           <TabsContent value="innovations">
-            <div className=" max-w-[600px] mx-auto">
+            <div className=" max-w-[782px] mx-auto">
               <InnovationProfile />
             </div>
           </TabsContent>
           <TabsContent value="post"></TabsContent>
-          <TabsContent value="about"></TabsContent>
+          <TabsContent value="about">
+            <div className=" max-w-[782px] mx-auto">
+              <UserDetailsForm />
+            </div>
+          </TabsContent>
         </Tabs>
       </div>
     </div>

@@ -61,6 +61,7 @@ export async function POST(request: Request) {
         yearInvented: value.innovation_year,
         country: value.innovation_country,
         cost: Number(value.innovation_cost),
+        userId: "",
         month: value.innovation_month,
         productChain: value.innovation_value_chain,
         productPhase: value.innovation_phase,
