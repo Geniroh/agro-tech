@@ -194,10 +194,10 @@ const Step5: React.FC = () => {
                       name={`inventor_${index + 1}_contact`}
                       rules={[
                         { required: true, message: "Required" },
-                        {
-                          validator: validatePhoneNumber,
-                          message: "Please enter a valid phone number",
-                        },
+                        // {
+                        //   validator: validatePhoneNumber,
+                        //   message: "Please enter a valid phone number",
+                        // },
                       ]}
                     >
                       <Input
