@@ -71,6 +71,7 @@ const App: React.FC = () => {
       {previewImage && (
         <Image
           wrapperStyle={{ display: "none" }}
+          alt=""
           preview={{
             visible: previewOpen,
             onVisibleChange: (visible) => setPreviewOpen(visible),
