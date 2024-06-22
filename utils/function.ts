@@ -1,4 +1,40 @@
 import { RuleObject } from "antd/lib/form";
+
+import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
+
+const generalAfricanPhoneRegex = /^(\+2[0-9]{1,3}|002[0-9]{1,3})?[0-9]{8,12}$/;
+
+export const validatePhoneNumber = (
+  rule: RuleObject,
+  value: any,
+  callback: (error?: string) => void,
+  countryCode?: CountryCode
+) => {
+  if (!value) {
+    callback();
+    return;
+  }
+
+  if (countryCode) {
+    const phoneNumber = parsePhoneNumberFromString(value, countryCode);
+    if (phoneNumber && phoneNumber.isValid()) {
+      callback();
+      return;
+    } else {
+      callback("Please enter a valid African phone number");
+      return;
+    }
+  } else {
+    if (value.match(generalAfricanPhoneRegex)) {
+      callback();
+      return;
+    } else {
+      callback("Please enter a valid African phone number");
+      return;
+    }
+  }
+};
+
 export const getFirstName = (fullName: string | undefined | null) => {
   if (!fullName) return "";
   const names = fullName.trim().split(/\s+/);
@@ -52,19 +88,19 @@ export const validateEmail = (
   }
 };
 
-export const validatePhoneNumber = (
-  rule: RuleObject,
-  value: any,
-  callback: (error?: string) => void
-) => {
-  const phoneRegex = /^(?:\+?234)?(?:0)?([7-9][0-9]{9})$/;
+// export const validatePhoneNumber = (
+//   rule: RuleObject,
+//   value: any,
+//   callback: (error?: string) => void
+// ) => {
+//   const phoneRegex = /^(?:\+?234)?(?:0)?([7-9][0-9]{9})$/;
 
-  if (!value || value.match(phoneRegex)) {
-    callback();
-  } else {
-    callback("Please enter a valid phone number");
-  }
-};
+//   if (!value || value.match(phoneRegex)) {
+//     callback();
+//   } else {
+//     callback("Please enter a valid phone number");
+//   }
+// };
 
 //CHARTS FUNCTION
 export const transformInnovationsToChartData = (

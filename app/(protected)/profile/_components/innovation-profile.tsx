@@ -20,14 +20,14 @@ export const InnovationProfile = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
   return (
     <div>
-      <div className="pt-10 mt-10 pb-4 border-b flex justify-between">
+      <div className="mt-10 pb-4 border-b flex justify-between">
         <div className="flex gap-4">
           <button
             className={`${
               activeSection == 1
-                ? "text-white bg-black"
+                ? "text-white bg-mygreen"
                 : "bg-transparent text-black"
-            } py-1 px-6 rounded-3xl`}
+            } py-1 px-6 rounded-3xl text-[14px]`}
             onClick={() => setActiveSection(1)}
           >
             All
@@ -35,9 +35,9 @@ export const InnovationProfile = () => {
           <button
             className={`${
               activeSection == 2
-                ? "text-white bg-black"
+                ? "text-white bg-mygreen"
                 : "bg-transparent text-black"
-            } py-1 px-6 rounded-3xl`}
+            } py-1 px-6 rounded-3xl text-[14px]`}
             onClick={() => setActiveSection(2)}
           >
             Innovations
@@ -45,9 +45,9 @@ export const InnovationProfile = () => {
           <button
             className={`${
               activeSection == 3
-                ? "text-white bg-black"
+                ? "text-white bg-mygreen"
                 : "bg-transparent text-black"
-            } py-1 px-6 rounded-3xl`}
+            } py-1 px-6 rounded-3xl text-[14px]`}
             onClick={() => setActiveSection(3)}
           >
             Discussion

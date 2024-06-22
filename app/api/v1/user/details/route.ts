@@ -8,12 +8,12 @@ const postSchema = Joi.object({
   phone: Joi.string().optional(),
   occupation: Joi.string().optional(),
   country: Joi.string().optional(),
-  state: Joi.string().optional(),
-  lga: Joi.string().optional(),
-  address: Joi.string().optional(),
-  company_name: Joi.string().optional(),
-  association: Joi.string().optional(),
-  position: Joi.string().optional(),
+  state: Joi.string().optional().allow(null),
+  lga: Joi.string().optional().allow(null),
+  address: Joi.string().optional().allow(null),
+  company_name: Joi.string().optional().allow(null),
+  association: Joi.string().optional().allow(null),
+  position: Joi.string().optional().allow(null),
 });
 
 export async function GET(req: Request, res: Request) {
@@ -46,7 +46,9 @@ export async function GET(req: Request, res: Request) {
 export async function PUT(req: Request, res: Response) {
   try {
     const body = await req.json();
-    const { error, value } = postSchema.validate(body);
+    const { error, value } = postSchema.validate(body, {
+      allowUnknown: true,
+    });
 
     if (error) {
       return NextResponse.json(

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "@/context/FormContext";
 import { Input, Form, Select, Button, message } from "antd";
 import { countriesData, ICountry } from "@/data/country-region";
@@ -10,6 +10,8 @@ const { Item } = Form;
 const Step1: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
+
+  const [countryCode, setCountryCode] = useState<string>("NG");
 
   const [form] = Form.useForm();
 
@@ -52,6 +54,18 @@ const Step1: React.FC = () => {
     } catch (error) {
       message.error("Please fill in all required fields");
     }
+  };
+
+  const getCountryCode = (countryString: string) => {
+    const code = countriesData
+      .filter((country) => country.countryName == countryString)
+      .map((country) => country.countryShortCode);
+    return code[0];
+  };
+
+  const handleCountrySelect = (value: string) => {
+    const code = getCountryCode(value);
+    setCountryCode(code);
   };
 
   const generateYearOptions = () => {
@@ -155,6 +169,7 @@ const Step1: React.FC = () => {
             className="w-full"
             size="large"
             variant="filled"
+            onChange={handleCountrySelect}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
                 .toLowerCase()
@@ -167,7 +182,7 @@ const Step1: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Cost (Naira)
+          Cost ({countryCode})
         </h3>
 
         <Item
