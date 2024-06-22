@@ -1,8 +1,8 @@
 "use client";
 import { OCCUPATION_OPTIONS, VALUE_CHAIN_OPTIONS } from "@/constants/options";
 import { validatePhoneNumber } from "@/utils/function";
-import { Button, Form, Input, Select, Space } from "antd";
-import React, { useState } from "react";
+import { Button, Form, Input, Select, Space, message } from "antd";
+import React, { useEffect, useState } from "react";
 import { FaMobileAlt, FaUser } from "react-icons/fa";
 import { MdEmail, MdOutlineWork } from "react-icons/md";
 import { countriesData, ICountry } from "@/data/country-region";
@@ -44,9 +44,23 @@ export const UserDetailsForm = () => {
       console.log({ data });
       console.log(values);
     } catch (error) {
+      message.error("Update failed, please try again");
       console.log(error);
     }
   };
+  const fetchUserDetails = async () => {
+    try {
+      const { data } = await axios.get("/api/v1/user/details");
+      console.log(data);
+      form.setFieldsValue(data);
+    } catch (error) {
+      message.error("Network error");
+    }
+  };
+
+  useEffect(() => {
+    fetchUserDetails();
+  });
 
   return (
     <div>
@@ -158,7 +172,7 @@ export const UserDetailsForm = () => {
                 >
                   <Select
                     showSearch
-                    suffixIcon={<MdOutlineWork />}
+                    // suffixIcon={<MdOutlineWork />}
                     allowClear
                     placeholder="Select An Occupation"
                     optionFilterProp="label"
@@ -189,7 +203,7 @@ export const UserDetailsForm = () => {
                     optionFilterProp="label"
                     className="w-full"
                     size="large"
-                    variant="borderless"
+                    variant="filled"
                     filterSort={(optionA, optionB) =>
                       (optionA?.label ?? "")
                         .toLowerCase()
@@ -320,9 +334,11 @@ export const UserDetailsForm = () => {
 
             <div className="w-full flex justify-end">
               <Button
-                style={{ borderRadius: "32px" }}
+                // style={{ borderRadius: "32px" }}
                 type="primary"
                 onClick={handleUserUpdate}
+                size="large"
+                shape="round"
               >
                 Save Changes
               </Button>

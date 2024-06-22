@@ -16,6 +16,33 @@ const postSchema = Joi.object({
   position: Joi.string().optional(),
 });
 
+export async function GET(req: Request, res: Request) {
+  try {
+    const session = await auth();
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
+
+    const userDetails = await db.userDetails.findFirst({ where: { userId } });
+
+    return NextResponse.json(
+      {
+        details: userDetails,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json(
+      { error: "Failed to get user details" },
+      { status: 500 }
+    );
+  }
+}
+
 export async function PUT(req: Request, res: Response) {
   try {
     const body = await req.json();
