@@ -1,7 +1,7 @@
 "use client";
 import { OCCUPATION_OPTIONS, VALUE_CHAIN_OPTIONS } from "@/constants/options";
 import { validatePhoneNumber } from "@/utils/function";
-import { Button, Form, Input, Select, Space, message } from "antd";
+import { Button, Form, Input, Select, Space, Tooltip, message } from "antd";
 import React, { useEffect, useState } from "react";
 import { FaMobileAlt, FaUser } from "react-icons/fa";
 import { MdEmail, MdOutlineWork } from "react-icons/md";
@@ -14,6 +14,7 @@ const { Item } = Form;
 
 export const UserDetailsForm = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(false);
   const [form] = Form.useForm();
   const user = useCurrentUser();
 
@@ -37,22 +38,26 @@ export const UserDetailsForm = () => {
   };
 
   const handleUserUpdate = async () => {
+    setLoading(true);
     try {
       const values = await form.validateFields();
+      // console.log(values);
 
       const { data } = await axios.put("/api/v1/user/details", values);
+
+      message.success("Details updated successfully");
       console.log({ data });
       console.log(values);
     } catch (error) {
       message.error("Update failed, please try again");
       console.log(error);
     }
+    setLoading(false);
   };
   const fetchUserDetails = async () => {
     try {
       const { data } = await axios.get("/api/v1/user/details");
-      console.log(data);
-      form.setFieldsValue(data);
+      form.setFieldsValue(data.details);
     } catch (error) {
       message.error("Network error");
     }
@@ -60,11 +65,11 @@ export const UserDetailsForm = () => {
 
   useEffect(() => {
     fetchUserDetails();
-  });
+  }, []);
 
   return (
     <div>
-      <div className="mt-5 pb-4 border-b flex justify-between">
+      <div className="mt-10 pb-4 border-b flex justify-between">
         <div className="flex gap-4">
           <button
             className={`${
@@ -132,14 +137,19 @@ export const UserDetailsForm = () => {
                     </div>
                   }
                 >
-                  <Input
-                    prefix={<MdEmail color="#888888" />}
-                    placeholder={`${user?.email}`}
-                    variant="filled"
-                    size="large"
-                    readOnly
-                    className="rounded-md"
-                  />
+                  <Tooltip
+                    title="Sorry but you cannot edit your email"
+                    color="green"
+                  >
+                    <Input
+                      prefix={<MdEmail color="#888888" />}
+                      placeholder={`${user?.email}`}
+                      variant="filled"
+                      size="large"
+                      readOnly
+                      className="rounded-md"
+                    />
+                  </Tooltip>
                 </Item>
 
                 <Item
@@ -339,6 +349,8 @@ export const UserDetailsForm = () => {
                 onClick={handleUserUpdate}
                 size="large"
                 shape="round"
+                loading={loading}
+                disabled={loading}
               >
                 Save Changes
               </Button>

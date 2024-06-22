@@ -153,6 +153,15 @@ interface ChartData {
   value: number;
 }
 
+interface IUser {
+  email: string;
+  emailVerified: string;
+  id: string;
+  image: string;
+  name: string;
+  role: string;
+}
+
 // interface IInnovationComments {
 //   createdAt: Date;
 //   dislikes: number;

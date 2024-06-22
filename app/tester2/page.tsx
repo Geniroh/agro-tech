@@ -1,86 +1,137 @@
+// "use client";
+// import React, { useState } from "react";
+// import { PlusOutlined } from "@ant-design/icons";
+// import { Image, Upload } from "antd";
+// import type { GetProp, UploadFile, UploadProps } from "antd";
+
+// type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+
+// const getBase64 = (file: FileType): Promise<string> =>
+//   new Promise((resolve, reject) => {
+//     const reader = new FileReader();
+//     reader.readAsDataURL(file);
+//     reader.onload = () => resolve(reader.result as string);
+//     reader.onerror = (error) => reject(error);
+//   });
+
+// const App: React.FC = () => {
+//   const [previewOpen, setPreviewOpen] = useState(false);
+//   const [previewImage, setPreviewImage] = useState("");
+//   const [fileList, setFileList] = useState<UploadFile[]>([
+//     {
+//       uid: "-1",
+//       name: "image.png",
+//       status: "done",
+//       url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+//     },
+//     {
+//       uid: "-xxx",
+//       percent: 50,
+//       name: "image.png",
+//       status: "uploading",
+//       url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+//     },
+//     {
+//       uid: "-5",
+//       name: "image.png",
+//       status: "error",
+//     },
+//   ]);
+
+//   const handlePreview = async (file: UploadFile) => {
+//     if (!file.url && !file.preview) {
+//       file.preview = await getBase64(file.originFileObj as FileType);
+//     }
+
+//     setPreviewImage(file.url || (file.preview as string));
+//     setPreviewOpen(true);
+//   };
+
+//   const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
+//     setFileList(newFileList);
+
+//   const uploadButton = (
+//     <button style={{ border: 0, background: "none" }} type="button">
+//       <PlusOutlined />
+//       <div style={{ marginTop: 8 }}>Upload</div>
+//     </button>
+//   );
+//   return (
+//     <>
+//       <div className="text-4xl">Hello world</div>
+//       <Upload
+//         action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
+//         listType="picture-circle"
+//         fileList={fileList}
+//         onPreview={handlePreview}
+//         onChange={handleChange}
+//       >
+//         {fileList.length >= 8 ? null : uploadButton}
+//       </Upload>
+//       {previewImage && (
+//         <Image
+//           wrapperStyle={{ display: "none" }}
+//           alt=""
+//           preview={{
+//             visible: previewOpen,
+//             onVisibleChange: (visible) => setPreviewOpen(visible),
+//             afterOpenChange: (visible) => !visible && setPreviewImage(""),
+//           }}
+//           src={previewImage}
+//         />
+//       )}
+//     </>
+//   );
+// };
+
+// export default App;
+
 "use client";
 import React, { useState } from "react";
-import { PlusOutlined } from "@ant-design/icons";
-import { Image, Upload } from "antd";
-import type { GetProp, UploadFile, UploadProps } from "antd";
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
-
-const getBase64 = (file: FileType): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
+import { UploadOutlined } from "@ant-design/icons";
+import type { UploadProps } from "antd";
+import { Button, message, Upload } from "antd";
+import ImgCrop from "antd-img-crop";
+import axios from "axios";
 
 const App: React.FC = () => {
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
-  const [fileList, setFileList] = useState<UploadFile[]>([
-    {
-      uid: "-1",
-      name: "image.png",
-      status: "done",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-xxx",
-      percent: 50,
-      name: "image.png",
-      status: "uploading",
-      url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
-    },
-    {
-      uid: "-5",
-      name: "image.png",
-      status: "error",
-    },
-  ]);
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as FileType);
+  const updateProfilePic = async (url: string) => {
+    try {
+      const { data } = await axios.put("/api/v1/user/pic", { url });
+      message.success("Profile updated successfully");
+    } catch (error) {
+      message.error("Profile update failed");
     }
-
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
   };
 
-  const handleChange: UploadProps["onChange"] = ({ fileList: newFileList }) =>
-    setFileList(newFileList);
+  const props: UploadProps = {
+    name: "file",
+    action: "/api/v1/upload",
+    showUploadList: { showRemoveIcon: false },
+    onChange(info) {
+      if (info.file.status === "uploading") {
+        console.log("Uploading...");
+      }
+      if (info.file.status === "done") {
+        console.log(info.file.response.files[0].url);
+        if (info.file.response && info.file.response) {
+          const imageUrl = info.file.response.files[0].url;
+          updateProfilePic(imageUrl);
+        } else {
+          message.error("Failed to upload file");
+        }
+      } else if (info.file.status === "error") {
+        message.error(`${info.file.name} file upload failed.`);
+      }
+    },
+  };
 
-  const uploadButton = (
-    <button style={{ border: 0, background: "none" }} type="button">
-      <PlusOutlined />
-      <div style={{ marginTop: 8 }}>Upload</div>
-    </button>
-  );
   return (
-    <>
-      <div className="text-4xl">Hello world</div>
-      <Upload
-        action="https://660d2bd96ddfa2943b33731c.mockapi.io/api/upload"
-        listType="picture-circle"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
-      >
-        {fileList.length >= 8 ? null : uploadButton}
+    <ImgCrop rotationSlider>
+      <Upload {...props} maxCount={1}>
+        <Button icon={<UploadOutlined />}>Click to Upload</Button>
       </Upload>
-      {previewImage && (
-        <Image
-          wrapperStyle={{ display: "none" }}
-          alt=""
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-        />
-      )}
-    </>
+    </ImgCrop>
   );
 };
 
