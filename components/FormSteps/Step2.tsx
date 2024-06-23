@@ -1,10 +1,11 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "@/context/FormContext";
 import { Input, Form, Select, Button, message } from "antd";
 import { toast } from "sonner";
 import { StyledFileInput } from "@/components/general/upload-input";
 import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
+import { MdDeleteOutline } from "react-icons/md";
 
 const { Item } = Form;
 const { TextArea } = Input;
@@ -12,8 +13,16 @@ const { TextArea } = Input;
 const Step2: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
+  const [mediaFiles, setMediaFiles] = useState<any[]>(
+    formData.product_media || []
+  );
 
   const [form] = Form.useForm();
+
+  const clearMedia = () => {
+    setFormData({ ...formData, product_media: [] });
+    setMediaFiles([]);
+  };
 
   useEffect(() => {
     form.setFieldsValue(formData);
@@ -27,11 +36,13 @@ const Step2: React.FC = () => {
       type: string | null;
     }[]
   ) => {
+    const fileList = [...fileDataArray, ...mediaFiles];
+    setMediaFiles(fileList);
     if (fileDataArray.some((file) => file.url === null)) {
       message.error("Some files failed to upload.");
     } else {
       message.success("Files uploaded successfully.");
-      setFormData({ ...formData, product_media: fileDataArray });
+      setFormData({ ...formData, product_media: fileList });
     }
   };
 
@@ -154,6 +165,20 @@ const Step2: React.FC = () => {
             onChange={handleFileChange}
           />
         </Item>
+        <div className="flex justify-between">
+          <div className="text-[10px] text-muted-foreground flex gap-x-2 items-center flex-wrap">
+            <span className="text-[12px] text-[#000]">Media:</span>
+            {mediaFiles.map((file, i) => (
+              <span key={i}>{file.name}</span>
+            ))}
+          </div>
+          <div>
+            <MdDeleteOutline
+              className="text-destructive text-[14px] cursor-pointer"
+              onClick={clearMedia}
+            />
+          </div>
+        </div>
       </div>
 
       <div>

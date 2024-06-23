@@ -4,6 +4,8 @@ import { useFormContext } from "@/context/FormContext";
 import { Input, Form, Select, Button, message } from "antd";
 import { countriesData, ICountry } from "@/data/country-region";
 import { MONTH_OPTIONS, VALUE_CHAIN_OPTIONS } from "@/constants/options";
+import { countryCurrencies } from "@/data/country-currency";
+import { generateYearOptions } from "@/utils/function";
 
 const { Item } = Form;
 
@@ -11,7 +13,7 @@ const Step1: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
 
-  const [countryCode, setCountryCode] = useState<string>("NG");
+  const [countryCode, setCountryCode] = useState<string>("NGN");
 
   const [form] = Form.useForm();
 
@@ -56,25 +58,17 @@ const Step1: React.FC = () => {
     }
   };
 
-  const getCountryCode = (countryString: string) => {
-    const code = countriesData
-      .filter((country) => country.countryName == countryString)
-      .map((country) => country.countryShortCode);
-    return code[0];
+  const getCountryCurrency = (countryString: string) => {
+    const currency = countryCurrencies.filter(
+      (country) => country.country == countryString
+    );
+    return currency[0].currency_code || "NGN";
   };
 
   const handleCountrySelect = (value: string) => {
-    const code = getCountryCode(value);
+    const code = getCountryCurrency(value);
     setCountryCode(code);
-  };
-
-  const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = currentYear; year >= 1900; year--) {
-      years.push({ value: year.toString(), label: year.toString() });
-    }
-    return years;
+    setFormData({ ...formData, currency: code });
   };
 
   const generateCountryOptions = (countries: ICountry[]) => {
@@ -187,7 +181,7 @@ const Step1: React.FC = () => {
 
         <Item
           name="innovation_cost"
-          rules={[{ required: true, message: "Please Enter Product Cost" }]}
+          rules={[{ message: "Please Enter Product Cost" }]}
         >
           <Input
             size="large"

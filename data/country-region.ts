@@ -1,3 +1,5 @@
+import { CountryCode } from "libphonenumber-js";
+
 export interface IRegion {
   name?: string;
   shortCode?: string;
@@ -5,7 +7,7 @@ export interface IRegion {
 
 export interface ICountry {
   countryName: string;
-  countryShortCode: string;
+  countryShortCode: CountryCode;
   regions: IRegion[];
 }
 
@@ -712,7 +714,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "Antarctica",
-    countryShortCode: "AQ",
+    countryShortCode: "AT",
     regions: [
       {
         name: "Antarctica",
@@ -2020,7 +2022,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "Bouvet Island",
-    countryShortCode: "BV",
+    countryShortCode: "BI",
     regions: [
       {
         name: "Bouvet Island",
@@ -4952,7 +4954,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "French Southern and Antarctic Lands",
-    countryShortCode: "TF",
+    countryShortCode: "TC",
     regions: [
       {
         name: "Adelie Land",
@@ -5673,7 +5675,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "Heard Island and McDonald Islands",
-    countryShortCode: "HM",
+    countryShortCode: "HT",
     regions: [
       {
         name: "Heard Island and McDonald Islands",
@@ -12153,7 +12155,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "Pitcairn",
-    countryShortCode: "PN",
+    countryShortCode: "PE",
     regions: [
       {
         name: "Pitcairn Islands",
@@ -14812,7 +14814,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "South Georgia and South Sandwich Islands",
-    countryShortCode: "GS",
+    countryShortCode: "GP",
     regions: [
       {
         name: "Bird Island",
@@ -18382,7 +18384,7 @@ export const countriesData: ICountry[] = [
   },
   {
     countryName: "United States Minor Outlying Islands",
-    countryShortCode: "UM",
+    countryShortCode: "UZ",
     regions: [
       {
         name: "Baker Island",
