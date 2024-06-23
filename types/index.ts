@@ -55,6 +55,7 @@ interface IInnovationType {
   dislikes: number;
   currency: string;
   reactions?: IInnovationReaction[];
+  comments: IInnovationComment[];
   productChain: string[];
   productPhase: string;
   productUse: string;

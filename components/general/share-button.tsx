@@ -14,7 +14,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import React from "react";
-import { toast, Toaster } from "sonner";
+import { message } from "antd";
 
 interface ShareButtonProps {
   type?: "external" | "internal";
@@ -35,10 +35,10 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
   const handleCopy = () => {
     navigator.clipboard.writeText(url).then(
       () => {
-        toast.success("Copied to clipboard");
+        message.success("Copied to clipboard");
       },
       (err) => {
-        toast.error("Failed to copy");
+        message.error("Failed to copy");
       }
     );
   };

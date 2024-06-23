@@ -104,10 +104,15 @@ export async function POST(
         },
       });
 
+      const comments = await db.innovationComment.findMany({
+        where: { innovationDiscussionId: isDiscussion.id },
+      });
+
       return NextResponse.json(
         {
           message: "Comment added to existing discussion",
           comment: newComment,
+          comments,
         },
         { status: 200 }
       );
@@ -127,10 +132,15 @@ export async function POST(
         },
       });
 
+      const comments = await db.innovationComment.findMany({
+        where: { innovationDiscussionId: newInnovationDiscussion.id },
+      });
+
       return NextResponse.json(
         {
           message: "New discussion created and comment added",
           discussion: newInnovationDiscussion,
+          comments,
         },
         { status: 201 }
       );
