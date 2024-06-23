@@ -105,7 +105,7 @@ const Step8: React.FC = () => {
                 ]}
               >
                 <TextArea
-                  placeholder="Please enter brief description to support image"
+                  placeholder="Please enter brief description to support"
                   size="large"
                   rows={4}
                 />

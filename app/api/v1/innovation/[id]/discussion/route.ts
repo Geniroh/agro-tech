@@ -106,6 +106,7 @@ export async function POST(
 
       const comments = await db.innovationComment.findMany({
         where: { innovationDiscussionId: isDiscussion.id },
+        include: { replies: true },
       });
 
       return NextResponse.json(
@@ -134,6 +135,7 @@ export async function POST(
 
       const comments = await db.innovationComment.findMany({
         where: { innovationDiscussionId: newInnovationDiscussion.id },
+        include: { replies: true },
       });
 
       return NextResponse.json(

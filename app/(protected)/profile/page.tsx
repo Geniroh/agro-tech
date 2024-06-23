@@ -131,10 +131,7 @@ const ProfilePage = () => {
 
       <div className="mt-10 w-screen">
         <Tabs defaultValue="account" className="w-full">
-          <TabsList
-            className="grid grid-cols-3 w-full"
-            defaultValue="innovations"
-          >
+          <TabsList className="grid grid-cols-3 w-full" defaultValue="about">
             <TabsTrigger value="innovations">My Innovation</TabsTrigger>
             <TabsTrigger value="post">My Post</TabsTrigger>
             <TabsTrigger value="about">About</TabsTrigger>
