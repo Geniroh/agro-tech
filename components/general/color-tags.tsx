@@ -1,46 +1,3 @@
-// import React from "react";
-
-// interface ColorTagProps {
-//   name: string;
-//   type: "yellow" | "purple" | "blue" | "green" | "ash";
-// }
-
-// const tagStyles = {
-//   yellow: {
-//     bgcolor: "#EFF2CE",
-//     textcolor: "#60661A",
-//   },
-//   purple: {
-//     bgcolor: "#FFD9FF",
-//     textcolor: "#661A66",
-//   },
-//   blue: {
-//     bgcolor: "#1A4666",
-//     textcolor: "#D9EFFF",
-//   },
-//   green: {
-//     bgcolor: "#33661A",
-//     textcolor: "#E5FFD9",
-//   },
-//   ash: {
-//     bgcolor: "#F2F2F2",
-//     textcolor: "#242424",
-//   },
-// };
-
-// export const ColorTag: React.FC<ColorTagProps> = ({ name, type }) => {
-//   const styles = tagStyles[type];
-
-//   return (
-//     <span
-//       className="py-1 px-3 rounded-xl text-[9px] font-bold text-nowrap"
-//       style={{ backgroundColor: styles.bgcolor, color: styles.textcolor }}
-//     >
-//       {name}
-//     </span>
-//   );
-// };
-
 import React from "react";
 
 interface ColorTagProps {
@@ -83,11 +40,6 @@ const COLORS = [
   "#FFF455",
 ];
 
-const getRandomColor = () => {
-  const randomIndex = Math.floor(Math.random() * COLORS.length);
-  return COLORS[randomIndex];
-};
-
 const VALUE_CHAIN_OPTIONS = [
   "Input Supply",
   "Production",
@@ -97,17 +49,27 @@ const VALUE_CHAIN_OPTIONS = [
   "Export",
 ];
 
+const getColorForValueChain = (name: string) => {
+  const index = VALUE_CHAIN_OPTIONS.indexOf(name);
+  if (index !== -1) {
+    return COLORS[index % COLORS.length];
+  }
+  return "#FFFFFF"; // default color if name is not found
+};
+
 export const ColorTag: React.FC<ColorTagProps> = ({ name, type }) => {
   let styles;
 
   if (VALUE_CHAIN_OPTIONS.includes(name)) {
-    const randomColor = getRandomColor();
+    const color = getColorForValueChain(name);
     styles = {
-      bgcolor: randomColor,
-      textcolor: "#FFFFFF", // default text color for random colors
-    }; // or any other default style for predefined options
+      bgcolor: color,
+      textcolor: "#FFFFFF", // default text color for predefined options
+    };
+  } else if (type) {
+    styles = tagStyles[type];
   } else {
-    const randomColor = getRandomColor();
+    const randomColor = getColorForValueChain(name);
     styles = {
       bgcolor: randomColor,
       textcolor: "#FFFFFF", // default text color for random colors
@@ -116,7 +78,7 @@ export const ColorTag: React.FC<ColorTagProps> = ({ name, type }) => {
 
   return (
     <span
-      className="py-1 px-3 rounded-xl text-[9px] font-bold text-nowrap"
+      className="px-3 rounded-xl text-[9px] font-bold text-nowrap"
       style={{ backgroundColor: styles.bgcolor, color: styles.textcolor }}
     >
       {name}

@@ -53,6 +53,7 @@ interface IInnovationType {
   likes: number;
   status?: string;
   dislikes: number;
+  currency: string;
   reactions?: IInnovationReaction[];
   productChain: string[];
   productPhase: string;

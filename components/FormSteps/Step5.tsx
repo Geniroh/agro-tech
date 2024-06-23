@@ -7,7 +7,12 @@ import {
   convertObjectToInventorArray,
   reverseArrayToInventorObject,
 } from "@/utils/multi-step";
-import { validateEmail, validatePhoneNumber } from "@/utils/function";
+import {
+  createValidatePhoneNumber,
+  getCountryCode,
+  validateEmail,
+} from "@/utils/function";
+import { CountryCode } from "libphonenumber-js";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -19,6 +24,7 @@ const Step5: React.FC = () => {
   const [form] = Form.useForm();
   const [showInputs, setShowInputs] = useState<boolean>(false);
   const [inputGroups, setInputGroups] = useState<number[]>([]);
+  const [code, setCode] = useState<CountryCode>("NG");
 
   const handleSelectChange = (value: boolean) => {
     setShowInputs(value);
@@ -105,6 +111,8 @@ const Step5: React.FC = () => {
 
     const prev = reverseArrayToInventorObject(formData.inventor || []);
     form.setFieldsValue({ ...formData, ...prev });
+
+    setCode(getCountryCode(formData?.innovation_country));
   }, [formData]);
 
   return (
@@ -193,9 +201,9 @@ const Step5: React.FC = () => {
                       className="w-full"
                       name={`inventor_${index + 1}_contact`}
                       rules={[
-                        { required: true, message: "Required" },
+                        // { required: true, message: "Required" },
                         {
-                          validator: validatePhoneNumber,
+                          validator: createValidatePhoneNumber(code),
                           message: "Please enter a valid phone number",
                         },
                       ]}

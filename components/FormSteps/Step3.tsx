@@ -19,6 +19,7 @@ const Step3: React.FC = () => {
   const [form] = Form.useForm();
   const [showInputs, setShowInputs] = useState<boolean>(false);
   const [inputGroups, setInputGroups] = useState<number[]>([]);
+  const [mediaFiles, setMediaFiles] = useState<any[]>([]);
 
   const handleSelectChange = (value: boolean) => {
     setShowInputs(value);
@@ -100,6 +101,7 @@ const Step3: React.FC = () => {
       type: string | null;
     }[]
   ) => {
+    setMediaFiles((prev) => [...prev, ...fileDataArray]);
     if (fileDataArray.some((file) => file.url === null)) {
       message.error("Some files failed to upload.");
     } else {
@@ -129,7 +131,7 @@ const Step3: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-5">
             Do you have Usage Example to Show?
           </h3>
           <Item
@@ -154,7 +156,8 @@ const Step3: React.FC = () => {
                 <div key={index}>
                   <div>
                     <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                      Instance Media Upload
+                      {index + 1}
+                      {")"} Instance Media Upload
                     </h3>
 
                     <Item
@@ -171,15 +174,19 @@ const Step3: React.FC = () => {
                             ? formData.instances[index].instance_media
                             : undefined
                         }
-                        placeholder="Click to add images/videos of product"
+                        placeholder="Click to add an Instance Media"
                         onChange={handleFileChange}
                       />
                     </Item>
+                    <div className="text-[10px] text-muted-foreground flex gap-x-2 items-center flex-wrap mb-3">
+                      <span>Media:</span> <span>{mediaFiles[index]?.name}</span>
+                    </div>
                   </div>
 
                   <div>
                     <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                      Add very Brief Description
+                      {index + 1}
+                      {")"} Add very Brief Description
                     </h3>
 
                     <Item
@@ -214,7 +221,7 @@ const Step3: React.FC = () => {
                     onClick={addInputGroup}
                     icon={<PlusOutlined />}
                   >
-                    Add Instance
+                    Add Another Instance
                   </Button>
                 </Form.Item>
               </div>

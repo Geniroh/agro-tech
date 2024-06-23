@@ -115,7 +115,8 @@ model Innovation {
   productName              String
   yearInvented             String
   country                  String
-  cost                     Float
+  currency                 String                 @default("NG")
+  cost                     Float?
   userId                   String
   month                    String
   productChain             String[]
