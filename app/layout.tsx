@@ -5,6 +5,7 @@ import { ConfigProvider } from "antd";
 
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
+import { AppProvider } from "@/context/AppContext";
 
 export const metadata: Metadata = {
   title: "Stavmia",
@@ -31,7 +32,7 @@ export default function RootLayout({
                 },
               }}
             >
-              {children}
+              <AppProvider>{children}</AppProvider>
             </ConfigProvider>
           </AntdRegistry>
           {/* <Toaster position="top-right" richColors /> */}

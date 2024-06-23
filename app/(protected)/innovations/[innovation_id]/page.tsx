@@ -23,16 +23,18 @@ import { IoPlay } from "react-icons/io5";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import NoContent from "@/components/loaders/no-content";
 import { ReactionButtons } from "@/components/general/reaction-buttons";
+import { useAppContext } from "@/context/AppContext";
 
 const InnovationPage = () => {
   const router = useRouter();
+  const { track } = useAppContext();
   const params = useParams<{ innovation_id: string }>();
   const { innovation_id } = params;
 
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<IInnovationType>();
-  const [comments, setComments] = useState<IInnovationComment[]>();
+  // const [comments, setComments] = useState<IInnovationComment[]>();
 
   const fetchData = async (id: string) => {
     setLoading(true);
@@ -41,14 +43,14 @@ const InnovationPage = () => {
       const { data } = await axios.get<IInnovationType>(
         `/api/v1/innovation/${id}`
       );
-      const { data: comments } = await axios.get<{
-        message: string;
-        comments: IInnovationComment[];
-      }>(`/api/v1/innovation/${innovation_id}/discussion`);
+      // const { data: comments } = await axios.get<{
+      //   message: string;
+      //   comments: IInnovationComment[];
+      // }>(`/api/v1/innovation/${innovation_id}/discussion`);
 
       setData(data);
-      console.log(data);
-      setComments(comments.comments);
+      // console.log(data);
+      // setComments(comments.comments);
     } catch (error) {
       setError("Network Error, please try again!");
     }
@@ -57,7 +59,7 @@ const InnovationPage = () => {
 
   useEffect(() => {
     fetchData(innovation_id);
-  }, []);
+  }, [track]);
 
   if (loading) {
     return (
@@ -175,6 +177,7 @@ const InnovationPage = () => {
               dislikes={data?.dislikes}
               replies={data?.discussion?.length || 0}
               type="innovation"
+              id={data?.id}
             />
 
             <div className="flex gap-x-2 md:gap-x-4">
@@ -207,7 +210,7 @@ const InnovationPage = () => {
           </div>
 
           <div>
-            <div className="grid grid-cols-4 gap-6 mt-10">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
               {data?.productMedia ? (
                 data.productMedia.map((media, i) => (
                   <>
@@ -233,7 +236,7 @@ const InnovationPage = () => {
             </div>
 
             <div className="mt-10">
-              <h2 className="text-2xl text-muted-foreground">
+              <h2 className="text-2xl text-muted-foreground mb-5">
                 Additional Info
               </h2>
               <Accordion type="single" collapsible className="w-full">
@@ -411,20 +414,33 @@ const InnovationPage = () => {
               </Accordion>
             </div>
 
-            {/* <div className="w-full border shadow-sm rounded-md mt-5 h-[35px] flex items-center justify-between px-2">
-              <InnovationReactions innovationId={innovation_id} key={2} />
+            <div className="w-full border shadow-sm rounded-md mt-5 h-[35px] flex items-center justify-between px-2">
+              <ReactionButtons
+                likes={data?.likes}
+                dislikes={data?.dislikes}
+                replies={data?.discussion?.length || 0}
+                type="innovation"
+                id={data?.id}
+              />
 
               <div className="flex gap-x-4">
                 <ShareButton link={`innovation/${innovation_id}`} />
               </div>
-            </div> */}
+            </div>
 
-            {/* {comments && (
-              <InnovationDiscussionForum
-                innovationId={innovation_id}
-                comments={comments}
-              />
-            )} */}
+            <h2 className="text-lg text-muted-foreground mt-10">
+              Join the community
+            </h2>
+
+            <InnovationDiscussionForum
+              innovationId={data?.id}
+              comments={data?.comments}
+            />
+
+            {/* <InnovationDiscussionForum
+              innovationId={innovation_id}
+              // comments={comments}
+            /> */}
           </div>
         </div>
       )}

@@ -1,15 +1,15 @@
 "use client";
+import { message } from "antd";
 import axios from "axios";
 import { MessageSquareText, ThumbsDown, ThumbsUp } from "lucide-react";
 import React, { useEffect, useState } from "react";
-import { ClipLoader } from "react-spinners";
-import { toast } from "sonner";
 
 interface ReactionButtonProps {
   likes: number;
   dislikes: number;
   replies: number;
   type: "innovation" | "discussion" | "comment";
+  id: string;
 }
 
 export const ReactionButtons = ({
@@ -17,7 +17,10 @@ export const ReactionButtons = ({
   dislikes,
   replies,
   type,
+  id,
 }: ReactionButtonProps) => {
+  const [myLikes, setMyLikes] = useState<number>(likes);
+  const [myDisLikes, setMyDisLikes] = useState<number>(dislikes);
   const [isError, setIsError] = useState(false);
   const [loading, setLoading] = useState(false);
   const [clickedIcon, setClickedIcon] = useState<"like" | "dislike" | null>(
@@ -28,7 +31,31 @@ export const ReactionButtons = ({
     try {
       setClickedIcon(reaction);
       setTimeout(() => setClickedIcon(null), 500);
-    } catch (error) {}
+      if (type === "innovation") {
+        handleInnovationReaction(reaction);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleInnovationReaction = async (reaction: "like" | "dislike") => {
+    try {
+      const { data } = await axios.post(`/api/v1/innovation/${id}/reactions`, {
+        reaction,
+        innovation_id: id,
+      });
+      setMyDisLikes(data.dislikes);
+      setMyLikes(data.likes);
+
+      if (reaction == "like") {
+        message.success("liked");
+      } else {
+        message.error("disliked");
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
@@ -43,7 +70,7 @@ export const ReactionButtons = ({
           >
             <ThumbsUp size={13} />
           </span>
-          <span>{likes}</span>
+          <span>{myLikes}</span>
         </button>
 
         <button className="flex items-center text-xs">
@@ -55,7 +82,7 @@ export const ReactionButtons = ({
           >
             <ThumbsDown size={13} />
           </span>
-          <span>{dislikes}</span>
+          <span>{myDisLikes}</span>
         </button>
 
         <button className="flex items-center text-xs">
