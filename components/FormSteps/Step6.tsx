@@ -8,6 +8,7 @@ import {
   reverseArrayToSupplierObject,
 } from "@/utils/multi-step";
 import {
+  createValidatePhoneNumber,
   getCountryCode,
   validateEmail,
   validatePhoneNumber,
@@ -202,10 +203,10 @@ const Step6: React.FC = () => {
                       name={`supplier_${index + 1}_contact`}
                       rules={[
                         { required: true, message: "Required" },
-                        // {
-                        //   validator: validatePhoneNumber,
-                        //   message: "Please enter a valid phone number",
-                        // },
+                        {
+                          validator: createValidatePhoneNumber(code),
+                          message: "Please enter a valid phone number",
+                        },
                       ]}
                     >
                       <Input
