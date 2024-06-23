@@ -88,54 +88,136 @@
 
 "use client";
 import React, { useState } from "react";
-import { UploadOutlined } from "@ant-design/icons";
-import type { UploadProps } from "antd";
-import { Button, message, Upload } from "antd";
-import ImgCrop from "antd-img-crop";
-import axios from "axios";
+import { TreeSelect } from "antd";
+import type { TreeSelectProps } from "antd";
 
+const treeData = [
+  {
+    value: "parent 1",
+    title: "parent 1",
+    children: [
+      {
+        value: "parent 1-0",
+        title: "parent 1-0",
+        children: [
+          {
+            value: "leaf1",
+            title: "leaf1",
+          },
+          {
+            value: "leaf2",
+            title: "leaf2",
+          },
+          {
+            value: "leaf3",
+            title: "leaf3",
+          },
+          {
+            value: "leaf4",
+            title: "leaf4",
+          },
+          {
+            value: "leaf5",
+            title: "leaf5",
+          },
+          {
+            value: "leaf6",
+            title: "leaf6",
+          },
+        ],
+      },
+      {
+        value: "parent 1-1",
+        title: "parent 1-1",
+        children: [
+          {
+            value: "leaf11",
+            title: <b style={{ color: "#08c" }}>leaf11</b>,
+          },
+        ],
+      },
+    ],
+  },
+];
 const App: React.FC = () => {
-  const updateProfilePic = async (url: string) => {
-    try {
-      const { data } = await axios.put("/api/v1/user/pic", { url });
-      message.success("Profile updated successfully");
-    } catch (error) {
-      message.error("Profile update failed");
-    }
+  const [value, setValue] = useState<string>();
+
+  const onChange = (newValue: string) => {
+    setValue(newValue);
   };
 
-  const props: UploadProps = {
-    name: "file",
-    action: "/api/v1/upload",
-    showUploadList: { showRemoveIcon: false },
-    onChange(info) {
-      if (info.file.status === "uploading") {
-        console.log("Uploading...");
-      }
-      if (info.file.status === "done") {
-        console.log(info.file.response.files[0].url);
-        if (info.file.response && info.file.response) {
-          const imageUrl = info.file.response.files[0].url;
-          updateProfilePic(imageUrl);
-        } else {
-          message.error("Failed to upload file");
-        }
-      } else if (info.file.status === "error") {
-        message.error(`${info.file.name} file upload failed.`);
-      }
-    },
+  const onPopupScroll: TreeSelectProps["onPopupScroll"] = (e) => {
+    console.log("onPopupScroll", e);
   };
 
   return (
-    <ImgCrop rotationSlider>
-      <Upload {...props} maxCount={1}>
-        <Button icon={<UploadOutlined />}>Click to Upload</Button>
-      </Upload>
-    </ImgCrop>
+    <TreeSelect
+      showSearch
+      style={{ width: "100%" }}
+      value={value}
+      dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+      placeholder="2 replies"
+      allowClear
+      treeDefaultExpandAll
+      onChange={onChange}
+      treeData={treeData}
+      onPopupScroll={onPopupScroll}
+    />
   );
 };
 
 export default App;
+
+// "use client";
+// import React, { useState } from "react";
+// import { UploadOutlined } from "@ant-design/icons";
+// import type { UploadProps } from "antd";
+// import { Button, message, Upload } from "antd";
+// import ImgCrop from "antd-img-crop";
+// import axios from "axios";
+
+// const App: React.FC = () => {
+//   const updateProfilePic = async (url: string) => {
+//     try {
+//       const { data } = await axios.put("/api/v1/user/pic", { url });
+//       message.success("Profile updated successfully");
+//     } catch (error) {
+//       message.error("Profile update failed");
+//     }
+//   };
+
+//   const props: UploadProps = {
+//     name: "file",
+//     action: "/api/v1/upload",
+//     showUploadList: { showRemoveIcon: false },
+//     onChange(info) {
+//       if (info.file.status === "uploading") {
+//         console.log("Uploading...");
+//       }
+//       if (info.file.status === "done") {
+//         console.log(info.file.response.files[0].url);
+//         if (info.file.response && info.file.response) {
+//           const imageUrl = info.file.response.files[0].url;
+//           updateProfilePic(imageUrl);
+//         } else {
+//           message.error("Failed to upload file");
+//         }
+//       } else if (info.file.status === "error") {
+//         message.error(`${info.file.name} file upload failed.`);
+//       }
+//     },
+//   };
+
+//   return (
+//     <ImgCrop rotationSlider>
+//       <Upload {...props} maxCount={1}>
+//         <Button icon={<UploadOutlined />}>Click to Upload</Button>
+//       </Upload>
+//     </ImgCrop>
+//   );
+// };
+
+// export default App;
 
 // import React, { useState } from "react";
 // import { Upload } from "antd";

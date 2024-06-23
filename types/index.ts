@@ -75,7 +75,7 @@ interface IInnovationType {
   productGenderDescription?: string | null;
   createdAt: string;
   updatedAt?: string;
-  discussion?: IInnovationDiscussion[];
+  discussions: IInnovationDiscussion[];
 }
 
 interface IInnovationComment {
@@ -116,7 +116,7 @@ interface IInnovationDiscussion {
   likes: number;
   topComment: any;
   updatedAt: string;
-  comments: any[];
+  comments: IInnovationComment[];
   Innovation?: IInnovationType;
 }
 

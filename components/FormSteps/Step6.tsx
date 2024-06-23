@@ -202,7 +202,7 @@ const Step6: React.FC = () => {
                       className="w-full"
                       name={`supplier_${index + 1}_contact`}
                       rules={[
-                        { required: true, message: "Required" },
+                        // { required: true, message: "Required" },
                         {
                           validator: createValidatePhoneNumber(code),
                           message: "Please enter a valid phone number",

@@ -34,7 +34,8 @@ const InnovationPage = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<IInnovationType>();
-  // const [comments, setComments] = useState<IInnovationComment[]>();
+  const [comments, setComments] = useState<IInnovationComment[]>();
+  const [discussion, setDiscussion] = useState<IInnovationDiscussion>();
 
   const fetchData = async (id: string) => {
     setLoading(true);
@@ -43,14 +44,18 @@ const InnovationPage = () => {
       const { data } = await axios.get<IInnovationType>(
         `/api/v1/innovation/${id}`
       );
-      // const { data: comments } = await axios.get<{
-      //   message: string;
-      //   comments: IInnovationComment[];
-      // }>(`/api/v1/innovation/${innovation_id}/discussion`);
+      const { data: discussion } = await axios.get<{
+        message: string;
+        comments: IInnovationComment[];
+        discussion: IInnovationDiscussion;
+      }>(`/api/v1/innovation/${innovation_id}/discussion`);
+
+      console.log({ data, discussion });
 
       setData(data);
-      // console.log(data);
-      // setComments(comments.comments);
+      console.log(data);
+      setComments(discussion.comments);
+      setDiscussion(discussion.discussion);
     } catch (error) {
       setError("Network Error, please try again!");
     }
@@ -60,6 +65,8 @@ const InnovationPage = () => {
   useEffect(() => {
     fetchData(innovation_id);
   }, [track]);
+
+  // console.log(data?.comments);
 
   if (loading) {
     return (
@@ -175,7 +182,7 @@ const InnovationPage = () => {
             <ReactionButtons
               likes={data?.likes}
               dislikes={data?.dislikes}
-              replies={data?.discussion?.length || 0}
+              replies={comments?.length || 0}
               type="innovation"
               id={data?.id}
             />
@@ -418,7 +425,7 @@ const InnovationPage = () => {
               <ReactionButtons
                 likes={data?.likes}
                 dislikes={data?.dislikes}
-                replies={data?.discussion?.length || 0}
+                replies={comments?.length || 0}
                 type="innovation"
                 id={data?.id}
               />
@@ -434,7 +441,7 @@ const InnovationPage = () => {
 
             <InnovationDiscussionForum
               innovationId={data?.id}
-              comments={data?.comments}
+              comments={comments || []}
             />
 
             {/* <InnovationDiscussionForum
