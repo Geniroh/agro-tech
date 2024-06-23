@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/lib/db";
 import Joi from "joi";
+import { auth } from "@/auth";
 
 const querySchema = Joi.object({
   name: Joi.string().optional(),
@@ -20,7 +21,7 @@ const innovationSchema = Joi.object({
   innovation_year: Joi.string().required(),
   innovation_country: Joi.string().required(),
   innovation_month: Joi.string().required(),
-  innovation_cost: Joi.number().required(),
+  innovation_cost: Joi.number().optional().allow(null),
   innovation_value_chain: Joi.array().items(Joi.string()).required(),
   innovation_phase: Joi.string().required(),
   product_usage: Joi.string().required(),
@@ -37,6 +38,7 @@ const innovationSchema = Joi.object({
   inventor: Joi.array().items(Joi.any()).optional(),
   supplier: Joi.array().items(Joi.any()).optional(),
   hseguidelines: Joi.array().items(Joi.any()).optional(),
+  currency: Joi.string().required(),
   isGenderFriendly: Joi.boolean().optional(),
   gender_description: Joi.string().optional(),
 });
@@ -44,16 +46,25 @@ const innovationSchema = Joi.object({
 export async function POST(request: Request) {
   try {
     const body = await request.json();
+    const session = await auth();
 
     // Validate the incoming payload
     const { error, value } = innovationSchema.validate(body, {
       allowUnknown: true,
     });
+
     if (error) {
-      throw new Error(
-        `Validation error: ${error.details.map((x) => x.message).join(", ")}`
+      return NextResponse.json(
+        { error: error.details[0].message },
+        { status: 400 }
       );
     }
+
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const userId = session.user.id;
 
     const newInnovation = await db.innovation.create({
       data: {
@@ -61,6 +72,8 @@ export async function POST(request: Request) {
         yearInvented: value.innovation_year,
         country: value.innovation_country,
         cost: Number(value.innovation_cost),
+        currency: value.currency,
+        userId,
         month: value.innovation_month,
         productChain: value.innovation_value_chain,
         productPhase: value.innovation_phase,

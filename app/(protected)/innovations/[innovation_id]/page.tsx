@@ -132,7 +132,11 @@ const InnovationPage = () => {
               <div className="mx-4">|</div>
               <div>
                 <span className="text-muted-foreground mr-2">Cost:</span>
-                <span>{data?.cost}</span>
+                <span>
+                  {data?.cost
+                    ? data.currency + " " + data.cost
+                    : "Not applicable"}
+                </span>
               </div>
             </div>
             <div className="flex flex-wrap items-center gap-x-2 justify-center max-w-[900px] mt-6 md:mt-3 text-sm tracking-wide mx-auto gap-y-3">
@@ -196,7 +200,7 @@ const InnovationPage = () => {
             ) : (
               <RenderMedia
                 media={data?.productMedia[0]}
-                className="w-full max-w-[1000px] mx-auto h-[450px] object-cover"
+                className="w-full  h-[450px] object-cover"
                 key={data?.productMedia[0].name}
               />
             )}
@@ -238,10 +242,16 @@ const InnovationPage = () => {
                     How to Use
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productUse ? (
-                      <ul>
-                        {data?.productUse.split(",").map((use, i) => (
-                          <li key={i}>{use}</li>
+                    {data?.productInstruction ? (
+                      <ul className="flex flex-col gap-4">
+                        {data?.productInstruction.map((step, i) => (
+                          <li key={i}>
+                            <span className="font-semibold">
+                              {" "}
+                              Step {i + 1}:{"  "}
+                            </span>
+                            {step.instruction_step}
+                          </li>
                         ))}
                       </ul>
                     ) : (
@@ -257,17 +267,17 @@ const InnovationPage = () => {
                     Contact Supplier
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6 space-y-4">
-                    {data?.productSupplier ? (
+                    {data?.isSupplier ? (
                       <>
                         {data.productSupplier.map((supplier, i) => (
                           <div
                             key={i}
-                            className="text-[12px] leading-[22px] mb-3"
+                            className="text-[14px] leading-[22px] mb-3"
                           >
-                            <h2 className="text-[#888888] text-[14px] mb-2">
+                            <h2 className="text-[#888888] text-[16px] mb-2">
                               Contact {i + 1}
                             </h2>
-                            <ul>
+                            <ul className="flex flex-col gap-2">
                               <li>
                                 <span className="text-[#888888]">Name</span>{" "}
                                 {supplier.supplier_name}
@@ -285,7 +295,7 @@ const InnovationPage = () => {
                         ))}
                       </>
                     ) : (
-                      <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
+                      <div className="text-center text-muted-foreground flex justify-center items-center">
                         --- No data ----
                       </div>
                     )}
@@ -297,17 +307,17 @@ const InnovationPage = () => {
                     Contact Inventor
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productInventor ? (
+                    {data?.isInventor ? (
                       <>
                         {data.productInventor.map((inventor, i) => (
                           <div
                             key={i}
-                            className="text-[12px] leading-[22px] mb-3"
+                            className="text-[14px] leading-[22px] mb-3"
                           >
-                            <h2 className="text-[#888888] text-[14px] mb-2">
+                            <h2 className="text-[#888888] text-[16px] mb-2">
                               Contact {i + 1}
                             </h2>
-                            <ul>
+                            <ul className="flex flex-col gap-2">
                               <li>
                                 <span className="text-[#888888]">Name</span>{" "}
                                 {inventor.inventor_name}
@@ -337,19 +347,19 @@ const InnovationPage = () => {
                     Usage Examples
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productExample ? (
-                      <ul>
+                    {data?.isExample ? (
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
                         {data?.productExample?.map((example, i) => (
-                          <li key={i}>
+                          <div key={i} className="text-center">
                             <RenderMedia
                               media={example.instance_media[0]}
                               key={i}
-                              className="w-[40px] h-[40px]"
+                              className="w-full max-w-[250px] mx-auto h-[220px] md:h-[250px] lg:h-[250px] object-cover"
                             />
                             {example.instance_description}
-                          </li>
+                          </div>
                         ))}
-                      </ul>
+                      </div>
                     ) : (
                       <div className="text-center text-muted-foreground">
                         --- No data ----
@@ -363,7 +373,7 @@ const InnovationPage = () => {
                     HSE Guideline
                   </AccordionTrigger>
                   <AccordionContent className="mt-5 px-6">
-                    {data?.productGuidelines ? (
+                    {data?.isHSEGuidelines ? (
                       <ul>
                         {data?.productGuidelines?.map((guideline, i) => (
                           <li key={i}>{guideline.name}</li>

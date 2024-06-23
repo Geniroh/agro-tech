@@ -4,7 +4,7 @@ const page = () => {
   return (
     <div
       style={{
-        background: "#242424",
+        background: "#fff",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -42,7 +42,7 @@ const page = () => {
               alignItems: "center",
             }}
           >
-            <p style={{ color: "#fff", fontSize: "18px" }}>Loading</p>
+            <p style={{ color: " #329632", fontSize: "18px" }}>Loading</p>
             <p
               style={{
                 border: "8px solid transparent",

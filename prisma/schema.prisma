@@ -12,6 +12,26 @@ enum UserRole {
   USER
 }
 
+// model User {
+//   id                   String                 @id @default(auto()) @map("_id") @db.ObjectId
+//   name                 String?
+//   email                String?                @unique
+//   emailVerified        DateTime?              @map("email_verified")
+//   image                String?
+//   password             String?
+//   role                 UserRole               @default(USER)
+//   accounts             Account[]
+//   Reply                Reply[]
+//   Discussion           Discussion[]
+//   reactions            CommentReaction[]
+//   replies              CommentReply[]
+//   CommentReplyReaction CommentReplyReaction[]
+//   innovationReaction   InnovationReaction[]
+//   discussionReaction   Reaction[]
+
+//   @@map("users")
+// }
+
 model User {
   id                   String                 @id @default(auto()) @map("_id") @db.ObjectId
   name                 String?
@@ -28,8 +48,28 @@ model User {
   CommentReplyReaction CommentReplyReaction[]
   innovationReaction   InnovationReaction[]
   discussionReaction   Reaction[]
+  userDetails          UserDetails?
 
   @@map("users")
+}
+
+model UserDetails {
+  id           String  @id @default(auto()) @map("_id") @db.ObjectId
+  username     String  @unique
+  phone        String
+  occupation   String
+  userId       String  @db.ObjectId
+  country      String
+  state        String?
+  lga          String?
+  address      String?
+  company_name String?
+  position     String?
+  association  String?
+  user         User    @relation(fields: [userId], references: [id])
+
+  @@unique([userId])
+  @@map("userdetails")
 }
 
 model Account {
@@ -75,7 +115,9 @@ model Innovation {
   productName              String
   yearInvented             String
   country                  String
-  cost                     Float
+  currency                 String                 @default("NG")
+  cost                     Float?
+  userId                   String
   month                    String
   productChain             String[]
   productPhase             String

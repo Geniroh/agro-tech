@@ -118,38 +118,40 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
   };
 
   return (
-    <div
-      className={`relative ${className} bg-[#fafafa] w-full min-h-[90px] flex items-center justify-center`}
-    >
-      <input
-        id={id}
-        name={name}
-        type="file"
-        ref={fileInputRef}
-        onChange={handleFileChange}
-        className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-        multiple
-      />
-      <div className="flex justify-center items-center h-full">
-        {isLoading ? (
-          <span className="">
-            <BarLoader color="#53a350" />
-          </span>
-        ) : (
-          <span className="flex gap-x-2 items-center justify-center text-muted-foreground text-[14px] leading-[24px]">
-            {defaultValue || fileNames.length > 1 ? (
-              <span className="max-w-[150px] mx-auto text-center">
-                {Array.isArray(defaultValue)
-                  ? defaultValue.flat().map((value) => `${value.name}, `)
-                  : defaultValue || fileNames.join(", ")}
-              </span>
-            ) : (
-              <span>
-                {placeholder || "Upload files"} <CiImageOn />
-              </span>
-            )}
-          </span>
-        )}
+    <div>
+      <div
+        className={`relative ${className} bg-[#fafafa] w-full min-h-[90px] flex items-center justify-center`}
+      >
+        <input
+          id={id}
+          name={name}
+          type="file"
+          ref={fileInputRef}
+          onChange={handleFileChange}
+          className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          multiple
+        />
+        <div className="flex justify-center items-center h-full">
+          {isLoading ? (
+            <span className="">
+              <BarLoader color="#53a350" />
+            </span>
+          ) : (
+            <span className="flex gap-x-2 items-center justify-center text-muted-foreground text-[14px] leading-[24px]">
+              {defaultValue || fileNames.length > 1 ? (
+                <span className="max-w-[150px] mx-auto text-center">
+                  {Array.isArray(defaultValue)
+                    ? defaultValue.flat().map((value) => `${value.name}, `)
+                    : defaultValue || fileNames.join(", ")}
+                </span>
+              ) : (
+                <span className="flex gap-x-2 items-center">
+                  {placeholder || "Upload files"} <CiImageOn />
+                </span>
+              )}
+            </span>
+          )}
+        </div>
       </div>
     </div>
   );

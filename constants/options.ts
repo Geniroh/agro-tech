@@ -30,3 +30,15 @@ export const MONTH_OPTIONS = [
   { value: "November", label: "November" },
   { value: "December", label: "December" },
 ];
+
+export const OCCUPATION_OPTIONS = [
+  { value: "Farmer", label: "Farmer" },
+  { value: "Processor", label: "Processor" },
+  { value: "Consultant", label: "Consultant" },
+  { value: "Input Supplier", label: "Input Supplier" },
+  { value: "Researcher", label: "Researcher" },
+  { value: "Marketer", label: "Marketer" },
+  { value: "Transporter", label: "Transporter" },
+  { value: "Entrepreneur", label: "Entrepreneur" },
+  { value: "Others", label: "Others" },
+];

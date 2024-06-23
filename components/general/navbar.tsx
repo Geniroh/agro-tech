@@ -169,7 +169,7 @@ export const Navbar = () => {
             </Link>
 
             <Link
-              key={12133}
+              key={12}
               href={"/upload"}
               className={`${
                 pathname === "/upload"

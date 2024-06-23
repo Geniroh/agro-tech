@@ -53,6 +53,7 @@ interface IInnovationType {
   likes: number;
   status?: string;
   dislikes: number;
+  currency: string;
   reactions?: IInnovationReaction[];
   productChain: string[];
   productPhase: string;
@@ -60,10 +61,14 @@ interface IInnovationType {
   productDescription: string;
   productMedia: Media[];
   isExample: boolean;
+  isHSEGuidelines: boolean;
+  isInstruction: boolean;
+  isInventor: boolean;
+  isSupplier: boolean;
   productExample?: ProductExample[];
   productInstruction?: ProductInstruction[];
-  productInventor?: ProductInventor[];
-  productSupplier?: ProductSupplier[];
+  productInventor: ProductInventor[];
+  productSupplier: ProductSupplier[];
   productGuidelines?: ProductGuidelines[];
   isGenderFriendly?: boolean | null;
   productGenderDescription?: string | null;
@@ -147,6 +152,15 @@ interface ICombinedDiscussion {
 interface ChartData {
   name: string;
   value: number;
+}
+
+interface IUser {
+  email: string;
+  emailVerified: string;
+  id: string;
+  image: string;
+  name: string;
+  role: string;
 }
 
 // interface IInnovationComments {

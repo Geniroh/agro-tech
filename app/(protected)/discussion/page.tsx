@@ -31,9 +31,9 @@ import { toast, Toaster } from "sonner";
 import axios from "axios";
 import { message } from "antd";
 import { ClipLoader } from "react-spinners";
-import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-card";
-import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
-import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
+// import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-card";
+// import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
+// import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
 
 const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
@@ -60,11 +60,8 @@ const DiscussionPage = () => {
       } else {
         const { data } = await axios.post("api/v1/discussion", payload);
         message.success("Discussion started successfully");
-        console.log(data);
       }
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
     setBtnLoading(false);
   };
 
@@ -84,7 +81,6 @@ const DiscussionPage = () => {
       console.log(data);
     } catch (error) {
       toast.error("Network error!");
-      console.log(error);
     }
     setLoading(false);
   };

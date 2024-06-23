@@ -1,15 +1,19 @@
 "use client";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useFormContext } from "@/context/FormContext";
 import { Input, Form, Select, Button, message } from "antd";
 import { countriesData, ICountry } from "@/data/country-region";
 import { MONTH_OPTIONS, VALUE_CHAIN_OPTIONS } from "@/constants/options";
+import { countryCurrencies } from "@/data/country-currency";
+import { generateYearOptions } from "@/utils/function";
 
 const { Item } = Form;
 
 const Step1: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
+
+  const [countryCode, setCountryCode] = useState<string>("NGN");
 
   const [form] = Form.useForm();
 
@@ -54,13 +58,17 @@ const Step1: React.FC = () => {
     }
   };
 
-  const generateYearOptions = () => {
-    const currentYear = new Date().getFullYear();
-    const years = [];
-    for (let year = currentYear; year >= 1900; year--) {
-      years.push({ value: year.toString(), label: year.toString() });
-    }
-    return years;
+  const getCountryCurrency = (countryString: string) => {
+    const currency = countryCurrencies.filter(
+      (country) => country.country == countryString
+    );
+    return currency[0].currency_code || "NGN";
+  };
+
+  const handleCountrySelect = (value: string) => {
+    const code = getCountryCurrency(value);
+    setCountryCode(code);
+    setFormData({ ...formData, currency: code });
   };
 
   const generateCountryOptions = (countries: ICountry[]) => {
@@ -155,6 +163,7 @@ const Step1: React.FC = () => {
             className="w-full"
             size="large"
             variant="filled"
+            onChange={handleCountrySelect}
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
                 .toLowerCase()
@@ -167,12 +176,12 @@ const Step1: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Cost (Naira)
+          Cost ({countryCode})
         </h3>
 
         <Item
           name="innovation_cost"
-          rules={[{ required: true, message: "Please Enter Product Cost" }]}
+          rules={[{ message: "Please Enter Product Cost" }]}
         >
           <Input
             size="large"

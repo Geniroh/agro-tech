@@ -128,3 +128,7 @@ html,body,:root {
   .btn-clear-filters:hover {
     background-color: #e0e0e0;
   }
+
+  .ant-upload-list-item-name, .ant-upload-icon {
+    display: none;
+  }

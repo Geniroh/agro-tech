@@ -7,7 +7,13 @@ import {
   convertObjectToSupplierArray,
   reverseArrayToSupplierObject,
 } from "@/utils/multi-step";
-import { validateEmail, validatePhoneNumber } from "@/utils/function";
+import {
+  createValidatePhoneNumber,
+  getCountryCode,
+  validateEmail,
+  validatePhoneNumber,
+} from "@/utils/function";
+import { CountryCode } from "libphonenumber-js";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -19,6 +25,7 @@ const Step6: React.FC = () => {
   const [form] = Form.useForm();
   const [showInputs, setShowInputs] = useState<boolean>(false);
   const [inputGroups, setInputGroups] = useState<number[]>([]);
+  const [code, setCode] = useState<CountryCode>("NG");
 
   const handleSelectChange = (value: boolean) => {
     setShowInputs(value);
@@ -105,6 +112,8 @@ const Step6: React.FC = () => {
 
     const prev = reverseArrayToSupplierObject(formData.supplier || []);
     form.setFieldsValue({ ...formData, ...prev });
+
+    setCode(getCountryCode(formData?.innovation_country));
   }, [formData]);
 
   return (
@@ -194,10 +203,10 @@ const Step6: React.FC = () => {
                       name={`supplier_${index + 1}_contact`}
                       rules={[
                         { required: true, message: "Required" },
-                        // {
-                        //   validator: validatePhoneNumber,
-                        //   message: "Please enter a valid phone number",
-                        // },
+                        {
+                          validator: createValidatePhoneNumber(code),
+                          message: "Please enter a valid phone number",
+                        },
                       ]}
                     >
                       <Input

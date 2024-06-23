@@ -18,6 +18,7 @@ const Step4: React.FC = () => {
   const [selectValue, setSelectValue] = useState<boolean | null>(
     formData.isInstruction ?? null
   );
+
   const [stepInstructions, setStepInstructions] = useState<IInstructionStep[]>(
     formData.instructions || []
   );
