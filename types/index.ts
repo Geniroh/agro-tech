@@ -79,7 +79,7 @@ interface IInnovationType {
 }
 
 interface IInnovationComment {
-  createdAt?: Date;
+  createdAt?: string;
   dislikes: number;
   email: string;
   id: string;
@@ -90,6 +90,19 @@ interface IInnovationComment {
   topReply?: string;
   updatedAt?: Date;
   username: string;
+}
+
+interface IInnovationCommentReply {
+  commentId: string;
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  likes: number;
+  message: string;
+  updatedAt: string;
+  userId: string;
+  User: IUser;
+  Comment: IInnovationComment;
 }
 
 interface IGetInnovationReactions {

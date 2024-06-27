@@ -91,7 +91,7 @@ const DiscussionPage = () => {
 
   return (
     <div>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <div className="w-full container h-full">
         <BreadcrumbP
