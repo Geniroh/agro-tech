@@ -43,7 +43,7 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
         </div>
         <div>
           <h2>Value Chain</h2>
-          <div className="flex gapx-2">
+          <div className="flex gap-x-2">
             {innovation.productChain.map((chain, i) => (
               <p key={i}>
                 <ColorTag type="green" key={i} name={chain} />

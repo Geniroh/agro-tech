@@ -1,11 +1,10 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Navbar } from "@/components/general/navbar";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { useCurrentUser } from "@/hooks/current-user";
-import { LuTrash2, LuUpload } from "react-icons/lu";
+import { LuTrash2 } from "react-icons/lu";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { InnovationProfile } from "./_components/innovation-profile";
 import { UserDetailsForm } from "./_components/user-details-form";
@@ -21,37 +20,42 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import ImgCrop from "antd-img-crop";
-import axios from "axios";
 import { CgProfile } from "react-icons/cg";
 import { ClipLoader } from "react-spinners";
+import {
+  useUserProfile,
+  useUpdateProfilePic,
+  useDeleteProfilePic,
+  useGetUserPost,
+} from "@/hooks/useUserProfieData";
+import { Skeleton } from "@/components/ui/skeleton";
+import UserPosts from "./_components/user-posts";
 
 const ProfilePage = () => {
-  const user = useCurrentUser();
   const [profileUser, setProfileUser] = useState<IUser>();
   const [openDeletePic, setOpenDeletePic] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
-  const updateProfilePic = async (url: string) => {
-    try {
-      const { data } = await axios.put("/api/v1/user/pic", { url });
-      message.success("Profile updated successfully");
-    } catch (error) {
-      message.error("Profile update failed");
-    }
-  };
+  const { mutate: updatePic } = useUpdateProfilePic(
+    (data) => message.success("Profile picture updated successfully"),
+    (error) => message.error("Error updating profile picture")
+  );
+
+  const { mutate: deletePic, isLoading: isProfleDeleting } =
+    useDeleteProfilePic(
+      (data) => {
+        setProfileUser(data.user);
+        setOpenDeletePic(!openDeletePic);
+        message.success("Profile picture deleted successfully");
+      },
+      (error) => {
+        message.error("Error deleting profile picture");
+        setOpenDeletePic(!openDeletePic);
+      }
+    );
 
   const handleProfileDelete = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.delete<{ user: IUser }>("/api/v1/user/pic");
-      setProfileUser(data.user);
-      setOpenDeletePic(!openDeletePic);
-    } catch (error) {
-      message.error("Operation failed");
-      setOpenDeletePic(!openDeletePic);
-    }
-    setLoading(false);
+    deletePic();
   };
 
   const props: UploadProps = {
@@ -63,10 +67,11 @@ const ProfilePage = () => {
         setIsUploading(true);
       }
       if (info.file.status === "done") {
-        console.log(info.file.response.files[0].url);
         if (info.file.response && info.file.response) {
           const imageUrl = info.file.response.files[0].url;
-          updateProfilePic(imageUrl);
+          updatePic(imageUrl, {
+            onSuccess: () => refetchProfile(),
+          });
         } else {
           message.error("Failed to upload file");
         }
@@ -78,18 +83,14 @@ const ProfilePage = () => {
     },
   };
 
-  const getProfilePic = async () => {
-    try {
-      const { data } = await axios.get<{ user: IUser }>("/api/v1/user/pic");
-      setProfileUser(data.user);
-    } catch (error) {
-      message.error("Network Error");
-    }
+  const handleGetProfileSuccess = (data: { user: IUser }) => {
+    setProfileUser(data.user);
   };
 
-  useEffect(() => {
-    getProfilePic();
-  }, []);
+  const handleGetProfileError = (error: any) => message.error("Network Error");
+
+  const { isLoading: isProfileLoading, refetch: refetchProfile } =
+    useUserProfile(handleGetProfileSuccess, handleGetProfileError);
 
   return (
     <div className="pb-20">
@@ -102,12 +103,19 @@ const ProfilePage = () => {
       />
 
       <div className="w-full flex flex-col items-center gap-y-10">
-        <Avatar className=" w-[126px] h-[126px]">
-          <AvatarImage src={profileUser?.image} alt="profile" />
-          <AvatarFallback>
+        {isProfileLoading ? (
+          <Skeleton className="w-[126px] h-[126px] rounded-full flex justify-center items-center">
             <CgProfile size={30} />
-          </AvatarFallback>
-        </Avatar>
+          </Skeleton>
+        ) : (
+          <Avatar className=" w-[126px] h-[126px]">
+            <AvatarImage src={profileUser?.image} alt="profile" />
+            <AvatarFallback>
+              <CgProfile size={30} />
+            </AvatarFallback>
+          </Avatar>
+        )}
+
         <div className="flex gap-x-6">
           <ImgCrop rotationSlider>
             <Upload {...props} maxCount={1}>
@@ -129,8 +137,8 @@ const ProfilePage = () => {
         </div>
       </div>
 
-      <div className="mt-10 w-screen">
-        <Tabs defaultValue="account" className="w-full">
+      <div className="mt-10 w-full overflow-hidden px-5 md:px-10">
+        <Tabs defaultValue="about" className="w-full">
           <TabsList className="grid grid-cols-3 w-full" defaultValue="about">
             <TabsTrigger value="innovations">My Innovation</TabsTrigger>
             <TabsTrigger value="post">My Post</TabsTrigger>
@@ -141,7 +149,11 @@ const ProfilePage = () => {
               <InnovationProfile />
             </div>
           </TabsContent>
-          <TabsContent value="post"></TabsContent>
+          <TabsContent value="post">
+            <div className=" max-w-[782px] mx-auto">
+              <UserPosts />
+            </div>
+          </TabsContent>
           <TabsContent value="about">
             <div className=" max-w-[782px] mx-auto">
               <UserDetailsForm />
@@ -160,8 +172,16 @@ const ProfilePage = () => {
               </DialogDescription>
             </DialogHeader>
             <DialogFooter className="flex items-center gap-3">
-              <Button variant="destructive" onClick={handleProfileDelete}>
-                {loading ? <ClipLoader /> : "Yes"}
+              <Button
+                variant="destructive"
+                onClick={handleProfileDelete}
+                disabled={isProfleDeleting}
+              >
+                {isProfleDeleting ? (
+                  <ClipLoader size={15} color="#ffffff" />
+                ) : (
+                  "Yes"
+                )}
               </Button>
               <Button
                 variant="default"

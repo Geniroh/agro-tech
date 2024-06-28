@@ -1,22 +1,17 @@
-import type { Metadata } from "next";
-import { Toaster } from "@/components/ui/sonner";
+"use client";
 import { AntdRegistry } from "@ant-design/nextjs-registry";
 import { ConfigProvider } from "antd";
-
+import { QueryClientProvider, QueryClient } from "react-query";
 import "./globals.css";
 import { SessionProvider } from "next-auth/react";
 import { AppProvider } from "@/context/AppContext";
-
-export const metadata: Metadata = {
-  title: "Stavmia",
-  description: "",
-};
 
 export default function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const queryClient = new QueryClient();
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
@@ -32,10 +27,13 @@ export default function RootLayout({
                 },
               }}
             >
-              <AppProvider>{children}</AppProvider>
+              <AppProvider>
+                <QueryClientProvider client={queryClient}>
+                  {children}
+                </QueryClientProvider>
+              </AppProvider>
             </ConfigProvider>
           </AntdRegistry>
-          {/* <Toaster position="top-right" richColors /> */}
         </SessionProvider>
       </body>
     </html>

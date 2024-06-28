@@ -4,10 +4,10 @@ import { auth } from "@/auth";
 import Joi from "joi";
 
 const postSchema = Joi.object({
-  username: Joi.string().optional(),
-  phone: Joi.string().optional(),
-  occupation: Joi.string().optional(),
-  country: Joi.string().optional(),
+  username: Joi.string().optional().allow(null),
+  phone: Joi.string().optional().allow(null),
+  occupation: Joi.string().optional().allow(null),
+  country: Joi.string().optional().allow(null),
   state: Joi.string().optional().allow(null),
   lga: Joi.string().optional().allow(null),
   address: Joi.string().optional().allow(null),

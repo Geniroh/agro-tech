@@ -5,9 +5,6 @@ import { auth } from "@/auth";
 
 const getSchema = Joi.object({
   id: Joi.string().required(),
-  userId: Joi.string().optional(),
-  title: Joi.string().optional(),
-  recent: Joi.boolean().optional(),
 });
 const postSchema = Joi.object({
   message: Joi.string().optional(),
@@ -27,16 +24,8 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const url = new URL(req.url);
-    const userId = url.searchParams.get("userId");
-    const title = url.searchParams.get("title");
-    const recent = url.searchParams.get("recent") === "true";
-
     const { error, value } = getSchema.validate({
       ...params,
-      userId,
-      title,
-      recent,
     });
 
     if (error) {
@@ -53,41 +42,20 @@ export async function GET(
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const filterConditions: any = { id };
+    const discussion = await db.discussion.findFirst({
+      where: { id },
+      include: { replies: true, reactions: true, user: true },
+    });
 
-    if (userId) {
-      filterConditions.userId = userId;
-    }
-
-    if (title) {
-      filterConditions.title = { contains: title };
-    }
-
-    let discussions;
-
-    if (recent) {
-      discussions = await db.discussion.findMany({
-        where: filterConditions,
-        orderBy: {
-          createdAt: "desc",
-        },
-        include: { replies: true },
-      });
-    } else {
-      discussions = await db.discussion.findMany({
-        where: filterConditions,
-        include: { replies: true },
+    let comments: any[] = [];
+    if (discussion) {
+      comments = await db.reply.findMany({
+        where: { discussionId: discussion.id },
+        include: { user: true },
       });
     }
 
-    if (discussions.length === 0) {
-      return NextResponse.json(
-        { error: "Discussions not found" },
-        { status: 404 }
-      );
-    }
-
-    return NextResponse.json({ discussions }, { status: 200 });
+    return NextResponse.json({ ...discussion, comments }, { status: 200 });
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to get discussions" },
@@ -269,3 +237,101 @@ export async function DELETE(
     );
   }
 }
+
+// import { NextRequest, NextResponse } from "next/server";
+// import { db } from "@/lib/db";
+// import Joi from "joi";
+// import { auth } from "@/auth";
+
+// const getSchema = Joi.object({
+//   id: Joi.string().required(),
+//   userId: Joi.string().optional().allow(null),
+//   title: Joi.string().optional().allow(null),
+//   recent: Joi.boolean().optional().allow(null),
+// });
+// const postSchema = Joi.object({
+//   message: Joi.string().optional(),
+//   reaction: Joi.string().valid("like", "dislike").optional(),
+// });
+
+// const putSchema = Joi.object({
+//   title: Joi.string().required(),
+// });
+
+// const deleteSchema = Joi.object({
+//   id: Joi.string().required(),
+// });
+
+// export async function GET(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const url = new URL(req.url);
+//     const userId = url.searchParams.get("userId");
+//     const title = url.searchParams.get("title");
+//     const recent = url.searchParams.get("recent") === "true";
+
+//     const { error, value } = getSchema.validate({
+//       ...params,
+//       userId,
+//       title,
+//       recent,
+//     });
+
+//     if (error) {
+//       return NextResponse.json(
+//         { error: error.details[0].message },
+//         { status: 400 }
+//       );
+//     }
+
+//     const { id } = value;
+
+//     const session = await auth();
+//     if (!session) {
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     }
+
+//     const filterConditions: any = { id };
+
+//     if (userId) {
+//       filterConditions.userId = userId;
+//     }
+
+//     if (title) {
+//       filterConditions.title = { contains: title };
+//     }
+
+//     let discussions;
+
+//     if (recent) {
+//       discussions = await db.discussion.findMany({
+//         where: filterConditions,
+//         orderBy: {
+//           createdAt: "desc",
+//         },
+//         include: { replies: true, reactions: true, user: true },
+//       });
+//     } else {
+//       discussions = await db.discussion.findMany({
+//         where: filterConditions,
+//         include: { replies: true, reactions: true, user: true },
+//       });
+//     }
+
+//     if (discussions.length === 0) {
+//       return NextResponse.json(
+//         { error: "Discussions not found" },
+//         { status: 404 }
+//       );
+//     }
+
+//     return NextResponse.json({ discussions }, { status: 200 });
+//   } catch (error) {
+//     return NextResponse.json(
+//       { error: "Failed to get discussions" },
+//       { status: 500 }
+//     );
+//   }
+// }

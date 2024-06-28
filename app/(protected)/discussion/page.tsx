@@ -1,13 +1,5 @@
 "use client";
-import { Navbar } from "@/components/general/navbar";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import { ChatCard } from "@/components/general/chat-card";
-import { Capsule } from "@/components/general/capsule";
-import { TagSelect } from "@/components/general/tag-select";
-import { ReplyCard } from "@/components/general/reply-card";
-import { FaPlus } from "react-icons/fa6";
-import { ChatCard2 } from "@/components/auth/chat-card2";
+import React, { useState } from "react";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -15,25 +7,24 @@ import {
   Dialog,
   DialogContent,
   DialogDescription,
-  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { Laugh, XCircle, XCircleIcon } from "lucide-react";
 import { IoSendSharp } from "react-icons/io5";
 import { RiFolder2Fill } from "react-icons/ri";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/current-user";
 import { getFirstName } from "@/utils/function";
-import { toast, Toaster } from "sonner";
-import axios from "axios";
 import { message } from "antd";
 import { ClipLoader } from "react-spinners";
-// import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-card";
-// import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
-// import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
+import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-card";
+import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
+import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
+import { useGetAllDiscussion } from "@/hooks/useDiscussionData";
+import { Skeleton } from "@/components/ui/skeleton";
+import { useAddUserDiscussion } from "@/hooks/useAddDiscussion";
 
 const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
@@ -48,52 +39,52 @@ const DiscussionPage = () => {
   const [allDiscussion, setAllDiscussion] = useState<ICombinedDiscussion[]>([]);
   const user = useCurrentUser();
 
+  const handleGetAllDiscussionSuccess = (data: {
+    userDiscussion: IUserDiscussion[];
+    innovationDiscussion: IInnovationDiscussion[];
+    all: ICombinedDiscussion[];
+  }) => {
+    setInnovationDiscussion(data.innovationDiscussion);
+    setUserDiscussion(data.userDiscussion);
+    setAllDiscussion(data.all);
+  };
+
+  const onError = (err: any) => {
+    message.error("Network Error!");
+  };
+
+  const { isLoading, refetch } = useGetAllDiscussion(
+    handleGetAllDiscussionSuccess,
+    onError
+  );
+  const { mutate: startDiscussion, isLoading: isLoadingDiscussion } =
+    useAddUserDiscussion();
+
   const handleDiscussionCreate = async () => {
     const payload = {
       message: body,
       title: topic,
     };
-    setBtnLoading(true);
     try {
       if (body == "" && topic == "") {
         message.error("Please fill in all field");
       } else {
-        const { data } = await axios.post("api/v1/discussion", payload);
-        message.success("Discussion started successfully");
+        startDiscussion(payload, {
+          onSuccess: (data) => {
+            message.success("Discussion started successfully");
+            refetch();
+          },
+          onError: () => {
+            message.error("Failed to start a discussion");
+          },
+        });
       }
     } catch (error) {}
-    setBtnLoading(false);
   };
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get<{
-        userDiscussion: IUserDiscussion[];
-        innovationDiscussion: IInnovationDiscussion[];
-        all: ICombinedDiscussion[];
-      }>("/api/v1/discussion");
-
-      setInnovationDiscussion(data.innovationDiscussion);
-      setUserDiscussion(data.userDiscussion);
-      setAllDiscussion(data.all);
-
-      console.log(data);
-    } catch (error) {
-      toast.error("Network error!");
-    }
-    setLoading(false);
-  };
-
-  useEffect(() => {
-    fetchData();
-  }, []);
 
   return (
     <div>
-      {/* <Navbar /> */}
-
-      <div className="w-full container h-full">
+      <div className="w-full container h-full pb-20">
         <BreadcrumbP
           fromHref="/"
           fromTitle="Back to Home Page"
@@ -139,10 +130,10 @@ const DiscussionPage = () => {
                     title="Start typing to start a discussion"
                   />
                   <div className="flex text-[14px] gap-x-2">
-                    <button className="p-2 flex items-center justify-center rounded-full hover:bg-white border">
+                    {/* <button className="p-2 flex items-center justify-center rounded-full hover:bg-white border">
                       <RiFolder2Fill />
-                    </button>
-                    <button className="p-2 flex items-center justify-center rounded-full hover:bg-white border">
+                    </button> */}
+                    <button className="p-2 flex items-center justify-center text-mygreen rounded-full hover:bg-white border">
                       <IoSendSharp />
                     </button>
                   </div>
@@ -212,9 +203,9 @@ const DiscussionPage = () => {
                     variant="outline"
                     className="flex gap-2 items-center text-[12px] rounded-2xl"
                     onClick={handleDiscussionCreate}
-                    disabled={btnLoading}
+                    disabled={isLoadingDiscussion}
                   >
-                    {btnLoading ? (
+                    {isLoadingDiscussion ? (
                       <ClipLoader size={13} />
                     ) : (
                       <>
@@ -262,36 +253,38 @@ const DiscussionPage = () => {
             </div>
           </div>
 
-          {/* {activeSection === 1 && (
+          {isLoading ? (
+            <div>
+              <Skeleton className="w-full min-h-[300px]" />
+            </div>
+          ) : (
             <>
-              {allDiscussion.map((discussion, i) => (
-                <CombinedReplyCard discussion={discussion} key={i} />
-              ))}
+              {activeSection === 1 && (
+                <>
+                  {allDiscussion.map((discussion, i) => (
+                    <CombinedReplyCard discussion={discussion} key={i} />
+                  ))}
+                </>
+              )}
+
+              {activeSection === 2 && (
+                <>
+                  {innovationDiscussion.map((discussion, i) => (
+                    <InnovationReplyCard discussion={discussion} key={i} />
+                  ))}
+                </>
+              )}
+
+              {activeSection === 3 && (
+                <>
+                  {userDiscussion.map((discussion, i) => (
+                    <UserReplyCard discussion={discussion} key={i} />
+                  ))}
+                </>
+              )}
             </>
           )}
-
-          {activeSection === 2 && (
-            <>
-              {innovationDiscussion.map((discussion, i) => (
-                <InnovationReplyCard discussion={discussion} key={i} />
-              ))}
-            </>
-          )}
-
-          {activeSection === 3 && (
-            <>
-              {userDiscussion.map((discussion, i) => (
-                <UserReplyCard discussion={discussion} key={i} />
-              ))}
-            </>
-          )} */}
         </div>
-
-        {/* <div className="my-[100px] flex items-center justify-center">
-          <button className="flex gap-3 items-center bg-myoffwhie/50 text-green px-3 py-1 rounded-2xl hover:text-white hover:bg-mypurple">
-            More <FaPlus />
-          </button>
-        </div> */}
       </div>
     </div>
   );
