@@ -1,10 +1,11 @@
 import { getFirstName } from "@/utils/function";
-import { Form, Input } from "antd";
-import axios from "axios";
-import { MessageSquareText, ThumbsDown, ThumbsUp } from "lucide-react";
-import React, { useEffect, useState } from "react";
+import { Form, Input, message } from "antd";
+import React, { useState } from "react";
 import { IoMdArrowDropup, IoMdArrowDropdown, IoMdSend } from "react-icons/io";
 import { DateDifference } from "../general/date-diff-calculator";
+import { useFetchInnovationReplies } from "@/hooks/useRepliesData";
+import { useAddDiscussionReply } from "@/hooks/useAddComment";
+import { ReactionButtons } from "../general/reaction-buttons";
 
 export const DiscussionInnovationComment = ({
   comment,
@@ -13,63 +14,47 @@ export const DiscussionInnovationComment = ({
   comment: IInnovationComment;
   innovationId: string;
 }) => {
-  const [clickedIcon, setClickedIcon] = useState<"like" | "dislike" | null>(
-    null
-  );
   const [showReplies, setShowReplies] = useState<boolean>(false);
   const [replies, setReplies] = useState<IInnovationCommentReply[]>([]);
   const [showReplyField, setShowReplyField] = useState<boolean>(false);
-  const [newReply, setNewReply] = useState<string>("");
 
   const [form] = Form.useForm();
 
   const handleCommentReply = async () => {
     try {
       const values = await form.validateFields();
-      const { data } = await axios.post<{ message: string; reply: string }>(
-        `/api/v1/innovation/${innovationId}/discussion/reply`,
-        { message: values.message, commentId: comment.id }
-      );
-
-      setShowReplyField(false);
-
-      console.log({ test2: data });
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleReaction = (reaction: "like" | "dislike") => {
-    try {
-      setClickedIcon(reaction);
-      setTimeout(() => setClickedIcon(null), 500);
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const fetchReplies = async () => {
-    try {
-      const { data } = await axios.get<{
-        message: string;
-        replies: IInnovationCommentReply[];
-      }>(`/api/v1/innovation/${innovationId}/discussion/reply`, {
-        params: {
+      addReply(
+        {
           commentId: comment.id,
+          innovationId,
+          message: values.message,
         },
-      });
-      setReplies(data.replies);
-      console.log({ test: data });
+        {
+          onSuccess: (data) => {
+            setShowReplyField(false);
+            setReplies((prev) => [...prev, data.reply]);
+            message.info("Commented");
+            form.resetFields();
+          },
+          onError: (error) => {
+            message.error("Network error");
+          },
+        }
+      );
     } catch (error) {
       console.log(error);
     }
-
-    console.log(comment);
   };
 
-  useEffect(() => {
-    fetchReplies();
-  }, []);
+  const handleGetReplySuccess = (data: IGetInnovationDisussionReplies) =>
+    setReplies(data.replies);
+
+  const { isLoading } = useFetchInnovationReplies(
+    innovationId,
+    comment.id,
+    handleGetReplySuccess
+  );
+  const { mutate: addReply } = useAddDiscussionReply();
 
   return (
     <div>
@@ -79,56 +64,33 @@ export const DiscussionInnovationComment = ({
             <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
               {getFirstName(comment.username)[0] || ""}
             </div>
-            <div>{getFirstName(comment.username) || comment.email}</div>
-            {/* <div className="text-muted-foreground">Replied</div> */}
+            <div>{comment.username || comment.email}</div>
           </div>
 
-          <div className="text-muted-foreground">
+          <div className="text-muted-foreground text-[14px] flex items-center gap-x-2">
             Posted <DateDifference date={comment.createdAt || ""} />
-            ago
           </div>
         </div>
 
         <div>{comment.message}</div>
 
-        <div className="flex gap-x-2 md:gap-x-4">
-          <>
-            <button className="flex items-center text-xs">
-              <span
-                className={`p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center transition-transform ${
-                  clickedIcon === "like" ? "rotate-icon" : ""
-                }`}
-                onClick={() => handleReaction("like")}
-              >
-                <ThumbsUp size={13} />
-              </span>
-              <span>{comment.likes}</span>
-            </button>
-
-            <button className="flex items-center text-xs">
-              <span
-                className={`p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center transition-transform ${
-                  clickedIcon === "dislike" ? "rotate-icon" : ""
-                }`}
-                onClick={() => handleReaction("dislike")}
-              >
-                <ThumbsDown size={13} />
-              </span>
-              <span>{comment.dislikes}</span>
-            </button>
-
-            <button className="flex items-center text-xs">
-              <div
-                onClick={() => setShowReplyField(true)}
-                className="flex items-center gap-1"
-              >
-                <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-                  <MessageSquareText size={13} />
-                </span>
-                Reply
-              </div>
-            </button>
-          </>
+        <div className="flex gap-x-2 md:gap-x-2 items-center">
+          <ReactionButtons
+            dislikes={comment.dislikes}
+            id={innovationId}
+            likes={comment.likes}
+            type="innovationDiscussion"
+            isCommentId={comment.id}
+            key={comment.id}
+            replies={replies.length}
+            showReplyBtn={false}
+          />
+          <span
+            className="text-xs cursor-pointer"
+            onClick={() => setShowReplyField(!showReplyField)}
+          >
+            Reply
+          </span>
         </div>
         {showReplyField && (
           <div className="ml-5 md:ml-10">
@@ -136,9 +98,8 @@ export const DiscussionInnovationComment = ({
               <Form.Item name="message">
                 <Input
                   placeholder="Share your thoughts"
-                  className="w-full"
-                  // variant="f"
-                  size="large"
+                  className="w-full my-0 py-0"
+                  size="middle"
                   onPressEnter={handleCommentReply}
                   suffix={
                     <IoMdSend
@@ -154,82 +115,68 @@ export const DiscussionInnovationComment = ({
         <div></div>
 
         <div
-          className="flex items-center text-[14px] text-mygreen cursor-pointer"
+          className="flex items-center text-[14px] text-mygreen cursor-pointer mt-[-10px]"
           onClick={() => setShowReplies(!showReplies)}
         >
-          {showReplies ? <IoMdArrowDropup /> : <IoMdArrowDropdown />} 2 Replies
+          {showReplies ? <IoMdArrowDropup /> : <IoMdArrowDropdown />}{" "}
+          {replies.length} Replies
         </div>
-        <div className="ml-5 md:ml-10"></div>
+        <div className="ml-5 md:ml-10 space-y-4">
+          {showReplies && (
+            <>
+              {replies.map((reply, i) => (
+                <DiscussionInnovationReply
+                  reply={reply}
+                  innovationId={innovationId}
+                  key={reply.id}
+                />
+              ))}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-export const DiscussionInnovationReply = () => {
-  const [clickedIcon, setClickedIcon] = useState<"like" | "dislike" | null>(
-    null
-  );
+export const DiscussionInnovationReply = ({
+  reply,
+  innovationId,
+}: {
+  reply: IInnovationCommentReply;
+  innovationId: string;
+}) => {
   return (
     <div>
       <div className="flex flex-col gap-3">
         <div className="flex gap-6 items-center">
           <div className="flex items-center gap-3">
             <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
-              K
+              {getFirstName(reply?.User?.name || "")[0] || "I"}
             </div>
-            <div>Username</div>
-            <div className="text-muted-foreground">Replied</div>
+            <div>{reply?.User?.name || reply?.User?.email}</div>
+            <div className="text-muted-foreground text-[14px]">Replied</div>
           </div>
 
-          <div className="text-muted-foreground">Posted 2 hours ago</div>
+          <div className="text-muted-foreground text-[14px] flex items-center gap-x-2">
+            Posted <DateDifference date={reply.createdAt || ""} />
+          </div>
         </div>
 
-        <div>
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Optio, sint.
-        </div>
+        <div>{reply.message}</div>
 
         <div className="flex gap-x-2 md:gap-x-4">
           <>
-            <button className="flex items-center text-xs">
-              <span
-                className={`p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center transition-transform ${
-                  clickedIcon === "like" ? "rotate-icon" : ""
-                }`}
-                // onClick={() => handleReaction("like")}
-              >
-                <ThumbsUp size={13} />
-              </span>
-              <span>0</span>
-            </button>
-
-            <button className="flex items-center text-xs">
-              <span
-                className={`p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center transition-transform ${
-                  clickedIcon === "dislike" ? "rotate-icon" : ""
-                }`}
-                // onClick={() => handleReaction("dislike")}
-              >
-                <ThumbsDown size={13} />
-              </span>
-              <span>0</span>
-            </button>
-
-            <button className="flex items-center text-xs">
-              <div
-                // onClick={() => router.push(`/discussion/innovation/${id}`)}
-                className="flex items-center gap-1"
-              >
-                <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-                  <MessageSquareText size={13} />
-                </span>
-                Reply
-              </div>
-            </button>
+            <ReactionButtons
+              dislikes={reply.dislikes}
+              id={innovationId}
+              likes={reply.likes}
+              type="innovationDiscussionReply"
+              replies={0}
+              isReplyId={reply.id}
+              showReplyBtn={false}
+            />
           </>
-        </div>
-
-        <div className="flex items-center text-[14px] text-mygreen">
-          <IoMdArrowDropup /> 2 Replies
         </div>
       </div>
     </div>

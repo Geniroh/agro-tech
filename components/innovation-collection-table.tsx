@@ -3,20 +3,19 @@ import { Button } from "@/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
 import { TagSelect } from "@/components/general/tag-select";
 import { CircleX, LayoutGrid, List } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import {
   CollectionDataTableP,
   CollectionDataImageGrid,
 } from "@/components/data/collections-table";
-import axios from "axios";
-import { toast } from "sonner";
-import { countriesData } from "@/data/country-region";
+import { message } from "antd";
 import { Skeleton } from "@/components/ui/skeleton";
-import { PRODUCT_PHASE_OPTIONS } from "@/constants/options";
+import { phaseOptions } from "@/constants/options";
+import { generateCountryArray, generateYears } from "@/utils/function";
+import { useGetInnovation } from "@/hooks/useInnovationData";
 
 export const CollectionTable = () => {
   const [displayState, setDisplayState] = useState<number>(1);
-  const [loading, setLoading] = useState<boolean>(false);
   const [pageNo, setPageNo] = useState<number>(1);
   const [totalPages, setTotalPages] = useState<number>(1);
   const [nameParam, setNameParam] = useState<string>("");
@@ -25,55 +24,40 @@ export const CollectionTable = () => {
   });
   const [innovations, setInnovations] = useState<IInnovationType[]>([]);
 
-  const generateYears = () => {
-    const currentYear = new Date().getFullYear();
-    const yearsArray = Array.from(
-      { length: currentYear - 1970 + 1 },
-      (_, index) => 1970 + index
+  const handleSuccess = (data: IGetInnovationResponse) => {
+    setInnovations(data.data);
+    setPageNo(data.page);
+    setTotalPages(data.totalPages);
+  };
+
+  const handleError = (error: unknown) => {
+    message.error(
+      "Please we are unable to get Innovations at his time, please try again!"
     );
-    yearsArray.sort((a, b) => b - a);
-
-    return yearsArray;
   };
-  const generateCountryArray = () => {
-    return countriesData.map((country) => country.countryName);
-  };
-  const phaseOptions = PRODUCT_PHASE_OPTIONS.map((phase) => phase.value);
-  const yearOptions = generateYears();
-  const countryOptions = generateCountryArray();
 
-  const fetchInnovations = async () => {
-    setLoading(true);
-    try {
-      const { data } = await axios.get<IGetInnovationResponse>(
-        "/api/v1/innovation",
-        {
-          params: queryParams,
-        }
-      );
-
-      setInnovations(data.data);
-      setPageNo(data.page);
-      setTotalPages(data.totalPages);
-    } catch (error) {
-      toast.error(
-        "Please we are unable to get Innovations at his time, please try again!"
-      );
-    }
-    setLoading(false);
-  };
+  const { isLoading } = useGetInnovation(
+    queryParams,
+    handleSuccess,
+    handleError
+  );
 
   const handleSetPage = async (No: number) => {
     setPageNo(No);
     setQueryParams((prev) => ({ ...prev, page: No }));
   };
 
-  useEffect(() => {
-    fetchInnovations();
-  }, [queryParams]);
-
   const handleTagSelectChange = (field: string, value: string) => {
     setQueryParams((prev) => ({ ...prev, [field]: value }));
+  };
+
+  const handleClear = () => {
+    handleTagSelectChange("phase", "");
+    handleTagSelectChange("year", "");
+    handleTagSelectChange("country", "");
+    setQueryParams({
+      page: pageNo,
+    });
   };
 
   const handleSearch = () => {
@@ -107,11 +91,12 @@ export const CollectionTable = () => {
               <CircleX
                 size={13}
                 className="text-myblack cursor-pointer"
-                onClick={() =>
+                onClick={() => {
                   setQueryParams({
                     page: pageNo,
-                  })
-                }
+                  });
+                  setNameParam("");
+                }}
               />
             )}
           </div>
@@ -123,7 +108,6 @@ export const CollectionTable = () => {
             Click here to search
           </Button>
         </div>
-
         <div className="mb-5 flex flex-col gap-4 md:flex-row justify-between items-center">
           <div className="flex gap-x-7 flex-wrap gap-y-4 justify-between md:justify-normal">
             <TagSelect
@@ -134,24 +118,17 @@ export const CollectionTable = () => {
             />
             <TagSelect
               name="Year created"
-              options={yearOptions}
+              options={generateYears()}
               onValueChange={(value) => handleTagSelectChange("year", value)}
             />
             <TagSelect
               name="Country"
-              options={countryOptions}
+              options={generateCountryArray()}
               onValueChange={(value) => handleTagSelectChange("country", value)}
             />
 
             {Object.keys(queryParams).length > 1 && (
-              <Button
-                size="sm"
-                onClick={() =>
-                  setQueryParams({
-                    page: pageNo,
-                  })
-                }
-              >
+              <Button size="sm" onClick={handleClear}>
                 Clear
               </Button>
             )}
@@ -174,7 +151,7 @@ export const CollectionTable = () => {
             </Button>
           </div>
         </div>
-        {loading ? (
+        {isLoading ? (
           <Skeleton className="h-[300px] w-full" />
         ) : (
           <div className="mt-10 mb-[100px]">

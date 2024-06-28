@@ -1,15 +1,7 @@
-import React, { useState } from "react";
-import {
-  ThumbsUp,
-  ThumbsDown,
-  MessageSquareText,
-  Share,
-  Upload,
-} from "lucide-react";
-import { toast } from "sonner";
+import React from "react";
 import { DateDifference } from "../general/date-diff-calculator";
-import axios from "axios";
 import { useRouter } from "next/navigation";
+import { ReactionButtons } from "../general/reaction-buttons";
 
 export const InnovationReplyCard = ({
   discussion,
@@ -49,7 +41,7 @@ export const InnovationReplyCard = ({
         <div className="text-sm ">{discussion?.comments[0]?.message}</div>
 
         <div className="flex gap-x-4">
-          <button className="flex items-center text-xs">
+          {/* <button className="flex items-center text-xs">
             <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
               <ThumbsUp size={13} />
             </span>
@@ -73,7 +65,15 @@ export const InnovationReplyCard = ({
               <MessageSquareText size={13} />
             </span>
             <span>{discussion?.comments?.length}</span>
-          </button>
+          </button> */}
+
+          <ReactionButtons
+            dislikes={discussion.dislikes}
+            likes={discussion.likes}
+            type="innovation"
+            id={discussion.innovation_id}
+            replies={discussion?.comments?.length}
+          />
         </div>
       </div>
     </div>

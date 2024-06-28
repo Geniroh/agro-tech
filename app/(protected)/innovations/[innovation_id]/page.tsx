@@ -1,11 +1,8 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import Link from "next/link";
 import { Capsule } from "@/components/general/capsule";
 import { Upload, X } from "lucide-react";
-import { VideoPlayer } from "@/components/general/video-player";
-import { FaCheckCircle, FaPhone } from "react-icons/fa";
-import axios from "axios";
+import { FaCheckCircle } from "react-icons/fa";
 import {
   Accordion,
   AccordionContent,
@@ -13,62 +10,55 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Skeleton } from "@/components/ui/skeleton";
-import { ForumChats } from "@/components/general/forum-chats";
 import { useRouter, useParams } from "next/navigation";
 import { RenderMedia } from "@/components/general/render-media";
 import { ShareButton } from "@/components/general/share-button";
-import { InnovationReactions } from "@/components/innovationComp/innovation-reaction-button";
 import { InnovationDiscussionForum } from "@/components/innovationComp/innovation-discussion-form";
-import { IoPlay } from "react-icons/io5";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import NoContent from "@/components/loaders/no-content";
 import { ReactionButtons } from "@/components/general/reaction-buttons";
-import { useAppContext } from "@/context/AppContext";
+import { useGetInnovationById } from "@/hooks/useInnovationData";
+import { message } from "antd";
+import { useGetInnovationDiscussion } from "@/hooks/useDiscussionData";
+import { RiExternalLinkFill } from "react-icons/ri";
+import Link from "next/link";
 
 const InnovationPage = () => {
   const router = useRouter();
-  const { track } = useAppContext();
   const params = useParams<{ innovation_id: string }>();
   const { innovation_id } = params;
 
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [data, setData] = useState<IInnovationType>();
   const [comments, setComments] = useState<IInnovationComment[]>();
-  const [discussion, setDiscussion] = useState<IInnovationDiscussion>();
 
-  const fetchData = async (id: string) => {
-    setLoading(true);
-    setError(null);
-    try {
-      const { data } = await axios.get<IInnovationType>(
-        `/api/v1/innovation/${id}`
-      );
-      const { data: discussion } = await axios.get<{
-        message: string;
-        comments: IInnovationComment[];
-        discussion: IInnovationDiscussion;
-      }>(`/api/v1/innovation/${innovation_id}/discussion`);
-
-      console.log({ data, discussion });
-
-      setData(data);
-      console.log(data);
-      setComments(discussion.comments);
-      setDiscussion(discussion.discussion);
-    } catch (error) {
-      setError("Network Error, please try again!");
-    }
-    setLoading(false);
+  const handleGetInnovationSuccess = (data: IInnovationType) => {
+    setData(data);
+  };
+  const handleGetInnovationError = (error: unknown) => {
+    message.error("Network Error, Please try again!");
+  };
+  const handleGetDiscussionSuccess = (
+    data: IGetInnovationDiscussionResponse
+  ) => {
+    setComments(data.comments);
+  };
+  const handleGetDiscussionError = (error: unknown) => {
+    message.error("Network Error, Please try again!");
   };
 
-  useEffect(() => {
-    fetchData(innovation_id);
-  }, [track]);
+  const { isLoading, isError } = useGetInnovationById(
+    innovation_id,
+    handleGetInnovationSuccess,
+    handleGetInnovationError
+  );
 
-  // console.log(data?.comments);
+  useGetInnovationDiscussion(
+    innovation_id,
+    handleGetDiscussionSuccess,
+    handleGetDiscussionError
+  );
 
-  if (loading) {
+  if (isLoading) {
     return (
       <div className="flex flex-col space-y-3 w-full container mb-5">
         <Skeleton className="h-[300px] w-full mt-10" />
@@ -80,7 +70,7 @@ const InnovationPage = () => {
     );
   }
 
-  if (error) {
+  if (isError) {
     return (
       <NoContent
         message={` Looks like there was a problem getting innovation. For more
@@ -92,10 +82,13 @@ const InnovationPage = () => {
   return (
     <>
       {!data ? (
-        <NoContent
-          message={` Looks like there was a problem getting innovation. For more
-        information, please contact @help`}
-        />
+        <div className="flex flex-col space-y-3 w-full container mb-5">
+          <Skeleton className="h-[300px] w-full mt-10" />
+          <div className="space-y-2">
+            <Skeleton className="h-4 w-full" />
+            <Skeleton className="h-4 w-[200px]" />
+          </div>
+        </div>
       ) : (
         <div className="container pb-20">
           <BreadcrumbP
@@ -421,33 +414,19 @@ const InnovationPage = () => {
               </Accordion>
             </div>
 
-            <div className="w-full border shadow-sm rounded-md mt-5 h-[35px] flex items-center justify-between px-2">
-              <ReactionButtons
-                likes={data?.likes}
-                dislikes={data?.dislikes}
-                replies={comments?.length || 0}
-                type="innovation"
-                id={data?.id}
-              />
-
-              <div className="flex gap-x-4">
-                <ShareButton link={`innovation/${innovation_id}`} />
-              </div>
-            </div>
-
-            <h2 className="text-lg text-muted-foreground mt-10">
-              Join the community
-            </h2>
+            {comments && comments?.length > 1 && (
+              <Link href={`/discussion/innovation/${innovation_id}`}>
+                <h2 className="text-lg text-muted-foreground mt-10 flex gap-4 items-center">
+                  Join the community ({comments?.length}){" "}
+                  <RiExternalLinkFill size={15} />
+                </h2>
+              </Link>
+            )}
 
             <InnovationDiscussionForum
               innovationId={data?.id}
               comments={comments || []}
             />
-
-            {/* <InnovationDiscussionForum
-              innovationId={innovation_id}
-              // comments={comments}
-            /> */}
           </div>
         </div>
       )}
