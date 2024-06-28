@@ -164,6 +164,22 @@ interface IUser {
   role: string;
 }
 
+interface IUserDetails {
+  id: string;
+  username: string;
+  phone: string;
+  occupation: string;
+  userId: string;
+  country: string;
+  state?: string;
+  lga?: string;
+  address?: string;
+  company_name?: string;
+  position?: string;
+  association?: string;
+  user?: IUser;
+}
+
 interface IGetInnovationDiscussionResponse {
   message: string;
   comments: IInnovationComment[];

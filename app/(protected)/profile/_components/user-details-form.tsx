@@ -7,7 +7,6 @@ import { FaMobileAlt, FaUser } from "react-icons/fa";
 import { MdEmail, MdOutlineWork } from "react-icons/md";
 import { countriesData, ICountry } from "@/data/country-region";
 import { useCurrentUser } from "@/hooks/current-user";
-import { TfiWorld } from "react-icons/tfi";
 import axios from "axios";
 
 const { Item } = Form;
@@ -46,8 +45,6 @@ export const UserDetailsForm = () => {
       const { data } = await axios.put("/api/v1/user/details", values);
 
       message.success("Details updated successfully");
-      console.log({ data });
-      console.log(values);
     } catch (error) {
       message.error("Update failed, please try again");
       console.log(error);

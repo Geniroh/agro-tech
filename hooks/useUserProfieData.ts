@@ -69,5 +69,36 @@ export const useGetUserPost = (
   return useQuery("get-user-post", getUserPost, {
     onError,
     onSuccess,
+    keepPreviousData: true,
+  });
+};
+
+const getUserInnovation = async () => {
+  const { data } = await axiosInstance.get("/user/innovation");
+  return data;
+};
+
+export const useGetUserInnovation = (
+  onSuccess?: (data: IInnovationType[]) => void,
+  onError?: (error: unknown) => void
+) => {
+  return useQuery("get-user-innovation", getUserInnovation, {
+    onSuccess,
+    onError,
+  });
+};
+
+const getUserDetails = async () => {
+  const { data } = await axiosInstance.get("/user/details");
+  return data;
+};
+
+export const useGetUserDetails = (
+  onSuccess?: (data: IUserDetails) => void,
+  onError?: (error: unknown) => void
+) => {
+  return useQuery("get-user-details", getUserDetails, {
+    onSuccess,
+    onError,
   });
 };

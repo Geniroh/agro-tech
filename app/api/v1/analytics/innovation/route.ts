@@ -7,6 +7,7 @@ const querySchema = Joi.object({
   phase: Joi.string().optional(),
   country: Joi.string().optional(),
   year: Joi.string().optional(),
+  status: Joi.string().optional(),
   // minLikes: Joi.number().integer().min(0).optional(),
   // maxLikes: Joi.number().integer().min(0).optional(),
   // createdAfter: Joi.date().iso().optional(),

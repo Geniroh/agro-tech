@@ -29,8 +29,8 @@ const getInnovationById = async (id: string): Promise<IInnovationType> => {
 
 export const useGetInnovation = (
   queryParams: QueryParams,
-  onSuccess: SuccessHandler,
-  onError: ErrorHandler
+  onSuccess?: SuccessHandler,
+  onError?: ErrorHandler
 ): UseQueryResult<IGetInnovationResponse> => {
   return useQuery<IGetInnovationResponse, unknown>(
     ["get-innovation-with-pagination", queryParams],
