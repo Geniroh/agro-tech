@@ -11,7 +11,7 @@ export const Footer = () => {
           </div>
           <div className="text-[16px] leading-[22px] font-semibold space-y-1 font-open-sans md:max-w-[370px]">
             Repository is supported by the Royal Academy of Engineering (RAEng)
-            &Copy; Afro AgEng (PASAE) 2024
+            &copy; Afro AgEng (PASAE) 2024
           </div>
         </div>
         <div className="hidden md:block font-open-sans">

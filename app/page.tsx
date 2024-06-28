@@ -14,7 +14,7 @@ const innovations = [
   {
     id: 1,
     imgUrl: "/images/image1.jpg",
-    title: "Maize Thresher",
+    title: "Cowpea Thresher",
     tags: ["Processing"],
   },
   {
@@ -87,11 +87,11 @@ export default function Home() {
         <h2 className="text-[16px] md:text-[18px] leading-[24px] md:leading-[27px] font-normal text-[#242424] mt-3 text-center md:text-left">
           Welcome to STAVMiA, the central hub for agricultural innovations
           across Africa! Helping farmers, processors, input suppliers, business
-          owners, consultants, and researchers find valuable technologies and
-          methods easily. Our platform allows everyone in the agricultural value
-          chain to access, share, discuss, and collaborate on technologies,
-          boosting agro productivity. Join us in transforming agriculture in
-          Africa!
+          owners, consultants, and researchers to find valuable technologies and
+          methods that suit their needs easily. Our platform allows everyone in
+          the agricultural value chain to access, share, discuss, and
+          collaborate on technologies, boosting agro productivity. Join us in
+          transforming agriculture in Africa!
         </h2>
 
         <div className="mt-10">
@@ -100,7 +100,7 @@ export default function Home() {
               <ImageCard
                 id={1}
                 imageUrl="/images/image1.jpg"
-                title="Mazie Thresher"
+                title="Cowpea Thresher"
                 tags={
                   <div className="flex gap-4">
                     <ColorTag type="blue" name="Processing" />
