@@ -133,19 +133,6 @@ interface IInnovationDiscussion {
   Innovation?: IInnovationType;
 }
 
-interface IUserDiscussion {
-  createdAt: string;
-  dislikes: number;
-  id: string;
-  likes: number;
-  message: string;
-  title: string;
-  updatedAt: string;
-  userId: string;
-  user: any;
-  replies: any;
-}
-
 interface ICombinedDiscussion {
   createdAt: string;
   dislikes: number;
@@ -175,6 +162,44 @@ interface IUser {
   image: string;
   name: string;
   role: string;
+}
+
+interface IGetInnovationDiscussionResponse {
+  message: string;
+  comments: IInnovationComment[];
+  discussion: IInnovationDiscussion;
+}
+
+interface IGetInnovationDisussionReplies {
+  message: string;
+  replies: IInnovationCommentReply[];
+}
+
+interface IUserDiscussion {
+  createdAt: string;
+  dislikes: number;
+  id: string;
+  likes: number;
+  message: string;
+  replies: IUserDiscussionReply[];
+  title: string;
+  updatedAt: string;
+  userId: string;
+  user: IUser;
+  comments: IUserDiscussionReply[];
+}
+
+interface IUserDiscussionReply {
+  id: string;
+  message: string;
+  userId: string;
+  likes: number;
+  dislikes: number;
+  createdAt: string;
+  updatedAt: string;
+  user?: IUser;
+  discussionId: string;
+  Discussion?: IUserDiscussion;
 }
 
 // interface IInnovationComments {

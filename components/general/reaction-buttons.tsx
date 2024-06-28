@@ -1,19 +1,25 @@
 "use client";
-import { useAppContext } from "@/context/AppContext";
-import { InnovationComment } from "@prisma/client";
 import { message } from "antd";
-import axios from "axios";
 import { MessageSquareText, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useHandleReaction } from "@/hooks/useAddReaction";
+import { useFetchInnovationComments } from "@/hooks/useCommentsData";
 
 interface ReactionButtonProps {
   likes: number;
   dislikes: number;
-  replies: number;
-  type: "innovation" | "discussion" | "comment";
+  replies?: number;
+  type:
+    | "innovation"
+    | "userDiscussion"
+    | "innovationDiscussion"
+    | "innovationDiscussionReply"
+    | "userDiscussionReply";
   id: string;
   isCommentId?: string;
+  isReplyId?: string;
+  showReplyBtn?: boolean;
 }
 
 export const ReactionButtons = ({
@@ -23,91 +29,53 @@ export const ReactionButtons = ({
   type,
   id,
   isCommentId,
+  isReplyId,
+  showReplyBtn = true,
 }: ReactionButtonProps) => {
   const [myLikes, setMyLikes] = useState<number>(likes);
   const [myDisLikes, setMyDisLikes] = useState<number>(dislikes);
-  const [myComments, setMyComments] = useState<number>(replies);
-  const [isError, setIsError] = useState(false);
-  const [loading, setLoading] = useState(false);
   const [clickedIcon, setClickedIcon] = useState<"like" | "dislike" | null>(
     null
   );
-
   const router = useRouter();
 
-  const { commented, setCommented } = useAppContext();
+  const { mutate: handleReaction } = useHandleReaction();
+  const { data: comments, refetch: refetchComments } =
+    useFetchInnovationComments(id);
 
-  const handleReaction = (reaction: "like" | "dislike") => {
-    try {
-      setClickedIcon(reaction);
-      setTimeout(() => setClickedIcon(null), 500);
-      if (type === "innovation") {
-        handleInnovationReaction(reaction);
+  const onReaction = (reaction: "like" | "dislike") => {
+    setClickedIcon(reaction);
+    setTimeout(() => setClickedIcon(null), 500);
+
+    handleReaction(
+      { id, reaction, type, isCommentId, isReplyId },
+      {
+        onSuccess: (data) => {
+          console.log(data);
+          let customMessage = data?.message;
+          if (type === "innovationDiscussion") {
+            setMyLikes(data.comment.likes);
+            setMyDisLikes(data.comment.dislikes);
+          } else if (type === "innovationDiscussionReply") {
+            setMyLikes(data.replylikes);
+            setMyDisLikes(data.reply.dislikes);
+          } else {
+            setMyLikes(data.likes);
+            setMyDisLikes(data.dislikes);
+          }
+
+          if (reaction === "like") {
+            message.success(customMessage || "liked");
+          } else {
+            message.error(customMessage || "disliked");
+          }
+        },
+        onError: () => {
+          message.error("Network error");
+        },
       }
-      if (type === "discussion") {
-        handleInnovationDiscussionReaction(reaction);
-      }
-    } catch (error) {
-      console.log(error);
-    }
+    );
   };
-
-  const handleInnovationReaction = async (reaction: "like" | "dislike") => {
-    try {
-      const { data } = await axios.post(`/api/v1/innovation/${id}/reactions`, {
-        reaction,
-        innovation_id: id,
-      });
-      setMyDisLikes(data.dislikes);
-      setMyLikes(data.likes);
-
-      if (reaction == "like") {
-        message.success("liked");
-      } else {
-        message.error("disliked");
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleInnovationDiscussionReaction = async (
-    reaction: "like" | "dislike"
-  ) => {
-    try {
-      const { data } = await axios.post<{
-        comment: IInnovationComment;
-        message: string;
-      }>(`/api/v1/innovation/${id}/discussion/reaction`, {
-        commentId: isCommentId,
-        reaction,
-      });
-
-      setMyDisLikes(data.comment.dislikes);
-      setMyLikes(data.comment.likes);
-      setCommented(data.message);
-      message.info(data.message);
-    } catch (error) {
-      message.error("Network error");
-    }
-  };
-
-  const fetchComments = async () => {
-    if (type === "innovation") {
-      try {
-        const { data: comments } = await axios.get<{
-          message: string;
-          comments: IInnovationComment[];
-        }>(`/api/v1/innovation/${id}/discussion`);
-
-        setMyComments(comments.comments.length);
-      } catch (error) {}
-    }
-  };
-
-  useEffect(() => {
-    fetchComments();
-  }, [commented]);
 
   return (
     <div className="flex gap-x-2 md:gap-x-4">
@@ -117,7 +85,7 @@ export const ReactionButtons = ({
             className={`p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center transition-transform ${
               clickedIcon === "like" ? "rotate-icon" : ""
             }`}
-            onClick={() => handleReaction("like")}
+            onClick={() => onReaction("like")}
           >
             <ThumbsUp size={13} />
           </span>
@@ -129,7 +97,7 @@ export const ReactionButtons = ({
             className={`p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center transition-transform ${
               clickedIcon === "dislike" ? "rotate-icon" : ""
             }`}
-            onClick={() => handleReaction("dislike")}
+            onClick={() => onReaction("dislike")}
           >
             <ThumbsDown size={13} />
           </span>
@@ -137,22 +105,25 @@ export const ReactionButtons = ({
         </button>
 
         <button className="flex items-center text-xs">
-          {type === "discussion" ? (
-            <div
-              onClick={() => router.push(`/discussion/innovation/${id}`)}
-              className="flex items-center gap-1"
-            >
+          {!showReplyBtn ? (
+            <div className="flex items-center gap-1">
               <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
                 <MessageSquareText size={13} />
               </span>{" "}
-              Reply
+              {replies}
             </div>
           ) : (
             <>
-              <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-                <MessageSquareText size={13} />
-              </span>
-              <span>{myComments}</span>
+              {type === "innovationDiscussionReply" ? (
+                <></>
+              ) : (
+                <>
+                  <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
+                    <MessageSquareText size={13} />
+                  </span>
+                  <span>{comments?.length || 0}</span>
+                </>
+              )}
             </>
           )}
         </button>

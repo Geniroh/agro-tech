@@ -1,10 +1,24 @@
 import { RuleObject } from "antd/lib/form";
 import { countriesData } from "@/data/country-region";
 import { countryCurrencies } from "@/data/country-currency";
-
 import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
 
 const generalAfricanPhoneRegex = /^(\+2[0-9]{1,3}|002[0-9]{1,3})?[0-9]{8,12}$/;
+
+export const generateYears = () => {
+  const currentYear = new Date().getFullYear();
+  const yearsArray = Array.from(
+    { length: currentYear - 1970 + 1 },
+    (_, index) => 1970 + index
+  );
+  yearsArray.sort((a, b) => b - a);
+
+  return yearsArray;
+};
+
+export const generateCountryArray = () => {
+  return countriesData.map((country) => country.countryName);
+};
 
 export const createValidatePhoneNumber =
   (countryCode?: CountryCode) =>
@@ -33,37 +47,6 @@ export const createValidatePhoneNumber =
       }
     }
   };
-
-// export const validatePhoneNumber = (
-//   rule: RuleObject,
-//   value: any,
-//   callback: (error?: string) => void,
-//   countryCode?: CountryCode
-// ) => {
-//   if (!value) {
-//     callback();
-//     return;
-//   }
-
-//   if (countryCode) {
-//     const phoneNumber = parsePhoneNumberFromString(value, countryCode);
-//     if (phoneNumber && phoneNumber.isValid()) {
-//       callback();
-//       return;
-//     } else {
-//       callback("Please enter a valid African phone number");
-//       return;
-//     }
-//   } else {
-//     if (value.match(generalAfricanPhoneRegex)) {
-//       callback();
-//       return;
-//     } else {
-//       callback("Please enter a valid African phone number");
-//       return;
-//     }
-//   }
-// };
 
 export const getFirstName = (fullName: string | undefined | null) => {
   if (!fullName) return "";

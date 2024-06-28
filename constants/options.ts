@@ -42,3 +42,5 @@ export const OCCUPATION_OPTIONS = [
   { value: "Entrepreneur", label: "Entrepreneur" },
   { value: "Others", label: "Others" },
 ];
+
+export const phaseOptions = PRODUCT_PHASE_OPTIONS.map((phase) => phase.value);
