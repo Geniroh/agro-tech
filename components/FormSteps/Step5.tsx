@@ -177,7 +177,7 @@ const Step5: React.FC = () => {
                       className="w-full"
                       name={`inventor_${index + 1}_email`}
                       rules={[
-                        { required: true, message: "Required" },
+                        // { required: true, message: "Required" },
                         {
                           validator: validateEmail,
                           message: "Please enter a valid email address",
