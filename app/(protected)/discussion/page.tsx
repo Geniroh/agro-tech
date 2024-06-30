@@ -31,7 +31,6 @@ const DiscussionPage = () => {
   const [topic, setTopic] = useState("");
   const [body, setBody] = useState("");
   const [btnLoading, setBtnLoading] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
   const [innovationDiscussion, setInnovationDiscussion] = useState<
     IInnovationDiscussion[]
   >([]);
@@ -92,7 +91,7 @@ const DiscussionPage = () => {
           toTitle="Forum Page"
         />
 
-        <h1 className="w-full text-center text-4xl font-playfair font-semibold my-10">
+        <h1 className="w-full text-center text-2xl md:text-4xl font-playfair font-semibold my-10">
           Discussion Forum
         </h1>
 
@@ -139,7 +138,7 @@ const DiscussionPage = () => {
                   </div>
                 </div>
               </DialogTrigger>
-              <DialogContent className="max-w-[700px] max-h-[700px]">
+              <DialogContent className="max-w-[300px] md:max-w-[700px] max-h-[700px] mx-auto">
                 <DialogHeader>
                   <DialogTitle className="font-playfair text-[14px] md:text-[24px] leading-[20px] md:leading-[36px] text-[#888888]">
                     Create A Discussion

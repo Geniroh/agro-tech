@@ -23,8 +23,10 @@ export function TagSelect3({
     }
   };
   return (
-    <div className="bg-[#fafafa] rounded-xl flex flex-col justify-between items-center px-4 w-fit overflow-hidden py-2 relative">
-      <span className="text-[14px] text-muted-foreground">{name} :</span>
+    <div className="bg-[#fafafa] rounded-xl flex flex-col justify-between items-center px-1 md:px-4 w-fit overflow-hidden py-2 relative">
+      <span className="text-[12px] md:text-[14px] text-muted-foreground">
+        {name} :
+      </span>
       <Select
         onChange={onValueChange}
         variant="borderless"

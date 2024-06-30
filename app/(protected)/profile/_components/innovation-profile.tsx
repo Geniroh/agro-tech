@@ -5,6 +5,7 @@ import { DateDifference } from "@/components/general/date-diff-calculator";
 import { MessageSquareText, ThumbsDown, ThumbsUp } from "lucide-react";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const InnovationProfileCard = ({
   innovation,
@@ -25,11 +26,15 @@ const InnovationProfileCard = ({
         className="flex flex-col gap-3 cursor-pointer"
         onClick={handleNavigation}
       >
-        <div className="flex gap-6 items-center justify-between">
-          <div className="flex items-center gap-3 ">
-            <div className="w-[32px] h-[32px] rounded-[8px] bg-mygreen flex justify-center items-center text-white"></div>
-            <div>{innovation.productName}</div>
-            Posted <DateDifference date={innovation.createdAt} />
+        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
+          <div className="flex flex-col items-start md:items-center gap-3 ">
+            <div className="flex items-center gap-3">
+              <div className="w-[32px] h-[32px] rounded-[8px] bg-mygreen flex justify-center items-center text-white"></div>
+              <div>{innovation.productName}</div>
+            </div>
+            <div className="flex items-center gap-1 text-muted-foreground text-[14px]">
+              Posted <DateDifference date={innovation.createdAt} />
+            </div>
           </div>
 
           <div className="">
@@ -111,18 +116,25 @@ export const InnovationProfile = () => {
 
   const handleGetError = (err: any) => message.error("Network Error!");
 
-  const { data } = useGetUserInnovation(handleGetSuccess, handleGetError);
+  const { data, isLoading } = useGetUserInnovation(
+    handleGetSuccess,
+    handleGetError
+  );
+
+  if (isLoading) {
+    return <Skeleton className="w-full h-[200px]"></Skeleton>;
+  }
 
   return (
     <div>
       <div className="mt-10 pb-4 border-b flex justify-between">
-        <div className="flex gap-4">
+        <div className="flex gap-2 md:gap-4">
           <button
             className={`${
               activeSection == 1
                 ? "text-white bg-mygreen"
                 : "bg-transparent text-black"
-            } py-1 px-6 rounded-3xl text-[14px]`}
+            } py-0 px-3 md:py-1 md:px-6 rounded-3xl text-[14px]`}
             onClick={() => setActiveSection(1)}
           >
             All
@@ -148,7 +160,7 @@ export const InnovationProfile = () => {
             Pending Approval
           </button>
         </div>
-        <div>
+        <div className="hidden md:flex">
           <TagSelect name="Filter By" options={["Recent", "Older"]} />
         </div>
       </div>

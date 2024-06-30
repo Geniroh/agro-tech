@@ -1,6 +1,9 @@
 import React from "react";
 import { StackedProgressBar } from "@/components/data/charts/StackedProgressBar";
-import { ProgressLineP } from "@/components/data/charts/ProgressLineP";
+import {
+  ProgressLineMobileP,
+  ProgressLineP,
+} from "@/components/data/charts/ProgressLineP";
 import {
   countProductPhaseOccurrences,
   knumberformatter,
@@ -45,7 +48,7 @@ export const InnovationBar = ({
         Total innovations and implementation phase
       </h1>
 
-      <div className="flex gap-x-4 items-center">
+      <div className="flex gap-x-4 items-start md:items-center">
         <div className="h-full flex flex-col justify-end">
           <div className="text-[30px] font-bold leading-[40px]">
             {knumberformatter(count)}
@@ -54,8 +57,12 @@ export const InnovationBar = ({
         </div>
 
         <div className="w-full">
-          {/* <StackedProgressBar values={values} colors={colors} /> */}
-          <ProgressLineP data={productPhaseData} />
+          <div className="hidden md:flex">
+            <ProgressLineP data={productPhaseData} />
+          </div>
+          <div className="md:hidden">
+            <ProgressLineMobileP data={productPhaseData} />
+          </div>
         </div>
       </div>
     </div>

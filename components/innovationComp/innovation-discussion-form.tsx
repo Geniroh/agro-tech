@@ -44,10 +44,8 @@ export const InnovationDiscussionForum = ({
   };
 
   const showMoreComments = () => {
-    setDisplayedComments((prev) => prev + 10); // Increase the number of displayed comments by 10
+    setDisplayedComments((prev) => prev + 10);
   };
-
-  console.log(comments);
 
   return (
     <div className="mt-5">
@@ -74,7 +72,7 @@ export const InnovationDiscussionForum = ({
         <div className="md:ml-10 space-y-10">
           {myComments.slice(0, displayedComments).map((comment, i) => (
             <div
-              className="min-h-[56px] flex items-end justify-between"
+              className="min-h-[56px] flex flex-col md:flex-row items-start md:items-end justify-between"
               key={i}
             >
               <div className="flex items-center gap-3">

@@ -59,7 +59,7 @@ export const DiscussionInnovationComment = ({
   return (
     <div>
       <div className="flex flex-col gap-3">
-        <div className="flex gap-6 items-center">
+        <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
           <div className="flex items-center gap-3">
             <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
               {getFirstName(comment.username)[0] || ""}

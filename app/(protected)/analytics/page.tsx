@@ -14,6 +14,7 @@ import { useGetAnalyticsInnovation } from "@/hooks/useAnalyticsData";
 import { TagSelect3 } from "@/components/general/tag-select3";
 import { Button } from "@/components/ui/button";
 import { IoMdHelpCircle } from "react-icons/io";
+import { ClipLoader } from "react-spinners";
 
 export default function AnalyticsPage() {
   const [innovation, setInnovations] = useState<IInnovationType[]>([]);
@@ -92,80 +93,95 @@ export default function AnalyticsPage() {
   };
 
   return (
-    <main className="lg:h-screen relative">
+    <main className="w-full h-screen relative">
       <Navbar />
-
-      <h1 className="text-[16px] leading-[24px] font-semibold text-center my-5">
-        Analytics
+      <h1 className="text-[16px] leading-[24px] h-[30px] font-semibold text-center my-5">
+        {isLoading ? (
+          <span>
+            <ClipLoader size={15} /> Getting Innovations Data...
+          </span>
+        ) : (
+          "Analytics"
+        )}
       </h1>
 
-      <div className="w-full md:h-[500px] container">
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          <div className="w-full ">
-            <div
-              className="w-full h-[70px] md:flex justify-between md:px-[10px] mb-5 gap-x-2 hidden"
-              ref={ref1}
-            >
-              <TagSelect3
-                name="Filter By"
-                optionsName="Date"
-                options={yearOptions}
-                onValueChange={(value) => handleTagSelectChange("year", value)}
-                loading={isLoading}
-              />
-              <TagSelect3
-                name="Filter By"
-                optionsName="Value Chain"
-                options={valueOptions}
-                onValueChange={(value) => handleTagSelectChange("chain", value)}
-                loading={isLoading}
-              />
-              <TagSelect3
-                name="Filter By"
-                optionsName="Location"
-                options={countryOPtions}
-                onValueChange={(value) =>
-                  handleTagSelectChange("country", value)
-                }
-                loading={isLoading}
-              />
-            </div>
-            <div ref={ref2} className="h-full">
-              <DynamicChloropethMap innovations={innovation} />
+      <div className="container md:h-[calc(100vh-100px)] pb-10 md:pb-0">
+        <div className="flex flex-col md:flex-row gap-6 md:h-[90%] h-full">
+          <div className="h-full w-full md:w-[40%]">
+            <div className="w-full h-full">
+              <div
+                className="w-full h-[70px] flex justify-between md:px-[10px] mb-2 gap-x-2"
+                ref={ref1}
+              >
+                <TagSelect3
+                  name="Filter By"
+                  optionsName="Date"
+                  options={yearOptions}
+                  onValueChange={(value) =>
+                    handleTagSelectChange("year", value)
+                  }
+                  loading={isLoading}
+                />
+                <TagSelect3
+                  name="Filter By"
+                  optionsName="Chain"
+                  options={valueOptions}
+                  onValueChange={(value) =>
+                    handleTagSelectChange("chain", value)
+                  }
+                  loading={isLoading}
+                />
+                <TagSelect3
+                  name="Filter By"
+                  optionsName="Location"
+                  options={countryOPtions}
+                  onValueChange={(value) =>
+                    handleTagSelectChange("country", value)
+                  }
+                  loading={isLoading}
+                />
+                <div ref={ref2}></div>
+              </div>
+              <div className="h-[calc(100%-85px)] hidden md:block">
+                <DynamicChloropethMap innovations={innovation} />
+              </div>
             </div>
           </div>
-          <div className="col-span-2 flex flex-col gap-y-4 mb-10 h-full border border-blue-700">
-            <div ref={ref3}>
-              <InnovationBar innovations={innovation} count={count} />
-            </div>
-            <div className="flex flex-col md:flex-row gap-4 h-full">
-              <div
-                className="md:w-[40%] h-full border border-red-700"
-                ref={ref4}
-              >
-                <DonutChartCard innovations={innovation} />
+          <div className="md:w-[60%] w-full mx-auto h-full">
+            <div className="flex flex-col gap-4">
+              <div ref={ref3} className="w-full">
+                <InnovationBar innovations={innovation} count={count} />
               </div>
-              <div className=" md:w-[60%] h-full" ref={ref5}>
-                <BarChartCard
-                  title="Innovation per year"
-                  subtitle="Keep track of revenue performance for the beach house for the last 12 month"
-                  data={barChartData}
-                  dataKey="value"
-                  height={500}
-                  cellFill="#61ae61"
-                  XdataKey="name"
-                  fill="#475467"
-                  Ylabel="Revenue (N)"
-                  key={1}
-                  barWidth={32}
-                  className="h-fit"
-                />
+              <div className="flex flex-col md:flex-row gap-4 h-full">
+                <div
+                  className="md:w-[40%] max-h-[500px] min-h-[300px] h-full"
+                  ref={ref4}
+                >
+                  <DonutChartCard innovations={innovation} />
+                </div>
+                <div ref={ref2} className="md:hidden h-[400px] max-h-[550px]">
+                  <DynamicChloropethMap innovations={innovation} />
+                </div>
+                <div className="md:w-[60%] flex" ref={ref5}>
+                  <BarChartCard
+                    title="Innovation per year"
+                    subtitle="Keep track of revenue performance for the beach house for the last 12 month"
+                    data={barChartData}
+                    dataKey="value"
+                    height={500}
+                    cellFill="#61ae61"
+                    XdataKey="name"
+                    fill="#475467"
+                    Ylabel="Revenue (N)"
+                    key={1}
+                    barWidth={32}
+                  />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
       <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
       <Button
         className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0"

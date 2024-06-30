@@ -51,7 +51,6 @@ export const ReactionButtons = ({
       { id, reaction, type, isCommentId, isReplyId },
       {
         onSuccess: (data) => {
-          console.log(data);
           let customMessage = data?.message;
           if (type === "innovationDiscussion") {
             setMyLikes(data.comment.likes);

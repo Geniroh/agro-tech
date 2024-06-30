@@ -51,3 +51,41 @@ export const ProgressLineP: React.FC<ProgressLineProps> = ({ data }) => {
     </div>
   );
 };
+
+export const ProgressLineMobileP: React.FC<ProgressLineProps> = ({ data }) => {
+  const total = data.reduce((sum, item) => sum + item.value, 0);
+
+  return (
+    <div className="grid grid-cols-2">
+      <div className="flex flex-col items-center justify-start">
+        {data.map((item, index) => (
+          <div
+            key={index}
+            className="w-[25px]"
+            style={{
+              height: `${(item.value / total) * 100}%`,
+              backgroundColor: item.color || getRandomColor(),
+            }}
+            title={item.title}
+          ></div>
+        ))}
+      </div>
+      <div className="flex flex-col gap-6">
+        {data.map((item, i) => (
+          <div className="mb-1 flex flex-col items-start" key={i}>
+            <div className="text-[14px] font-bold text-center">
+              {knumberformatter(item.value)}
+            </div>
+            <div className="flex gap-x-1 items-center">
+              <span
+                className={`w-[10px] h-[10px] rounded-md `}
+                style={{ background: item.color }}
+              ></span>
+              <span className="text-[10px]">{item.title}</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
