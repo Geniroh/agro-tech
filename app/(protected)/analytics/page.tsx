@@ -188,7 +188,8 @@ export default function AnalyticsPage() {
         variant="outline"
         onClick={() => setOpen(true)}
       >
-        <IoMdHelpCircle className="text-[18px]" /> <span>Help</span>
+        <IoMdHelpCircle className="text-[18px] text-mygreen" />{" "}
+        <span className="text-mygreen">Help</span>
       </Button>
     </main>
   );

@@ -201,11 +201,13 @@ const InnovationPage = () => {
                 --- No data ----
               </div>
             ) : (
-              <RenderMedia
-                media={data?.productMedia[0]}
-                className="w-full  h-[450px] object-cover"
-                key={data?.productMedia[0].name}
-              />
+              <div className="flex justify-center max-w-[900px] h-[350px] md:h-[550px] mx-auto">
+                <RenderMedia
+                  media={data?.productMedia[0]}
+                  className="w-[1000px] h-[600px]"
+                  key={data?.productMedia[0].name}
+                />
+              </div>
             )}
           </div>
 

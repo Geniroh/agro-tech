@@ -15,7 +15,12 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning={true}>
       <head>
-        <link rel="shortcut icon" href="favicon.ico" type="image/x-icon" />
+        <title>Stavmia</title>
+        <meta
+          name="description"
+          content="Sustainable Technologies for Agricultural Value-Chain Mechanization in Africa."
+        />
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon" />
       </head>
       <body className={`font-open-sans bg-white w-screen overflow-x-hidden`}>
         <SessionProvider>

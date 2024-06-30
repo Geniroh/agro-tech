@@ -1,5 +1,4 @@
 import React from "react";
-import { StackedProgressBar } from "@/components/data/charts/StackedProgressBar";
 import {
   ProgressLineMobileP,
   ProgressLineP,
