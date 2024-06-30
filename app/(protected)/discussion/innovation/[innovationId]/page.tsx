@@ -96,17 +96,19 @@ const InnovationDiscussionPage = () => {
             />
 
             <div className="max-w-[782px] mx-auto">
-              <div className="flex items-center justify-between">
-                <div className="flex gap-2 items-center">
-                  <span>{data?.productName}</span>
+              <div className="flex flex-col md:flex-col items-start md:items-center justify-between">
+                <div className="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                  <span className="text-[18px] font-semibold">
+                    {data?.productName}
+                  </span>
                   <span className="text-muted-foreground text-[14px] flex items-center gap-2">
-                    posted <DateDifference date={data?.createdAt || ""} />
+                    Posted <DateDifference date={data?.createdAt || ""} />
                   </span>
                 </div>
 
                 <Link
                   href={`/innovations/${data?.id}`}
-                  className="text-mygreen"
+                  className="text-mygreen flex justify-end w-full"
                 >
                   Visit innovation page
                 </Link>

@@ -1,33 +1,27 @@
 "use client";
+import React, { forwardRef, useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FaUser } from "react-icons/fa";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { LoginButton } from "@/components/auth/login-button";
 import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
-import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
 import { ClipLoader } from "react-spinners";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
-  {
-    href: "/",
-    name: "Home",
-  },
-  {
-    href: "/discussion",
-    name: "Discussion forum",
-  },
-  {
-    href: "/analytics",
-    name: "Analytics",
-  },
+  { href: "/", name: "Home" },
+  { href: "/discussion", name: "Discussion forum" },
+  { href: "/analytics", name: "Analytics" },
 ];
 
-export const Navbar = () => {
+interface NavbarProps {
+  ref2?: any;
+}
+
+const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -56,7 +50,10 @@ export const Navbar = () => {
         </div>
 
         <div>
-          <div className="hidden lg:flex gap-6 text-[16px] justify-center">
+          <div
+            className="hidden lg:flex gap-6 text-[16px] justify-center"
+            ref={props.ref2}
+          >
             {navLinks.map((link) => {
               const isActive =
                 link.href === "/"
@@ -79,20 +76,18 @@ export const Navbar = () => {
           </div>
         </div>
 
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center" ref={ref}>
           <div className="flex gap-x-3">
             {session ? (
-              <>
-                <div className="flex items-center gap-x-3">
-                  <Button
-                    className="dark:text-white hidden md:flex"
-                    onClick={() => router.push("/upload")}
-                  >
-                    Upload Innovation
-                  </Button>
-                  <UserDropdownMenu />
-                </div>
-              </>
+              <div className="flex items-center gap-x-3">
+                <Button
+                  className="dark:text-white hidden md:flex"
+                  onClick={() => router.push("/upload")}
+                >
+                  Upload Innovation
+                </Button>
+                <UserDropdownMenu />
+              </div>
             ) : (
               <>
                 {status === "loading" ? (
@@ -133,7 +128,7 @@ export const Navbar = () => {
       >
         <div className="flex justify-end p-4">
           <X
-            className=" text-[24px] font-light leading-[32px] cursor-pointer"
+            className="text-[24px] font-light leading-[32px] cursor-pointer"
             onClick={() => setIsOpen(false)}
           />
         </div>
@@ -155,7 +150,6 @@ export const Navbar = () => {
                 {link.name}
               </Link>
             ))}
-
             <Link
               key={12133}
               href={"/innovations"}
@@ -167,7 +161,6 @@ export const Navbar = () => {
             >
               View Innovation
             </Link>
-
             <Link
               key={12}
               href={"/upload"}
@@ -184,4 +177,8 @@ export const Navbar = () => {
       </div>
     </div>
   );
-};
+});
+
+Navbar.displayName = "Navbar"; // Add a display name for better debugging
+
+export { Navbar };

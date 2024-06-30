@@ -26,7 +26,7 @@ const UserPosts = () => {
                 onClick={() => router.push(`discussion/forum/${discussion.id}`)}
               >
                 <div className="flex flex-col gap-3 cursor-pointer">
-                  <div className="flex gap-6 items-center">
+                  <div className="flex flex-col md:flex-row items-start gap-2 md:gap-6 md:items-center">
                     <div className="flex items-center gap-3">
                       <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white"></div>
                       <div>You</div>

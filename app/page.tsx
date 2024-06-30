@@ -9,6 +9,9 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { IoMdHelpCircle } from "react-icons/io";
+import { Tour } from "antd";
+import { useRef, useState } from "react";
+import type { TourProps } from "antd";
 
 const innovations = [
   {
@@ -76,9 +79,39 @@ const settings = {
 };
 
 export default function Home() {
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
+  const ref4 = useRef(null);
+
+  const [open, setOpen] = useState<boolean>(false);
+
+  const steps: TourProps["steps"] = [
+    {
+      title: "Sign in",
+      description:
+        "Sign in to access more innovations, the Discussion forum & the Analytics dashboard.",
+      target: () => ref1.current,
+    },
+    {
+      title: "Innovations",
+      description: "Click to see more info about this innovation",
+      target: () => ref2.current,
+    },
+    {
+      title: "Discussion Forums",
+      description: "Exchange ideas with other agro-professionals like you.",
+      target: () => ref3.current,
+    },
+    {
+      title: "Analytics",
+      description: "See the latest trends on agro-technologies in Africa",
+      target: () => ref3.current,
+    },
+  ];
   return (
     <div>
-      <Navbar />
+      <Navbar ref={ref1} ref2={ref3} />
       <main className="container mx-auto">
         <h1 className="text-[24px] md:text-[32px] font-jakara font-bold  mt-14 leading-[32px] md:leading-[42px] text-center md:text-left">
           Sustainable Technologies for Agricultural Value-Chain Mechanization in
@@ -94,7 +127,9 @@ export default function Home() {
           transforming agriculture in Africa!
         </h2>
 
-        <div className="mt-10">
+        <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
+
+        <div className="mt-10" ref={ref2}>
           <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
             <div className="col-span-2">
               <ImageCard
@@ -178,9 +213,11 @@ export default function Home() {
           <CollectionTable />
         </div>
       </main>
+
       <Button
         className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0"
         variant="outline"
+        onClick={() => setOpen(true)}
       >
         <IoMdHelpCircle className="text-[18px]" /> <span>Help</span>
       </Button>

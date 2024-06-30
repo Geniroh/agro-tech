@@ -67,7 +67,7 @@ export const UserDetailsForm = () => {
   return (
     <div>
       <div className="mt-10 pb-4 border-b flex justify-between">
-        <div className="flex gap-4">
+        <div className="flex flex-col md:flex-row gap-4">
           <button
             className={`${
               activeSection == 1

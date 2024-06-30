@@ -245,7 +245,7 @@ const BarChartCard = ({
       className={`bg-myoffwhie shadow-[15px] rounded-lg h-full flex flex-col justify-between  w-full p-5 ${className}`}
     >
       <span className="text-[#101828] text-[14px] font-semibold">{title}</span>
-      <ResponsiveContainer width="100%" height="90%">
+      <ResponsiveContainer width="100%" height="90%" minHeight="200px">
         <BarChart data={data} margin={{ top: 5, left: -22, bottom: 5 }}>
           <ReferenceLine y={0} stroke="#77808e" />
           <XAxis

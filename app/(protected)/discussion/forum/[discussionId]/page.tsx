@@ -22,7 +22,6 @@ const UserDiscussionPage = () => {
   const [comments, setComments] = useState<IInnovationComment[]>([]);
 
   const handleGetSuccess = (data: IUserDiscussion) => {
-    console.log(data);
     setDiscussion(data);
   };
   const handleGetError = (error: unknown) =>
