@@ -38,38 +38,12 @@ export const InnovationReplyCard = ({
           </div>
         </div>
 
-        <div className="text-sm ">{discussion?.comments[0]?.message}</div>
+        {/* <div className="text-sm ">{discussion?.comments[0]?.message}</div> */}
 
         <div className="flex gap-x-4">
-          {/* <button className="flex items-center text-xs">
-            <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-              <ThumbsUp size={13} />
-            </span>
-            <span>{discussion?.likes}</span>
-          </button>
-
-          <button className="flex items-center text-xs">
-            <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-              <ThumbsDown size={13} />
-            </span>
-            <span>{discussion?.dislikes}</span>
-          </button>
-
-          <button
-            className="flex items-center text-xs cursor-pointer"
-            onClick={() =>
-              router.push(`/discussion/innovation/${discussion.innovation_id}`)
-            }
-          >
-            <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
-              <MessageSquareText size={13} />
-            </span>
-            <span>{discussion?.comments?.length}</span>
-          </button> */}
-
           <ReactionButtons
-            dislikes={discussion.dislikes}
-            likes={discussion.likes}
+            dislikes={discussion.Innovation?.dislikes || discussion.likes}
+            likes={discussion.Innovation?.likes || discussion.likes}
             type="innovation"
             id={discussion.innovation_id}
             replies={discussion?.comments?.length}

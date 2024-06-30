@@ -1,5 +1,4 @@
 import * as React from "react";
-
 import {
   Select,
   SelectContent,
@@ -9,6 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { IoCloseCircleSharp } from "react-icons/io5";
 
 export function TagSelect({
   name,
@@ -66,9 +66,18 @@ export function TagSelect2({
   onValueChange?: ((value: string) => void) | undefined;
   value?: string;
 }) {
+  const handleClear = () => {
+    if (onValueChange) {
+      onValueChange(""); // Set the value to an empty string
+    }
+  };
   return (
-    <div className="bg-[#fafafa] rounded-xl flex flex-col justify-between items-center px-4 w-fit overflow-hidden py-2">
+    <div className="bg-[#fafafa] rounded-xl flex flex-col justify-between items-center px-4 w-fit overflow-hidden py-2 relative">
       <span className="text-[14px] text-muted-foreground">{name} :</span>
+      <button className="absolute top-[3px] right-[3px]" onClick={handleClear}>
+        {/* USE THIS TO CLEAR */}
+        <IoCloseCircleSharp />
+      </button>
       <Select onValueChange={onValueChange} value={value}>
         <SelectTrigger className="w-fit shadow-none focus-visible:ring-0 border-none">
           <SelectValue placeholder={optionsName} className="mr-2 text-[12px]" />

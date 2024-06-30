@@ -67,7 +67,7 @@ export const ReactionButtons = ({
           if (reaction === "like") {
             message.success(customMessage || "liked");
           } else {
-            message.error(customMessage || "disliked");
+            message.info(customMessage || "disliked");
           }
         },
         onError: () => {
