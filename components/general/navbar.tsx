@@ -8,7 +8,6 @@ import { LoginButton } from "@/components/auth/login-button";
 import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
-import { ClipLoader } from "react-spinners";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [
@@ -89,31 +88,28 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
                 <UserDropdownMenu />
               </div>
             ) : (
-              <>
-                {status === "loading" ? (
+              <div className="flex items-center gap-3">
+                <LoginButton>
                   <Button
                     variant="outline"
-                    className="dark:text-white"
-                    disabled={true}
+                    className="hidden md:flex"
+                    disabled={status === "loading"}
                   >
-                    <ClipLoader size={13} />
+                    Sign In
                   </Button>
-                ) : (
-                  <>
-                    <LoginButton>
-                      <Button variant="outline" className="hidden md:flex">
-                        Sign In
-                      </Button>
-                      <Button className="bg-mygreen md:hidden">Sign In</Button>
-                    </LoginButton>
-                    <RegisterButton>
-                      <Button className="hidden md:flex gap-x-2 bg-mygreen">
-                        Create an account <FaUser />
-                      </Button>
-                    </RegisterButton>
-                  </>
-                )}
-              </>
+                  <Button
+                    className="bg-mygreen md:hidden"
+                    disabled={status === "loading"}
+                  >
+                    Sign In
+                  </Button>
+                </LoginButton>
+                <RegisterButton>
+                  <Button className="hidden md:flex gap-x-2 bg-mygreen">
+                    Create an account <FaUser />
+                  </Button>
+                </RegisterButton>
+              </div>
             )}
           </div>
         </div>
@@ -179,6 +175,6 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
   );
 });
 
-Navbar.displayName = "Navbar"; // Add a display name for better debugging
+Navbar.displayName = "Navbar";
 
 export { Navbar };

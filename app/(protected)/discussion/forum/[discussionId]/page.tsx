@@ -10,9 +10,9 @@ import { Form, Input, message } from "antd";
 import NoContent from "@/components/loaders/no-content";
 import { IoMdSend } from "react-icons/io";
 import { ReactionButtons } from "@/components/general/reaction-buttons";
-import { DiscussionInnovationComment } from "@/components/discussionComp/discussion-innovation-comment";
 import { useAddUserDiscussionComment } from "@/hooks/useAddDiscussion";
 import { DiscussionUserReply } from "@/components/discussionComp/discussion-user-comment";
+import UserAvatar from "@/components/user-avatar";
 
 const UserDiscussionPage = () => {
   const params = useParams<{ discussionId: string }>();
@@ -85,7 +85,8 @@ const UserDiscussionPage = () => {
 
           <div className="max-w-[782px] mx-auto">
             <div className="flex items-center gap-x-4">
-              <div className="w-[32px] h-[32px] rounded-full bg-mygreen"></div>
+              {/* <div className="w-[32px] h-[32px] rounded-full bg-mygreen"></div> */}
+              <UserAvatar email={discussion?.user?.email || ""} />
               <div>{discussion?.user?.name || discussion?.user?.email}</div>
               <div className="text-[14px]">Created A Discussion posted </div>
               <div className="text-muted-foreground text-[14px]">

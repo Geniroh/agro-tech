@@ -2,6 +2,7 @@ import React from "react";
 import { DateDifference } from "../general/date-diff-calculator";
 import { useRouter } from "next/navigation";
 import { ReactionButtons } from "../general/reaction-buttons";
+import UserAvatar from "@/components/user-avatar";
 
 export const InnovationReplyCard = ({
   discussion,
@@ -9,6 +10,8 @@ export const InnovationReplyCard = ({
   discussion: IInnovationDiscussion;
 }) => {
   const router = useRouter();
+
+  console.log(discussion);
 
   return (
     <div className="py-4 pt-6 border-b">
@@ -21,8 +24,11 @@ export const InnovationReplyCard = ({
         <div className="flex items-center gap-x-3 ">
           <div
             className="w-[30px] h-[30px] bg-center bg-cover bg-no-repeat rounded-sm"
-            style={{ background: "#329632" }}
+            style={{
+              backgroundImage: `url(${discussion.Innovation?.productMedia[0].url})`,
+            }}
           ></div>
+
           <div
             className="flex flex-wrap gap-x-4 items-center cursor-pointer"
             onClick={() =>

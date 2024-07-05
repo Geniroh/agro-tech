@@ -2,6 +2,7 @@ import React from "react";
 import { DateDifference } from "@/components/general/date-diff-calculator";
 import { ReactionButtons } from "@/components/general/reaction-buttons";
 import Link from "next/link";
+import UserAvatar from "@/components/user-avatar";
 
 export const CombinedReplyCard = ({
   discussion,
@@ -14,10 +15,7 @@ export const CombinedReplyCard = ({
         <div className="w-full flex flex-col gap-y-2">
           <Link href={`/discussion/forum/${discussion?.id}`}>
             <div className="flex items-center gap-x-3 cursor-pointer">
-              <div
-                className="w-[30px] h-[30px] rounded-full bg-center bg-cover bg-no-repeat"
-                style={{ background: "#329632" }}
-              ></div>
+              <UserAvatar email={discussion?.user?.email} />
               <div className="flex flex-wrap gap-x-2 items-center">
                 <h1 className="text-[16px] leading-[24px] font-semibold text-myblack">
                   {discussion?.user?.name}
@@ -51,7 +49,9 @@ export const CombinedReplyCard = ({
             <div className="flex items-center gap-x-3 ">
               <div
                 className="w-[30px] h-[30px] bg-center bg-cover bg-no-repeat rounded-sm"
-                style={{ background: "#329632" }}
+                style={{
+                  backgroundImage: `url(${discussion.Innovation?.productMedia[0].url})`,
+                }}
               ></div>
               <div className="flex flex-wrap gap-x-4 items-center">
                 <h1 className="text-lg font-semibold text-myblack">
