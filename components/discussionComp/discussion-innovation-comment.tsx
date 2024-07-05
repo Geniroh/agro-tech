@@ -6,6 +6,7 @@ import { DateDifference } from "../general/date-diff-calculator";
 import { useFetchInnovationReplies } from "@/hooks/useRepliesData";
 import { useAddDiscussionReply } from "@/hooks/useAddComment";
 import { ReactionButtons } from "../general/reaction-buttons";
+import UserAvatar from "@/components/user-avatar";
 
 export const DiscussionInnovationComment = ({
   comment,
@@ -61,9 +62,10 @@ export const DiscussionInnovationComment = ({
       <div className="flex flex-col gap-3">
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center">
           <div className="flex items-center gap-3">
-            <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
+            {/* <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
               {getFirstName(comment.username)[0] || ""}
-            </div>
+            </div> */}
+            <UserAvatar email={comment.email} />
             <div>{comment.username || comment.email}</div>
           </div>
 
@@ -151,9 +153,10 @@ export const DiscussionInnovationReply = ({
       <div className="flex flex-col gap-3">
         <div className="flex gap-6 items-center">
           <div className="flex items-center gap-3">
-            <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
+            {/* <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
               {getFirstName(reply?.User?.name || "")[0] || "I"}
-            </div>
+            </div> */}
+            <UserAvatar email={reply?.User?.email} />
             <div>{reply?.User?.name || reply?.User?.email}</div>
             <div className="text-muted-foreground text-[14px]">Replied</div>
           </div>

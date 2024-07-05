@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
 import { ClipLoader } from "react-spinners";
 import { Menu, X } from "lucide-react";
+import { Tooltip } from "antd";
 
 const navLinks = [
   { href: "/", name: "Home" },
@@ -90,7 +91,7 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
               </div>
             ) : (
               <>
-                {status === "loading" ? (
+                {/* {status === "loading" ? (
                   <Button
                     variant="outline"
                     className="dark:text-white"
@@ -98,8 +99,18 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
                   >
                     <ClipLoader size={13} />
                   </Button>
-                ) : (
-                  <>
+                ) : ( */}
+                <>
+                  <Tooltip
+                    title={
+                      <span>
+                        Signing in <ClipLoader size={13} />
+                      </span>
+                    }
+                    trigger="click"
+                    open
+                    className="flex gap-3 items-center"
+                  >
                     <LoginButton>
                       <Button variant="outline" className="hidden md:flex">
                         Sign In
@@ -111,9 +122,34 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
                         Create an account <FaUser />
                       </Button>
                     </RegisterButton>
-                  </>
-                )}
+                  </Tooltip>
+                </>
               </>
+              // <>
+              //   {status === "loading" ? (
+              //     <Button
+              //       variant="outline"
+              //       className="dark:text-white"
+              //       disabled={true}
+              //     >
+              //       <ClipLoader size={13} />
+              //     </Button>
+              //   ) : (
+              //     <>
+              //       <LoginButton>
+              //         <Button variant="outline" className="hidden md:flex">
+              //           Sign In
+              //         </Button>
+              //         <Button className="bg-mygreen md:hidden">Sign In</Button>
+              //       </LoginButton>
+              //       <RegisterButton>
+              //         <Button className="hidden md:flex gap-x-2 bg-mygreen">
+              //           Create an account <FaUser />
+              //         </Button>
+              //       </RegisterButton>
+              //     </>
+              //   )}
+              // </>
             )}
           </div>
         </div>
@@ -179,6 +215,6 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
   );
 });
 
-Navbar.displayName = "Navbar"; // Add a display name for better debugging
+Navbar.displayName = "Navbar";
 
 export { Navbar };

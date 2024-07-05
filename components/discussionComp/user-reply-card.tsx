@@ -1,8 +1,8 @@
 import React from "react";
-import { ThumbsUp, ThumbsDown, MessageSquareText } from "lucide-react";
 import { DateDifference } from "@/components/general/date-diff-calculator";
 import { useRouter } from "next/navigation";
 import { ReactionButtons } from "@/components/general/reaction-buttons";
+import UserAvatar from "@/components/user-avatar";
 
 export const UserReplyCard = ({
   discussion,
@@ -17,10 +17,7 @@ export const UserReplyCard = ({
           className="flex items-center gap-x-3 cursor-pointer"
           onClick={() => router.push(`/discussion/forum/${discussion.id}`)}
         >
-          <div
-            className="w-[30px] h-[30px] rounded-full bg-center bg-cover bg-no-repeat"
-            style={{ background: "#329632" }}
-          ></div>
+          <UserAvatar email={discussion?.user?.email} />
           <div className="flex flex-wrap gap-x-2 items-center">
             <h1 className="text-[16px] leading-[24px] font-semibold text-myblack">
               {discussion?.user?.name}
