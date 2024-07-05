@@ -8,9 +8,7 @@ import { LoginButton } from "@/components/auth/login-button";
 import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "../auth/user-menu-button";
-import { ClipLoader } from "react-spinners";
 import { Menu, X } from "lucide-react";
-import { Tooltip } from "antd";
 
 const navLinks = [
   { href: "/", name: "Home" },
@@ -90,66 +88,28 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
                 <UserDropdownMenu />
               </div>
             ) : (
-              <>
-                {/* {status === "loading" ? (
+              <div className="flex items-center gap-3">
+                <LoginButton>
                   <Button
                     variant="outline"
-                    className="dark:text-white"
-                    disabled={true}
+                    className="hidden md:flex"
+                    disabled={status === "loading"}
                   >
-                    <ClipLoader size={13} />
+                    Sign In
                   </Button>
-                ) : ( */}
-                <>
-                  <Tooltip
-                    title={
-                      <span>
-                        Signing in <ClipLoader size={13} />
-                      </span>
-                    }
-                    trigger="click"
-                    open
-                    className="flex gap-3 items-center"
+                  <Button
+                    className="bg-mygreen md:hidden"
+                    disabled={status === "loading"}
                   >
-                    <LoginButton>
-                      <Button variant="outline" className="hidden md:flex">
-                        Sign In
-                      </Button>
-                      <Button className="bg-mygreen md:hidden">Sign In</Button>
-                    </LoginButton>
-                    <RegisterButton>
-                      <Button className="hidden md:flex gap-x-2 bg-mygreen">
-                        Create an account <FaUser />
-                      </Button>
-                    </RegisterButton>
-                  </Tooltip>
-                </>
-              </>
-              // <>
-              //   {status === "loading" ? (
-              //     <Button
-              //       variant="outline"
-              //       className="dark:text-white"
-              //       disabled={true}
-              //     >
-              //       <ClipLoader size={13} />
-              //     </Button>
-              //   ) : (
-              //     <>
-              //       <LoginButton>
-              //         <Button variant="outline" className="hidden md:flex">
-              //           Sign In
-              //         </Button>
-              //         <Button className="bg-mygreen md:hidden">Sign In</Button>
-              //       </LoginButton>
-              //       <RegisterButton>
-              //         <Button className="hidden md:flex gap-x-2 bg-mygreen">
-              //           Create an account <FaUser />
-              //         </Button>
-              //       </RegisterButton>
-              //     </>
-              //   )}
-              // </>
+                    Sign In
+                  </Button>
+                </LoginButton>
+                <RegisterButton>
+                  <Button className="hidden md:flex gap-x-2 bg-mygreen">
+                    Create an account <FaUser />
+                  </Button>
+                </RegisterButton>
+              </div>
             )}
           </div>
         </div>
