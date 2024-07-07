@@ -1,9 +1,9 @@
-import GitHub from "next-auth/providers/github";
-import Google from "next-auth/providers/google";
-import Facebook from "next-auth/providers/facebook";
+import NextAuth, { NextAuthConfig, User } from "next-auth";
+import GoogleProvider from "next-auth/providers/google";
+import GitHubProvider from "next-auth/providers/github";
+import FacebookProvider from "next-auth/providers/facebook";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { LoginSchema } from "@/schemas";
-import type { NextAuthConfig, User } from "next-auth";
 import { getUserByEmail } from "@/data/user";
 import bcrypt from "bcryptjs";
 import { UserRole } from "@prisma/client";
@@ -13,17 +13,19 @@ const JWT_SECRET = process.env.JWT_SECRET || "your_default_jwt_secret";
 
 export default {
   providers: [
-    GitHub({
+    GitHubProvider({
       clientId: process.env.GITHUB_CLIENT_ID,
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+      authorization: { params: { prompt: "consent" } },
     }),
-    Facebook({
+    FacebookProvider({
       clientId: process.env.FACEBOOK_CLIENT_ID,
       clientSecret: process.env.FACEBOOK_CLIENT_SECRET,
+      authorization: { params: { prompt: "consent" } },
     }),
     CredentialsProvider({
       name: "Credentials",
@@ -76,6 +78,42 @@ export default {
       },
     }),
   ],
+  session: {
+    strategy: "jwt",
+    maxAge: 24 * 60 * 60,
+  },
+  jwt: {
+    maxAge: 24 * 60 * 60,
+  },
+  callbacks: {
+    async jwt({ token, user, account }) {
+      if (account && user) {
+        token.accessToken = account.access_token as string;
+      }
+
+      if (!token.sub) return token;
+
+      const existingUser = await getUserByEmail(token.sub);
+
+      if (!existingUser) return token;
+
+      token.role = existingUser.role;
+
+      return token;
+    },
+    async session({ token, session }) {
+      if (token.sub && session.user) {
+        session.user.id = token.sub;
+      }
+      if (token.role && session.user) {
+        session.user.role = token.role as UserRole;
+      }
+      if (token.accessToken && session.user) {
+        session.user.accessToken = token.accessToken as string;
+      }
+      return session;
+    },
+  },
   trustHost: true,
   secret: process.env.AUTH_SECRET,
 } satisfies NextAuthConfig;

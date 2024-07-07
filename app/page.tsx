@@ -12,11 +12,12 @@ import { IoMdHelpCircle } from "react-icons/io";
 import { Tour } from "antd";
 import { useRef, useState } from "react";
 import type { TourProps } from "antd";
+import { FeaturedCard } from "@/components/general/featured-card";
 
 const innovations = [
   {
     id: 1,
-    imgUrl: "/images/image1.jpg",
+    imgUrl: "/images/image2.jpg",
     title: "Cowpea Thresher",
     tags: ["Processing"],
   },
@@ -130,58 +131,29 @@ export default function Home() {
         <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
 
         <div className="mt-10" ref={ref2}>
-          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="col-span-2">
-              <ImageCard
-                id={1}
-                imageUrl="/images/image1.jpg"
-                title="Cowpea Thresher"
-                tags={
-                  <div className="flex gap-4">
-                    <ColorTag type="blue" name="Processing" />
-                  </div>
-                }
-              />
-            </div>
-            <div>
-              <ImageCard
-                id={1}
-                imageUrl="/images/image2.jpg"
-                title="Locally Fabricated Maize Planter"
-                tags={
-                  <div className="flex gap-4">
-                    <ColorTag type="purple" name="Production" />
-                  </div>
-                }
-              />
-            </div>
-
-            <div>
-              <ImageCard
-                id={2}
-                imageUrl="/images/Image3.jpg"
-                title="Yam Pounding Machine"
-                tags={
-                  <div className="flex gap-4">
-                    <ColorTag type="purple" name="Processing" />
-                  </div>
-                }
-              />
-            </div>
-
-            <div className="col-span-2">
-              <ImageCard
-                id={3}
-                imageUrl="/images/image4.jpg"
-                title="Circular Maize Dryer"
-                tags={
-                  <div className="flex gap-4">
-                    {" "}
-                    <ColorTag type="purple" name="Processing" />
-                  </div>
-                }
-              />
-            </div>
+          <div className="hidden md:flex flex-wrap items-center gap-3">
+            {innovations.map((innovation, i) => (
+              <div
+                key={i}
+                //prettier-ignore
+                className={`${
+                  (i === 0 || i === 3) ? "w-[calc(60%)]" : "w-[calc(39%)]"
+                } flex justify-center h-full px-2 md:px-4`}
+              >
+                <FeaturedCard
+                  key={innovation.id}
+                  url={innovation.imgUrl}
+                  title={innovation.title}
+                  tags={
+                    <div className="flex gap-4">
+                      {innovation.tags.map((tag, i) => (
+                        <ColorTag key={i} type="blue" name={tag} />
+                      ))}
+                    </div>
+                  }
+                />
+              </div>
+            ))}
           </div>
 
           <div className="md:hidden">
@@ -191,9 +163,9 @@ export default function Home() {
                   key={i}
                   className="w-full flex justify-center h-full px-2 md:px-4"
                 >
-                  <ImageCard
-                    id={innovation.id}
-                    imageUrl={innovation.imgUrl}
+                  <FeaturedCard
+                    key={innovation.id}
+                    url={innovation.imgUrl}
                     title={innovation.title}
                     tags={
                       <div className="flex gap-4">
@@ -215,12 +187,12 @@ export default function Home() {
       </main>
 
       <Button
-        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0"
-        variant="outline"
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
+        variant="default"
         onClick={() => setOpen(true)}
       >
-        <IoMdHelpCircle className="text-[18px] text-mygreen" />{" "}
-        <span className="text-mygreen">Help</span>
+        <IoMdHelpCircle className="text-[18px] text-white" />{" "}
+        <span className="text-white">Help</span>
       </Button>
       <Footer />
     </div>

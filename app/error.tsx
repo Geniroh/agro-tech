@@ -1,7 +1,10 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 
 const ErrorBoundary = ({ error }: { error: Error }) => {
+  useEffect(() => {
+    console.log(error.message);
+  }, []);
   return (
     <div
       style={{
@@ -46,23 +49,19 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
             <p
               style={{
                 color: "#fff",
-                fontSize: "18px",
+                fontSize: "14px",
                 maxWidth: "500px",
                 marginInline: "auto",
               }}
             >
-              {error.message}
+              <div className="text-center ">
+                <h1 className="text-2xl mb-3 font-black-ops">
+                  Aaaah! Something went wrong
+                </h1>
+                <p>Brace yourself till we get the Error fixed</p>
+                <p>You may also refresh the page or try again Later</p>
+              </div>
             </p>
-            <p
-              style={{
-                border: "8px solid transparent",
-                borderTop: "8px solid red",
-                borderRadius: "50%",
-                width: "10px",
-                height: "10px",
-                animation: "spinLoader 1s linear infinite",
-              }}
-            ></p>
           </div>
         </div>
       </div>
