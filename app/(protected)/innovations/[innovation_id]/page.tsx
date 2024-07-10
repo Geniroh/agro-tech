@@ -22,6 +22,7 @@ import { message } from "antd";
 import { useGetInnovationDiscussion } from "@/hooks/useDiscussionData";
 import { RiExternalLinkFill } from "react-icons/ri";
 import Link from "next/link";
+import { RenderMediaList } from "@/components/general/render-media-list";
 
 const InnovationPage = () => {
   const router = useRouter();
@@ -137,7 +138,7 @@ const InnovationPage = () => {
                 <span>
                   {data?.cost
                     ? data.currency + " " + data.cost
-                    : "Not applicable"}
+                    : "Not available"}
                 </span>
               </div>
             </div>
@@ -196,7 +197,7 @@ const InnovationPage = () => {
           </div>
 
           <div className="mt-16">
-            {!data?.productMedia[0].url ? (
+            {/* {!data?.productMedia[0].url ? (
               <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
                 --- No data ----
               </div>
@@ -208,11 +209,16 @@ const InnovationPage = () => {
                   key={data?.productMedia[0].name}
                 />
               </div>
-            )}
+            )} */}
+            <RenderMediaList
+              media={data?.productMedia}
+              featuredClassName="w-full max-w-[900px] mx-auto"
+              listClassName="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
+            />
           </div>
 
           <div>
-            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
+            {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
               {data?.productMedia ? (
                 data.productMedia.map((media, i) => (
                   <>
@@ -230,7 +236,7 @@ const InnovationPage = () => {
                   --- No data ----
                 </div>
               )}
-            </div>
+            </div> */}
 
             <div className="mt-10">
               <h2 className="text-2xl text-muted-foreground">Description</h2>

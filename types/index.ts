@@ -218,77 +218,11 @@ interface IUserDiscussionReply {
   Discussion?: IUserDiscussion;
 }
 
-// interface IInnovationComments {
-//   createdAt: Date;
-//   dislikes: number;
-//   email: string;
-//   id: string;
-//   innovationDiscussionId: string;
-//   likes: number;
-//   message: string;
-//   topReply: any;
-//   updatedAt: Date;
-//   username: string;
-// }
-
-// const data: IInnovationType[] = [
-//   {
-//     id: "66697f03e9c81c3233f0c24d",
-//     productName: "Razorslasher",
-//     yearInvented: "2023",
-//     country: "Algeria",
-//     cost: 2000,
-//     likes: 0,
-//     dislikes: 0,
-//     productChain: ["Farm supply"],
-//     productPhase: "testing",
-//     productUse: "For automatically clearing weeds and land cultivation",
-//     productDescription: "Null",
-//     productMedia: [
-//       {
-//         name: "download__1_-removebg-preview.png",
-//         url: "https://stavmia-bucket.https://nyc3.digitaloceanspaces.com/download__1_-removebg-preview.png",
-//       },
-//     ],
-//     isExample: true,
-//     productExample: [
-//       {
-//         instance_description: "Null",
-//         instance_media: {
-//           name: "download__1_-removebg-preview.png",
-//           url: "https://stavmia-bucket.https://nyc3.digitaloceanspaces.com/download__1_-removebg-preview.png",
-//           type: "image/jpeg",
-//           size: 11277,
-//         },
-//       },
-//     ],
-//     productInstruction: [
-//       {
-//         instruction_step: "Step1",
-//       },
-//     ],
-//     productInventor: [
-//       {
-//         inventor_name: "Irobuisi Ch",
-//         inventor_email: "test@test.com",
-//         inventor_contact: "",
-//       },
-//     ],
-//     productSupplier: [
-//       {
-//         supplier_name: "Global distribution",
-//         supplier_email: "global@test.com",
-//         supplier_contact: "",
-//       },
-//     ],
-//     productGuidelines: [
-//       {
-//         name: "Guideline 1",
-//       },
-//     ],
-//     isGenderFriendly: false,
-//     productGenderDescription: "Optional description here",
-//     createdAt: "2024-06-12T10:57:07.486Z",
-//     updatedAt: "2024-06-12T10:57:07.486Z",
-//   },
-// ];
+interface IFeaturedPosts {
+  id: string;
+  title: string;
+  mediaUrl: string;
+  tag: string[];
+  createdAt: string;
+  updatedAt: string;
+}

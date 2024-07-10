@@ -8,6 +8,7 @@ export const publicRoutes = [
   "/auth/new-verification",
   "/api/v1",
   "/api/v1/upload",
+  "/api/v1/featured",
   "/api/v1/innovation",
   "/api/v1/innovation/:id",
 ];

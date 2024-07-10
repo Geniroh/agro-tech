@@ -1,7 +1,6 @@
 "use client";
 import { CollectionTable } from "@/components/innovation-collection-table";
 import { Navbar } from "@/components/general/navbar";
-import ImageCard from "@/components/general/image-card";
 import { ColorTag } from "@/components/general/color-tags";
 import { Footer } from "@/components/general/footer";
 import { Button } from "@/components/ui/button";
@@ -13,33 +12,8 @@ import { Tour } from "antd";
 import { useRef, useState } from "react";
 import type { TourProps } from "antd";
 import { FeaturedCard } from "@/components/general/featured-card";
-
-const innovations = [
-  {
-    id: 1,
-    imgUrl: "/images/image2.jpg",
-    title: "Cowpea Thresher",
-    tags: ["Processing"],
-  },
-  {
-    id: 2,
-    imgUrl: "/images/image2.jpg",
-    title: "Locally Fabricated Maize Planter",
-    tags: ["Production"],
-  },
-  {
-    id: 3,
-    imgUrl: "/images/Image3.jpg",
-    title: "Yam Pounding Machine",
-    tags: ["Processing"],
-  },
-  {
-    id: 4,
-    imgUrl: "/images/image4.jpg",
-    title: "Circular Maize Dryer",
-    tags: ["Processing"],
-  },
-];
+import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const settings = {
   dots: false,
@@ -86,6 +60,13 @@ export default function Home() {
   const ref4 = useRef(null);
 
   const [open, setOpen] = useState<boolean>(false);
+  const [featured, setFeatured] = useState<IFeaturedPosts[]>([]);
+
+  const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
+    setFeatured(data);
+  };
+
+  const { isLoading } = useFeaturedPosts(handleGetFeaturedPosts);
 
   const steps: TourProps["steps"] = [
     {
@@ -132,7 +113,7 @@ export default function Home() {
 
         <div className="mt-10" ref={ref2}>
           <div className="hidden md:flex flex-wrap items-center gap-3">
-            {innovations.map((innovation, i) => (
+            {featured.map((post, i) => (
               <div
                 key={i}
                 //prettier-ignore
@@ -141,13 +122,13 @@ export default function Home() {
                 } flex justify-center h-full px-2 md:px-4`}
               >
                 <FeaturedCard
-                  key={innovation.id}
-                  url={innovation.imgUrl}
-                  title={innovation.title}
+                  key={post.id}
+                  url={post.mediaUrl}
+                  title={post.title}
                   tags={
                     <div className="flex gap-4">
-                      {innovation.tags.map((tag, i) => (
-                        <ColorTag key={i} type="blue" name={tag} />
+                      {post.tag.map((t, i) => (
+                        <ColorTag key={i} type="blue" name={t} />
                       ))}
                     </div>
                   }
@@ -155,22 +136,35 @@ export default function Home() {
               </div>
             ))}
           </div>
+          {isLoading && (
+            <div className="hidden md:flex flex-wrap items-center gap-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  //prettier-ignore
+                  className={`${
+                      (i === 0 || i === 3) ? "w-[calc(60%)]" : "w-[calc(39%)]"
+                    } flex justify-center h-[350px] px-2 md:px-4`}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="md:hidden">
             <Slider {...settings}>
-              {innovations.map((innovation, i) => (
+              {featured.map((post, i) => (
                 <div
                   key={i}
                   className="w-full flex justify-center h-full px-2 md:px-4"
                 >
                   <FeaturedCard
-                    key={innovation.id}
-                    url={innovation.imgUrl}
-                    title={innovation.title}
+                    key={post.id}
+                    url={post.mediaUrl}
+                    title={post.title}
                     tags={
                       <div className="flex gap-4">
-                        {innovation.tags.map((tag, i) => (
-                          <ColorTag key={i} type="blue" name={tag} />
+                        {post.tag.map((t, i) => (
+                          <ColorTag key={i} type="blue" name={t} />
                         ))}
                       </div>
                     }

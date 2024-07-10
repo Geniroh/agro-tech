@@ -60,6 +60,7 @@ export const FeaturedCard = ({
         style={{ borderRadius: "16px", zIndex: 10 }}
         muted={true}
         playing={true}
+        loop={true}
         controls={false}
         config={{
           youtube: {

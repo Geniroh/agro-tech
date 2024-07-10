@@ -21,6 +21,7 @@ import Step5 from "@/components/FormSteps/Step5";
 import Step6 from "@/components/FormSteps/Step6";
 import Step7 from "@/components/FormSteps/Step7";
 import Step8 from "@/components/FormSteps/Step8";
+import StepPreview from "@/components/FormSteps/Preview";
 
 const steps = [
   { component: Step1, label: "Step 1" },
@@ -31,6 +32,7 @@ const steps = [
   { component: Step6, label: "Step 6" },
   { component: Step7, label: "Step 7" },
   { component: Step8, label: "Step 8" },
+  { component: StepPreview, label: "Step 9" },
 ];
 
 const MultiStepForm = () => {

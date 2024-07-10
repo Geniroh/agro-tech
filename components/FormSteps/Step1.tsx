@@ -12,7 +12,7 @@ const { Item } = Form;
 const Step1: React.FC = () => {
   const { formData, setFormData, currentStep, setCurrentStep, mySteps } =
     useFormContext();
-
+  const [costAvailable, setCostAvailable] = useState<boolean>(true);
   const [countryCode, setCountryCode] = useState<string>("NGN");
 
   const [form] = Form.useForm();
@@ -175,21 +175,33 @@ const Step1: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Cost ({countryCode})
-        </h3>
+        <div className="flex items-center justify-between">
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Cost ({countryCode})
+          </h3>
+          <span
+            className="text-mygreen cursor-pointer"
+            onClick={() => setCostAvailable(!costAvailable)}
+          >
+            {costAvailable ? "Not available?" : "Is available"}
+          </span>
+        </div>
 
-        <Item
-          name="innovation_cost"
-          rules={[{ message: "Please Enter Product Cost" }]}
-        >
-          <Input
-            size="large"
-            type="number"
-            variant="filled"
-            placeholder="How Much Does This Innovation Cost"
-          />
-        </Item>
+        {costAvailable && (
+          <Item
+            name="innovation_cost"
+            rules={[
+              { message: "Please Enter Product Cost", required: costAvailable },
+            ]}
+          >
+            <Input
+              size="large"
+              type="number"
+              variant="filled"
+              placeholder="How Much Does This Innovation Cost"
+            />
+          </Item>
+        )}
       </div>
 
       <div>
