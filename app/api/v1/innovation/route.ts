@@ -139,12 +139,17 @@ export async function GET(req: NextRequest) {
       where.yearInvented = { contains: filters.year };
     }
 
+    where.status = "approved";
+
     const [innovations, totalCount] = await Promise.all([
       db.innovation.findMany({
         where,
         skip,
         take,
         include: { discussions: true, reactions: true },
+        orderBy: {
+          createdAt: "desc",
+        },
       }),
       db.innovation.count({ where }),
     ]);
