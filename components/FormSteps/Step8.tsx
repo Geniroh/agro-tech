@@ -23,16 +23,13 @@ const Step8: React.FC = () => {
   };
 
   const handleNextStep = async () => {
-    setLoading(true);
     try {
       const values = await form.validateFields();
       saveData(values);
-
-      await handleSubmit({ ...formData, ...values });
+      setCurrentStep(currentStep + 1);
     } catch (error) {
-      message.error("Please fill in all required fields");
+      message.error("Please fill in all required fields guideline");
     }
-    setLoading(false);
   };
 
   const saveData = (values: any) => {
@@ -61,6 +58,46 @@ const Step8: React.FC = () => {
       message.error("Please fill in all required fields");
     }
   };
+
+  // const handleNextStep = async () => {
+  //   setLoading(true);
+  //   try {
+  //     const values = await form.validateFields();
+  //     saveData(values);
+
+  //     await handleSubmit({ ...formData, ...values });
+  //   } catch (error) {
+  //     message.error("Please fill in all required fields");
+  //   }
+  //   setLoading(false);
+  // };
+
+  // const saveData = (values: any) => {
+  //   setFormData({ ...formData, ...values });
+  // };
+
+  // const prevStep = () => {
+  //   if (currentStep > 0) {
+  //     setCurrentStep(currentStep - 1);
+  //   }
+  // };
+
+  // const handleSaveStep = async () => {
+  //   try {
+  //     const values = await form.validateFields();
+  //     if (values && typeof window !== "undefined") {
+  //       localStorage.setItem(
+  //         "formData",
+  //         JSON.stringify({ ...formData, ...values })
+  //       );
+  //       localStorage.setItem("currentStep", currentStep.toString());
+  //       localStorage.setItem("totalSteps", mySteps.toString());
+  //     }
+  //     message.success("Your progress has been saved");
+  //   } catch (error) {
+  //     message.error("Please fill in all required fields");
+  //   }
+  // };
 
   useEffect(() => {
     form.setFieldsValue(formData);
@@ -132,7 +169,7 @@ const Step8: React.FC = () => {
             disabled={loading}
             onClick={handleNextStep}
           >
-            Submit
+            Preview
           </Button>
         </div>
       </Form>

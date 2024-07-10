@@ -25,9 +25,9 @@
 //   );
 // };
 
-import { logout } from "@/actions/logout";
-import { useState } from "react";
-import { ClipLoader } from "react-spinners";
+// import { logout } from "@/actions/logout";
+
+import { signOut } from "next-auth/react";
 
 export const LogoutButton = ({
   children,
@@ -36,12 +36,12 @@ export const LogoutButton = ({
   children: React.ReactNode;
   className?: string;
 }) => {
-  const onClick = async () => {
-    await logout();
+  const handleLogout = async () => {
+    await signOut({ callbackUrl: "/" }); // Redirect to the homepage or any other URL after logout
   };
 
   return (
-    <button onClick={onClick} className={className}>
+    <button onClick={handleLogout} className={className}>
       {children}
     </button>
   );

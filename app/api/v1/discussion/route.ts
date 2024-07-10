@@ -13,9 +13,15 @@ export async function GET(req: NextRequest, res: NextResponse) {
 
     const discussions = await db.discussion.findMany({
       include: { replies: true, user: true },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
     const innovationDiscussion = await db.innovationDiscussion.findMany({
       include: { comments: true, Innovation: true },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
 
     const combinedDiscussion = [...discussions, ...innovationDiscussion];

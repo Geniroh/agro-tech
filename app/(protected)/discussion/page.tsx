@@ -13,7 +13,6 @@ import {
   DialogClose,
 } from "@/components/ui/dialog";
 import { IoSendSharp } from "react-icons/io5";
-import { RiFolder2Fill } from "react-icons/ri";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/current-user";
 import { getFirstName } from "@/utils/function";
@@ -30,7 +29,7 @@ const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
   const [topic, setTopic] = useState("");
   const [body, setBody] = useState("");
-  const [btnLoading, setBtnLoading] = useState<boolean>(false);
+  const [open, setOpen] = useState(false);
   const [innovationDiscussion, setInnovationDiscussion] = useState<
     IInnovationDiscussion[]
   >([]);
@@ -66,12 +65,13 @@ const DiscussionPage = () => {
     };
     try {
       if (body == "" && topic == "") {
-        message.error("Please fill in all field");
+        message.error("Please fill in all fields");
       } else {
         startDiscussion(payload, {
           onSuccess: (data) => {
             message.success("Discussion started successfully");
             refetch();
+            setOpen(false);
           },
           onError: () => {
             message.error("Failed to start a discussion");
@@ -98,13 +98,18 @@ const DiscussionPage = () => {
         <div className="max-w-[700px] mx-auto">
           <div className="flex items-center gap-x-3 mb-5">
             {user?.image ? (
-              <Image
-                src={user?.image || ""}
-                className="rounded-full"
-                alt=""
-                width={40}
-                height={40}
-              />
+              // <Image
+              //   src={user?.image || ""}
+              //   className="rounded-full"
+              //   alt=""
+              //   width={40}
+              //   height={40}
+              // />
+
+              <div
+                className="w-[40px] h-[40px] rounded-full bg-center bg-cover bg-no-repeat"
+                style={{ backgroundImage: `url(${user?.image})` }}
+              ></div>
             ) : (
               <Avatar className=" w-[40px] h-[40px]">
                 <AvatarImage src={user?.image || ""} alt="profile" />
@@ -120,7 +125,7 @@ const DiscussionPage = () => {
             </div>
           </div>
           <div className="max-w-[782px] max-h-[700px] mx-auto">
-            <Dialog>
+            <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <div className="bg-myoffwhie py-2 px-6 rounded-3xl w-full flex items-center">
                   <input
@@ -129,9 +134,6 @@ const DiscussionPage = () => {
                     title="Start typing to start a discussion"
                   />
                   <div className="flex text-[14px] gap-x-2">
-                    {/* <button className="p-2 flex items-center justify-center rounded-full hover:bg-white border">
-                      <RiFolder2Fill />
-                    </button> */}
                     <button className="p-2 flex items-center justify-center text-mygreen rounded-full hover:bg-white border">
                       <IoSendSharp />
                     </button>
@@ -188,7 +190,7 @@ const DiscussionPage = () => {
                   </div>
                 </div>
                 <div className="flex items-center justify-between">
-                  {!btnLoading && (
+                  {!isLoadingDiscussion && (
                     <DialogClose>
                       <Button
                         variant="outline"

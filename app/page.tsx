@@ -1,7 +1,6 @@
 "use client";
 import { CollectionTable } from "@/components/innovation-collection-table";
 import { Navbar } from "@/components/general/navbar";
-import ImageCard from "@/components/general/image-card";
 import { ColorTag } from "@/components/general/color-tags";
 import { Footer } from "@/components/general/footer";
 import { Button } from "@/components/ui/button";
@@ -12,33 +11,9 @@ import { IoMdHelpCircle } from "react-icons/io";
 import { Tour } from "antd";
 import { useRef, useState } from "react";
 import type { TourProps } from "antd";
-
-const innovations = [
-  {
-    id: 1,
-    imgUrl: "/images/image1.jpg",
-    title: "Cowpea Thresher",
-    tags: ["Processing"],
-  },
-  {
-    id: 2,
-    imgUrl: "/images/image2.jpg",
-    title: "Locally Fabricated Maize Planter",
-    tags: ["Production"],
-  },
-  {
-    id: 3,
-    imgUrl: "/images/Image3.jpg",
-    title: "Yam Pounding Machine",
-    tags: ["Processing"],
-  },
-  {
-    id: 4,
-    imgUrl: "/images/image4.jpg",
-    title: "Circular Maize Dryer",
-    tags: ["Processing"],
-  },
-];
+import { FeaturedCard } from "@/components/general/featured-card";
+import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const settings = {
   dots: false,
@@ -85,6 +60,13 @@ export default function Home() {
   const ref4 = useRef(null);
 
   const [open, setOpen] = useState<boolean>(false);
+  const [featured, setFeatured] = useState<IFeaturedPosts[]>([]);
+
+  const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
+    setFeatured(data);
+  };
+
+  const { isLoading } = useFeaturedPosts(handleGetFeaturedPosts);
 
   const steps: TourProps["steps"] = [
     {
@@ -130,75 +112,59 @@ export default function Home() {
         <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
 
         <div className="mt-10" ref={ref2}>
-          <div className="hidden md:grid grid-cols-2 lg:grid-cols-3 gap-6">
-            <div className="col-span-2">
-              <ImageCard
-                id={1}
-                imageUrl="/images/image1.jpg"
-                title="Cowpea Thresher"
-                tags={
-                  <div className="flex gap-4">
-                    <ColorTag type="blue" name="Processing" />
-                  </div>
-                }
-              />
-            </div>
-            <div>
-              <ImageCard
-                id={1}
-                imageUrl="/images/image2.jpg"
-                title="Locally Fabricated Maize Planter"
-                tags={
-                  <div className="flex gap-4">
-                    <ColorTag type="purple" name="Production" />
-                  </div>
-                }
-              />
-            </div>
-
-            <div>
-              <ImageCard
-                id={2}
-                imageUrl="/images/Image3.jpg"
-                title="Yam Pounding Machine"
-                tags={
-                  <div className="flex gap-4">
-                    <ColorTag type="purple" name="Processing" />
-                  </div>
-                }
-              />
-            </div>
-
-            <div className="col-span-2">
-              <ImageCard
-                id={3}
-                imageUrl="/images/image4.jpg"
-                title="Circular Maize Dryer"
-                tags={
-                  <div className="flex gap-4">
-                    {" "}
-                    <ColorTag type="purple" name="Processing" />
-                  </div>
-                }
-              />
-            </div>
+          <div className="hidden md:flex flex-wrap items-center gap-3">
+            {featured.map((post, i) => (
+              <div
+                key={i}
+                //prettier-ignore
+                className={`${
+                  (i === 0 || i === 3) ? "w-[calc(60%)]" : "w-[calc(39%)]"
+                } flex justify-center h-full px-2 md:px-4`}
+              >
+                <FeaturedCard
+                  key={post.id}
+                  url={post.mediaUrl}
+                  title={post.title}
+                  tags={
+                    <div className="flex gap-4">
+                      {post.tag.map((t, i) => (
+                        <ColorTag key={i} type="blue" name={t} />
+                      ))}
+                    </div>
+                  }
+                />
+              </div>
+            ))}
           </div>
+          {isLoading && (
+            <div className="hidden md:flex flex-wrap items-center gap-3">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <Skeleton
+                  key={i}
+                  //prettier-ignore
+                  className={`${
+                      (i === 0 || i === 3) ? "w-[calc(60%)]" : "w-[calc(39%)]"
+                    } flex justify-center h-[350px] px-2 md:px-4`}
+                />
+              ))}
+            </div>
+          )}
 
           <div className="md:hidden">
             <Slider {...settings}>
-              {innovations.map((innovation, i) => (
+              {featured.map((post, i) => (
                 <div
                   key={i}
                   className="w-full flex justify-center h-full px-2 md:px-4"
                 >
-                  <ImageCard
-                    id={innovation.id}
-                    imageUrl={innovation.imgUrl}
-                    title={innovation.title}
+                  <FeaturedCard
+                    key={post.id}
+                    url={post.mediaUrl}
+                    title={post.title}
                     tags={
                       <div className="flex gap-4">
-                        {innovation.tags.map((tag, i) => (
-                          <ColorTag key={i} type="blue" name={tag} />
+                        {post.tag.map((t, i) => (
+                          <ColorTag key={i} type="blue" name={t} />
                         ))}
                       </div>
                     }
@@ -215,12 +181,12 @@ export default function Home() {
       </main>
 
       <Button
-        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0"
-        variant="outline"
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
+        variant="default"
         onClick={() => setOpen(true)}
       >
-        <IoMdHelpCircle className="text-[18px] text-mygreen" />{" "}
-        <span className="text-mygreen">Help</span>
+        <IoMdHelpCircle className="text-[18px] text-white" />{" "}
+        <span className="text-white">Help</span>
       </Button>
       <Footer />
     </div>

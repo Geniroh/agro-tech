@@ -120,7 +120,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
   return (
     <div>
       <div
-        className={`relative ${className} bg-[#fafafa] w-full min-h-[90px] flex items-center justify-center`}
+        className={`relative ${className} bg-[#f0f0f0] w-full min-h-[120px] md:min-h-[150px] rounded-md flex items-center justify-center`}
       >
         <input
           id={id}
@@ -137,7 +137,7 @@ export const StyledFileInput: React.FC<StyledFileInputProps> = ({
               <BarLoader color="#53a350" />
             </span>
           ) : (
-            <span className="flex gap-x-2 items-center justify-center text-muted-foreground text-[14px] leading-[24px]">
+            <span className="flex gap-x-2 items-center justify-center text-[#b4b4b4] text-[14px] leading-[24px]">
               {defaultValue || fileNames.length > 1 ? (
                 <span className="max-w-[150px] mx-auto text-center">
                   {Array.isArray(defaultValue)

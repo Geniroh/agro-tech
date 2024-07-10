@@ -52,7 +52,7 @@ const Step2: React.FC = () => {
       saveData(values);
       setCurrentStep(currentStep + 1);
     } catch (error) {
-      toast.error("Please fill in all required fields");
+      message.error("Please fill in all required fields");
     }
   };
 
@@ -77,9 +77,9 @@ const Step2: React.FC = () => {
         localStorage.setItem("currentStep", currentStep.toString());
         localStorage.setItem("totalSteps", mySteps.toString());
       }
-      toast.success("Your progress has been saved");
+      message.success("Your progress has been saved");
     } catch (error) {
-      toast.error("Please fill in all required fields");
+      message.error("Please fill in all required fields");
     }
   };
 
@@ -150,9 +150,12 @@ const Step2: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Product Media
-        </h3>
+        <div className="w-full items-center justify-between flex">
+          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+            Product Media
+          </h3>
+          {/* <span className="text-mygreen cursor-pointer">Use links?</span> */}
+        </div>
         <Item
           name="product_media"
           rules={[{ required: true, message: "Please upload a file" }]}
