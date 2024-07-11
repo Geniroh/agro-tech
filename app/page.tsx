@@ -15,6 +15,12 @@ import { FeaturedCard } from "@/components/general/featured-card";
 import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
 import { Skeleton } from "@/components/ui/skeleton";
 
+// const data = [
+//   jhgjhgjjkk.
+//   jhjkljkljklj;l;k.
+//   jhgjkhkhljjkjj
+// ]
+
 const settings = {
   dots: false,
   infinite: true,
