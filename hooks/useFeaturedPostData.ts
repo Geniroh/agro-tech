@@ -11,7 +11,7 @@ export const useFeaturedPosts = (
   onError?: (error: unknown) => void
 ): UseQueryResult<IFeaturedPosts[]> => {
   return useQuery("get-featured-posts", getFeaturedPosts, {
-    keepPreviousData: true,
+    // keepPreviousData: true,
     onError,
     onSuccess,
   });
