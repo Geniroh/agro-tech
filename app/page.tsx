@@ -19,6 +19,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 //   jhgjhgjjkk.
 //   jhjkljkljklj;l;k.
 //   jhgjkhkhljjkjj
+// https://www.facebook.com/share/r/PecAWUz94bKV3dyK/
 // ]
 
 const settings = {
