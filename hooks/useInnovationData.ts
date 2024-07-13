@@ -37,7 +37,6 @@ export const useGetInnovation = (
     () => getInnovations(queryParams),
     {
       keepPreviousData: true,
-      refetchOnMount: false,
       onError,
       onSuccess,
     }

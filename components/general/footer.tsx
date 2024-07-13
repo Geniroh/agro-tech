@@ -44,6 +44,12 @@ export const Footer = () => {
         </div>
       </div>
 
+      <div className="flex items-center justify-center my-3">
+        <Link href="/privacy-policy" className="text-white font-bold underline">
+          Privacy Policy
+        </Link>
+      </div>
+
       <div className="flex flex-col items-center justify-center px-5 gap-y-4">
         <hr className="max-w-[850px] w-full" />
         <div>Developed by Qinsight</div>

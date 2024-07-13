@@ -1,6 +1,5 @@
 import * as React from "react";
 import { Select } from "antd";
-import { IoCloseCircleSharp } from "react-icons/io5";
 
 export function TagSelect3({
   name,
@@ -37,6 +36,7 @@ export function TagSelect3({
         defaultValue={value}
         placeholder={optionsName}
         loading={loading}
+        dropdownStyle={{ minWidth: "150px" }}
       >
         {options.map((option, i) => (
           <Select.Option value={option} key={i}>

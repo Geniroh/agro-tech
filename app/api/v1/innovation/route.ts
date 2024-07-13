@@ -7,6 +7,7 @@ const querySchema = Joi.object({
   name: Joi.string().optional(),
   phase: Joi.string().optional(),
   country: Joi.string().optional(),
+  chain: Joi.string().optional(),
   year: Joi.string().optional(),
   page: Joi.number().integer().min(1).default(1),
   pageSize: Joi.number().integer().min(1).max(100).default(10),
@@ -137,6 +138,9 @@ export async function GET(req: NextRequest) {
     }
     if (filters.year) {
       where.yearInvented = { contains: filters.year };
+    }
+    if (filters.chain) {
+      where.productChain = { has: filters.chain }; // Filters for productChain array
     }
 
     where.status = "approved";

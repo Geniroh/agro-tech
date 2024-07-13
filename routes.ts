@@ -5,6 +5,7 @@
 
 export const publicRoutes = [
   "/",
+  "/privacy-policy",
   "/auth/new-verification",
   "/api/v1",
   "/api/v1/upload",

@@ -14,6 +14,7 @@ import type { TourProps } from "antd";
 import { FeaturedCard } from "@/components/general/featured-card";
 import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
 import { Skeleton } from "@/components/ui/skeleton";
+import { HomeTour } from "@/components/tours/home-tour";
 
 // const data = [
 //   jhgjhgjjkk.
@@ -67,6 +68,7 @@ export default function Home() {
   const ref4 = useRef(null);
 
   const [open, setOpen] = useState<boolean>(false);
+  const [show, setShow] = useState<boolean>(false);
   const [featured, setFeatured] = useState<IFeaturedPosts[]>([]);
 
   const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
@@ -102,23 +104,33 @@ export default function Home() {
     <div>
       <Navbar ref={ref1} ref2={ref3} />
       <main className="container mx-auto">
-        <h1 className="text-[24px] md:text-[32px] font-jakara font-bold  mt-14 leading-[32px] md:leading-[42px] text-center md:text-left">
-          Sustainable Technologies for Agricultural Value-Chain Mechanization in
-          Africa
-        </h1>
-        <h2 className="text-[16px] md:text-[18px] leading-[24px] md:leading-[27px] font-normal text-[#242424] mt-3 text-center md:text-left">
-          Welcome to STAVMiA, the central hub for agricultural innovations
-          across Africa! Helping farmers, processors, input suppliers, business
-          owners, consultants, and researchers to find valuable technologies and
-          methods that suit their needs easily. Our platform allows everyone in
-          the agricultural value chain to access, share, discuss, and
-          collaborate on technologies, boosting agro productivity. Join us in
-          transforming agriculture in Africa!
-        </h2>
+        <div className="w-full flex">
+          <div className="max-w-[700px] mx-auto md:mx-0">
+            <h1 className="text-[32px] md:text-[42px] lg:text-[48px] font-jakara font-bold  mt-16 leading-[40px] md:leading-[60px] lg:leading-[66px] text-center md:text-left">
+              Sustainable <span className="text-mygreen"> Technologies</span>{" "}
+              for Agricultural Value-Chain Mechanization in Africa
+            </h1>
+            <h2 className="text-[14px] md:text-[18px] leading-[24px] md:leading-[27px] font-normal text-myblack mt-3 text-center md:text-left">
+              Welcome to STAVMiA, the central hub for agricultural innovations
+              across Africa! Helping farmers, processors, input suppliers,
+              business owners, consultants, and researchers to find valuable
+              technologies and methods that suit their needs easily. Our
+              platform allows everyone in the agricultural value chain to
+              access, share, discuss, and collaborate on technologies, boosting
+              agro productivity. Join us in transforming agriculture in Africa!
+            </h2>
+          </div>
+
+          <div className="hidden md:flex"></div>
+        </div>
+
+        <div className="mt-[100px]">
+          <CollectionTable />
+        </div>
 
         <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
 
-        <div className="mt-10" ref={ref2}>
+        {/* <div className="mt-10" ref={ref2}>
           <div className="hidden md:flex flex-wrap items-center gap-3">
             {featured.map((post, i) => (
               <div
@@ -180,13 +192,19 @@ export default function Home() {
               ))}
             </Slider>
           </div>
-        </div>
-
-        <div className="mt-[100px]">
-          <CollectionTable />
-        </div>
+        </div> */}
       </main>
 
+      {/* <Button
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
+        variant="default"
+        onClick={() => setShow(true)}
+      >
+        <IoMdHelpCircle className="text-[18px] text-white" />{" "}
+        <span className="text-white">Help</span>
+      </Button> */}
+
+      <HomeTour show={show} setShow={setShow} />
       <Button
         className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
         variant="default"

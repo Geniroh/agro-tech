@@ -78,7 +78,7 @@ export const ColorTag: React.FC<ColorTagProps> = ({ name, type }) => {
 
   return (
     <span
-      className="px-3 rounded-xl text-[9px] font-bold text-nowrap"
+      className="px-3 py-[1px] rounded-xl text-[9px] font-bold text-nowrap"
       style={{ backgroundColor: styles.bgcolor, color: styles.textcolor }}
     >
       {name}
