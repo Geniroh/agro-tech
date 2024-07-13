@@ -9,12 +9,13 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import { IoMdHelpCircle } from "react-icons/io";
 import { Tour } from "antd";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { TourProps } from "antd";
 import { FeaturedCard } from "@/components/general/featured-card";
 import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HomeTour } from "@/components/tours/home-tour";
+import { FeaturedPosts } from "@/components/general/featured-post";
 
 // const data = [
 //   jhgjhgjjkk.
@@ -77,6 +78,26 @@ export default function Home() {
 
   const { isLoading } = useFeaturedPosts(handleGetFeaturedPosts);
 
+  const [higlightIndex, setHihlightIndex] = useState<number>(0);
+  const highlightImages = [
+    "/images/bg1.jpg",
+    "/images/bg2.jpg",
+    "/images/bg3.jpg",
+  ];
+  // const borderColors = ["#59a930", "#C8F479","#55A42D"];
+
+  const sliderIndexer = () => {
+    let currentIndex = 0;
+    setInterval(() => {
+      currentIndex = (currentIndex + 1) % highlightImages.length;
+      setHihlightIndex(currentIndex);
+    }, 6000);
+  };
+
+  useEffect(() => {
+    sliderIndexer();
+  }, []);
+
   const steps: TourProps["steps"] = [
     {
       title: "Sign in",
@@ -104,11 +125,12 @@ export default function Home() {
     <div>
       <Navbar ref={ref1} ref2={ref3} />
       <main className="container mx-auto">
-        <div className="w-full flex">
+        <div className="w-full flex items-center">
           <div className="max-w-[700px] mx-auto md:mx-0">
             <h1 className="text-[32px] md:text-[42px] lg:text-[48px] font-jakara font-bold  mt-16 leading-[40px] md:leading-[60px] lg:leading-[66px] text-center md:text-left">
               Sustainable <span className="text-mygreen"> Technologies</span>{" "}
-              for Agricultural Value-Chain Mechanization in Africa
+              for Agricultural Value<span className="text-mygreen">-</span>Chain
+              Mechanization in Africa
             </h1>
             <h2 className="text-[14px] md:text-[18px] leading-[24px] md:leading-[27px] font-normal text-myblack mt-3 text-center md:text-left">
               Welcome to STAVMiA, the central hub for agricultural innovations
@@ -121,11 +143,35 @@ export default function Home() {
             </h2>
           </div>
 
-          <div className="hidden md:flex"></div>
+          <div className="hidden w-full md:flex items-center justify-center h-full mt-8 overflow-hidden">
+            <div
+              className="w-full py-10 bg-center bg-cover bg-no-repeat flex items-center justify-center rotate-[-35deg]"
+              style={{ backgroundImage: "url('/images/leaf.png')" }}
+            >
+              <div
+                className="h-[350px] w-[350px] rounded-full border-[7px] border-[#59a930] bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-linear relative rotate-[35deg]"
+                style={{
+                  backgroundImage: `url(${highlightImages[higlightIndex]})`,
+                }}
+              ></div>
+            </div>
+            {/* <div
+              className="h-[350px] w-[350px] rounded-full border-[7px] border-mygreen bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-linear relative"
+              style={{
+                backgroundImage: `url(${highlightImages[higlightIndex]})`,
+              }}
+            >
+             
+            </div> */}
+          </div>
         </div>
 
         <div className="mt-[100px]">
           <CollectionTable />
+        </div>
+
+        <div className="mt-[100px]">
+          <FeaturedPosts />
         </div>
 
         <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
