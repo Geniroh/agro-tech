@@ -7,11 +7,14 @@ export async function GET(req: NextRequest, res: NextResponse) {
       orderBy: {
         createdAt: "desc",
       },
-      take: 4,
     });
 
     return NextResponse.json(posts, { status: 200 });
   } catch (error) {
-    return NextResponse.json({ error: "Failed to posts" }, { status: 500 });
+    console.log(error);
+    return NextResponse.json(
+      { error: "Failed to get featured posts" },
+      { status: 500 }
+    );
   }
 }

@@ -132,3 +132,12 @@ html,body,:root {
   .ant-upload-list-item-name, .ant-upload-icon {
     display: none;
   }
+
+  .slick-slide {
+    padding: 0 10px;
+  }
+  
+  /* Remove default padding on the container to avoid double spacing */
+  .slick-list {
+    margin: 0 -10px;
+  }

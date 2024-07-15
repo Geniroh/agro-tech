@@ -223,6 +223,8 @@ interface IFeaturedPosts {
   title: string;
   mediaUrl: string;
   tag: string[];
+  thumbnailImage: string;
+  type: string;
   createdAt: string;
   updatedAt: string;
 }
