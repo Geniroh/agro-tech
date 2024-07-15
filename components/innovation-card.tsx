@@ -31,18 +31,18 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
         </div>
       </Link>
       <div className="mt-5 max-w-[378px] mx-auto">
-        <div className="flex items-center justify-between mb-4">
+        <div className="flex items-start justify-between mb-4">
           <Link href={`/innovation/${innovation.id}`}>
             <h1 className="text-[18px] leading-[27px] font-semibold md:underline">
               {innovation.productName}
             </h1>
           </Link>
-          <h3 className="text-muted-foreground text-[16px] leading-[24px]">
+          <h3 className="text-muted-foreground text-[14px] leading-[24px] text-nowrap">
             Created {innovation.yearInvented}
           </h3>
         </div>
         <div>
-          <h2>Value Chain</h2>
+          <h2 className="text-[14px]">Value Chain:</h2>
           <div className="flex gap-x-2">
             {innovation.productChain.map((chain, i) => (
               <p key={i}>

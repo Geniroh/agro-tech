@@ -36,7 +36,6 @@ export const useGetInnovation = (
     ["get-innovation-with-pagination", queryParams],
     () => getInnovations(queryParams),
     {
-      keepPreviousData: true,
       onError,
       onSuccess,
     }

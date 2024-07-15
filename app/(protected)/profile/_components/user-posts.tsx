@@ -1,17 +1,19 @@
 import { DateDifference } from "@/components/general/date-diff-calculator";
 import { TagSelect } from "@/components/general/tag-select";
+import { UserInnovationSkeleton } from "@/components/skeletons/user-innovation-skeleton";
 import { Skeleton } from "@/components/ui/skeleton";
-import { useGetUserPost } from "@/hooks/useUserProfieData";
+import { useGetUserPost } from "@/hooks/useUserProfileData";
 import { MessageSquareText, ThumbsDown, ThumbsUp } from "lucide-react";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 
 const UserPosts = () => {
+  const [userPost, setUserPost] = useState();
   const { data, isLoading } = useGetUserPost();
   const router = useRouter();
 
   if (isLoading) {
-    return <Skeleton className="w-full h-[300px]"></Skeleton>;
+    return <UserInnovationSkeleton />;
   }
 
   return (

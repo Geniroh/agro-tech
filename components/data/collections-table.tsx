@@ -81,7 +81,7 @@ export function CollectionDataImageGrid({
   return (
     <div>
       {innovations.length < 1 && (
-        <div className="w-full min-h-[200px] flex justify-center items-center text-muted-foreground">
+        <div className="w-full min-h-[200px] flex flex-col justify-center items-center text-muted-foreground">
           <svg
             className="mt-10"
             width="100%"
@@ -151,6 +151,7 @@ export function CollectionDataImageGrid({
               strokeLinecap="round"
             />
           </svg>
+          <div className="text-center">No data</div>
         </div>
       )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">

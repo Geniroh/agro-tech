@@ -13,16 +13,23 @@ import { phaseOptions, valueChainOptions } from "@/constants/options";
 import { generateCountryArray, generateYears } from "@/utils/function";
 import { useGetInnovation } from "@/hooks/useInnovationData";
 import { CollectionTableSkeleton } from "@/components/skeletons/collection-table-skeleton";
+import { CollectionGridSkeleton } from "./skeletons/collection-grid-skeleton";
+import { useAppContext } from "@/context/AppContext";
 
 export const CollectionTable = () => {
-  const [displayState, setDisplayState] = useState<number>(1);
-  const [pageNo, setPageNo] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const { innovationCollection } = useAppContext();
+  const [displayState, setDisplayState] = useState<number>(2);
+  const [pageNo, setPageNo] = useState<number>(innovationCollection.page);
+  const [totalPages, setTotalPages] = useState<number>(
+    innovationCollection.totalPages
+  );
   const [nameParam, setNameParam] = useState<string>("");
   const [queryParams, setQueryParams] = useState({
     page: pageNo,
   });
-  const [innovations, setInnovations] = useState<IInnovationType[]>([]);
+  const [innovations, setInnovations] = useState<IInnovationType[]>(
+    innovationCollection.data
+  );
 
   const handleSuccess = (data: IGetInnovationResponse) => {
     setInnovations(data.data);
@@ -144,9 +151,12 @@ export const CollectionTable = () => {
             </Button>
           </div>
         </div>
-        {isLoading ? (
-          // <Skeleton className="h-[300px] w-full" />
-          <CollectionTableSkeleton />
+        {isLoading && !innovations ? (
+          <div className="my-10">
+            {displayState === 1 && <CollectionTableSkeleton />}
+
+            {displayState === 2 && <CollectionGridSkeleton />}
+          </div>
         ) : (
           <div className="mt-10 mb-[100px]">
             {displayState === 1 && (

@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { ColumnProps, TableP } from "@/components/general/p-table";
 import { Skeleton } from "@/components/ui/skeleton";
 

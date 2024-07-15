@@ -16,6 +16,8 @@ import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
 import { Skeleton } from "@/components/ui/skeleton";
 import { HomeTour } from "@/components/tours/home-tour";
 import { FeaturedPosts } from "@/components/general/featured-post";
+import { useSetDefaultStates } from "@/hooks/useSetDefault";
+import { useAppContext } from "@/context/AppContext";
 
 // const data = [
 //   jhgjhgjjkk.
@@ -78,25 +80,7 @@ export default function Home() {
 
   const { isLoading } = useFeaturedPosts(handleGetFeaturedPosts);
 
-  const [higlightIndex, setHihlightIndex] = useState<number>(0);
-  const highlightImages = [
-    "/images/bg1.jpg",
-    "/images/bg2.jpg",
-    "/images/bg3.jpg",
-  ];
-  // const borderColors = ["#59a930", "#C8F479","#55A42D"];
-
-  const sliderIndexer = () => {
-    let currentIndex = 0;
-    setInterval(() => {
-      currentIndex = (currentIndex + 1) % highlightImages.length;
-      setHihlightIndex(currentIndex);
-    }, 6000);
-  };
-
-  useEffect(() => {
-    sliderIndexer();
-  }, []);
+  useSetDefaultStates();
 
   const steps: TourProps["steps"] = [
     {
@@ -125,8 +109,8 @@ export default function Home() {
     <div>
       <Navbar ref={ref1} ref2={ref3} />
       <main className="container mx-auto">
-        <div className="w-full flex items-center">
-          <div className="max-w-[700px] mx-auto md:mx-0">
+        {/* <div className="w-full flex items-center">
+          <div className="max-w-[600px] lg:max-w-[700px] mx-auto md:mx-0">
             <h1 className="text-[32px] md:text-[42px] lg:text-[48px] font-jakara font-bold  mt-16 leading-[40px] md:leading-[60px] lg:leading-[66px] text-center md:text-left">
               Sustainable <span className="text-mygreen"> Technologies</span>{" "}
               for Agricultural Value<span className="text-mygreen">-</span>Chain
@@ -149,24 +133,35 @@ export default function Home() {
               style={{ backgroundImage: "url('/images/leaf.png')" }}
             >
               <div
-                className="h-[350px] w-[350px] rounded-full border-[7px] border-[#59a930] bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-linear relative rotate-[35deg]"
+                className="h-[250px] w-[250px] xl:h-[350px] xl:w-[350px] rounded-full border-[7px] border-[#59a930] bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-linear relative rotate-[35deg]"
                 style={{
-                  backgroundImage: `url(${highlightImages[higlightIndex]})`,
+                  backgroundImage: `url(${highlightImages[highlightIndex]})`,
                 }}
               ></div>
             </div>
-            {/* <div
-              className="h-[350px] w-[350px] rounded-full border-[7px] border-mygreen bg-cover bg-center bg-no-repeat transition-all duration-1000 ease-linear relative"
-              style={{
-                backgroundImage: `url(${highlightImages[higlightIndex]})`,
-              }}
-            >
-             
-            </div> */}
+          </div>
+        </div> */}
+        <div className="w-full py-16">
+          <div className="">
+            <h1 className="text-[24px] md:text-[32px] font-jakara font-bold  leading-[32px] md:leading-[42px] text-center md:text-left">
+              Sustainable <span className="text-mygreen"> Technologies</span>{" "}
+              for Agricultural Value<span className="text-mygreen">-</span>Chain
+              Mechanization in Africa
+            </h1>
+
+            <h2 className="text-[14px] md:text-[18px] leading-[24px] md:leading-[27px] font-normal text-myblack mt-3 text-center md:text-left">
+              Welcome to STAVMiA, the central hub for agricultural innovations
+              across Africa! Helping farmers, processors, input suppliers,
+              business owners, consultants, and researchers to find valuable
+              technologies and methods that suit their needs easily. Our
+              platform allows everyone in the agricultural value chain to
+              access, share, discuss, and collaborate on technologies, boosting
+              agro productivity. Join us in transforming agriculture in Africa!
+            </h2>
           </div>
         </div>
 
-        <div className="mt-[100px]">
+        <div className="mt-[20px]">
           <CollectionTable />
         </div>
 
