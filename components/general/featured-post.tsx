@@ -1,9 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { useFeaturedPosts } from "@/hooks/useFeaturedPostData";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import Autoplay from "embla-carousel-autoplay";
 import {
   Dialog,
   DialogContent,
@@ -12,41 +10,18 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import ReactPlayer from "react-player";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
-const settings = {
-  dots: true,
-  arrow: true,
-  infinite: true,
-  speed: 1000,
-  autoplay: true,
-  autoplaySpeed: 2000,
-  slidesToShow: 6,
-  slidesToScroll: 1,
-  centerMode: true,
-  centerPadding: "10px",
-  responsive: [
-    {
-      breakpoint: 900,
-      settings: {
-        slidesToShow: 4,
-        slidesToScroll: 1,
-        centerPadding: "10px",
-        centerMode: true,
-        initialSlide: 2,
-      },
-    },
-    {
-      breakpoint: 480,
-      settings: {
-        slidesToShow: 2,
-        centerPadding: "10px",
-        slidesToScroll: 1,
-        centerMode: true,
-      },
-    },
-  ],
-};
+import ReactPlayer from "react-player";
+import { FeaturedCardSkeleton } from "@/components/skeletons/featured-card-skeleton";
+import { ColorTag } from "@/components/general/color-tags";
+import { useAppContext } from "@/context/AppContext";
 
 const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -58,13 +33,23 @@ const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
   return (
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
-        <div
-          className="mx-10 w-[350px] h-[300px] rounded-md bg-cover bg-no-repeat bg-center cursor-pointer"
-          style={{
-            backgroundImage: `url(${post?.thumbnailImage || post?.mediaUrl})`,
-            marginInline: "10px",
-          }}
-        ></div>
+        <div>
+          <div
+            className=" w-full h-[300px] rounded-md bg-cover bg-no-repeat bg-center cursor-pointer mb-2"
+            style={{
+              backgroundImage: `url(${post?.thumbnailImage || post?.mediaUrl})`,
+              // marginInline: "10px",
+            }}
+          ></div>
+          <div className="px-4 space-y-3">
+            <div>{post.title}</div>
+            <div className="flex gap-1 items-center text-wrap">
+              {post.tag.map((tag, i) => (
+                <ColorTag type="purple" name={tag} key={i} />
+              ))}
+            </div>
+          </div>
+        </div>
       </DialogTrigger>
       <DialogContent className="max-w-[300px] md:max-w-[700px] max-h-[700px] mx-auto">
         <DialogHeader>
@@ -72,6 +57,11 @@ const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
             {post?.title}
           </DialogTitle>
           <DialogDescription>
+            <div className="flex gap-1 items-center text-wrap mb-5">
+              {post.tag.map((tag, i) => (
+                <ColorTag type="purple" name={tag} key={i} />
+              ))}
+            </div>
             <div>
               <div className="min-h-[350px]">
                 {imageExtensions.includes(extension) ? (
@@ -97,12 +87,21 @@ const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
 };
 
 export const FeaturedPosts = () => {
-  const [featured, setFeatured] = useState<IFeaturedPosts[]>([]);
+  const { featuredPosts } = useAppContext();
+  const [featured, setFeatured] = useState<IFeaturedPosts[]>(featuredPosts);
   const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
     setFeatured(data);
   };
 
-  const { isLoading, data } = useFeaturedPosts(handleGetFeaturedPosts);
+  const plugin = React.useRef(
+    Autoplay({ delay: 2000, stopOnInteraction: true })
+  );
+
+  const { isLoading } = useFeaturedPosts(handleGetFeaturedPosts);
+
+  if (isLoading && featuredPosts.length < 1) {
+    return <FeaturedCardSkeleton />;
+  }
 
   return (
     <main>
@@ -110,15 +109,28 @@ export const FeaturedPosts = () => {
         <h1 className="w-full font-jakara text-[24px] md:text-2xl font-bold text-left mb-10 leading-[32px]">
           Featured Posts
         </h1>
-
-        <div className="slider-container">
-          <Slider {...settings}>
-            {featured.map((post) => (
-              <div key={post.id} style={{ marginInline: "15px" }}>
-                <FeaturedPostsCard post={post} key={post.id} />
-              </div>
-            ))}
-          </Slider>
+        <div className="px-10">
+          <Carousel
+            className="w-full"
+            plugins={[plugin.current]}
+            onMouseEnter={plugin.current.stop}
+            onMouseLeave={plugin.current.reset}
+          >
+            <CarouselContent className="-ml-1">
+              {featured.map((post) => (
+                <CarouselItem
+                  key={post.id}
+                  className="pl-1 md:basis-1/2 lg:basis-1/4"
+                >
+                  <div className="p-1">
+                    <FeaturedPostsCard post={post} key={post.id} />
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
         </div>
       </div>
     </main>

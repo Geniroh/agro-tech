@@ -1,4 +1,12 @@
 import React from "react";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const FeaturedCardSkeleton = () => {
   return (
@@ -8,16 +16,17 @@ export const FeaturedCardSkeleton = () => {
           Featured Posts
         </h1>
 
-        <div className=" space-x-4">
-          {/* <Slider {...settings}>
-      <div
-          className="w-[350px] h-[300px] rounded-md bg-cover bg-no-repeat bg-center mr-3 cursor-pointer mx-3"
-          style={{
-            backgroundImage: `url(${post?.thumbnailImage || post?.mediaUrl})`,
-          }}
-        ></div>
-      </Slider> */}
-        </div>
+        <Carousel className="w-full">
+          <CarouselContent className="-ml-1">
+            {Array.from({ length: 4 }).map((_, i) => (
+              <CarouselItem key={i} className="pl-1 md:basis-1/3 lg:basis-1/4">
+                <Skeleton className=" w-full h-[300px] rounded-md bg-cover bg-no-repeat bg-center cursor-pointer" />
+              </CarouselItem>
+            ))}
+          </CarouselContent>
+          <CarouselPrevious />
+          <CarouselNext />
+        </Carousel>
       </div>
     </main>
   );

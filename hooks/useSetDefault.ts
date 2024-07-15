@@ -5,6 +5,7 @@ import {
 } from "@/hooks/useUserProfileData";
 import { useEffect } from "react";
 import { useGetInnovation } from "./useInnovationData";
+import { useFeaturedPosts } from "./useFeaturedPostData";
 
 export const useSetDefaultStates = () => {
   const {
@@ -12,6 +13,7 @@ export const useSetDefaultStates = () => {
     setUserProfile,
     setInnovationCollection,
     innovationCollection,
+    setFeaturedPosts,
   } = useAppContext();
 
   const handleGetSuccess = (data: IInnovationType[]) => {
@@ -29,6 +31,14 @@ export const useSetDefaultStates = () => {
   const { data: collectionData, isLoading: isCollectionLoading } =
     useGetInnovation({ page: innovationCollection.page });
 
+  const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
+    setFeaturedPosts(data);
+  };
+
+  const { isLoading: isLoadingFeatured, data: featuredData } = useFeaturedPosts(
+    handleGetFeaturedPosts
+  );
+
   const dependencies = [
     data,
     isLoading,
@@ -36,6 +46,8 @@ export const useSetDefaultStates = () => {
     isProfileLoading,
     collectionData,
     isCollectionLoading,
+    isLoadingFeatured,
+    featuredData,
   ];
 
   useEffect(() => {
@@ -47,6 +59,9 @@ export const useSetDefaultStates = () => {
     }
     if (collectionData && isCollectionLoading) {
       setInnovationCollection(collectionData);
+    }
+    if (featuredData && isLoadingFeatured) {
+      setFeaturedPosts(featuredData);
     }
   }, [...dependencies]);
 };

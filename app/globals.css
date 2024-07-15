@@ -133,11 +133,10 @@ html,body,:root {
     display: none;
   }
 
-  .slick-slide {
-    padding: 0 10px;
+  @media (max-width: 767px) {
+  .ant-tour-content {
+    text-wrap: wrap;
+    max-width: 300px;
+    margin-inline: auto;
   }
-  
-  /* Remove default padding on the container to avoid double spacing */
-  .slick-list {
-    margin: 0 -10px;
-  }
+}

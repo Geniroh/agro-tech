@@ -8,6 +8,8 @@ interface AppContextType {
   setUserProfile: (data: IUser) => void;
   innovationCollection: IGetInnovationResponse;
   setInnovationCollection: (data: IGetInnovationResponse) => void;
+  featuredPosts: IFeaturedPosts[];
+  setFeaturedPosts: (data: IFeaturedPosts[]) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -41,6 +43,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
       totalPages: 1,
     });
 
+  const [featuredPosts, setFeaturedPosts] = useState<IFeaturedPosts[]>([]);
+
   return (
     <AppContext.Provider
       value={{
@@ -50,6 +54,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setUserProfile,
         innovationCollection,
         setInnovationCollection,
+        featuredPosts,
+        setFeaturedPosts,
       }}
     >
       {children}
