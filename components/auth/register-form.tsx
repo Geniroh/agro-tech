@@ -19,18 +19,7 @@ import { FormError } from "@/components/form-error";
 import { FormSuccess } from "@/components/form-success";
 import { register } from "@/actions/register";
 import { IoMdPerson, IoMdMail } from "react-icons/io";
-import { AiOutlineMobile } from "react-icons/ai";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { IoMdBriefcase } from "react-icons/io";
-
 import { FcGoogle } from "react-icons/fc";
-import { FaGithub, FaApple } from "react-icons/fa";
 import { FaSquareFacebook } from "react-icons/fa6";
 import { signIn } from "next-auth/react";
 
@@ -106,9 +95,8 @@ export const RegisterForm = () => {
           </div>
           <div className="w-full my-5 font-semibold text-center">Or</div>
 
-          <p className="text-muted-foreground mt-5 text-center text-[14px] mb-3 ">
-            Sign up with an email and an email would be send to confirm your
-            email.
+          <p className="text-muted-foreground mt-2 text-center text-[16px] mb-3 ">
+            Sign up with an email
           </p>
           <form
             onSubmit={form.handleSubmit(handleSubmit)}

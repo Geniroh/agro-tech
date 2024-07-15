@@ -9,20 +9,27 @@ import {
   CollectionDataImageGrid,
 } from "@/components/data/collections-table";
 import { message } from "antd";
-import { Skeleton } from "@/components/ui/skeleton";
-import { phaseOptions } from "@/constants/options";
+import { phaseOptions, valueChainOptions } from "@/constants/options";
 import { generateCountryArray, generateYears } from "@/utils/function";
 import { useGetInnovation } from "@/hooks/useInnovationData";
+import { CollectionTableSkeleton } from "@/components/skeletons/collection-table-skeleton";
+import { CollectionGridSkeleton } from "./skeletons/collection-grid-skeleton";
+import { useAppContext } from "@/context/AppContext";
 
 export const CollectionTable = () => {
-  const [displayState, setDisplayState] = useState<number>(1);
-  const [pageNo, setPageNo] = useState<number>(1);
-  const [totalPages, setTotalPages] = useState<number>(1);
+  const { innovationCollection } = useAppContext();
+  const [displayState, setDisplayState] = useState<number>(2);
+  const [pageNo, setPageNo] = useState<number>(innovationCollection.page);
+  const [totalPages, setTotalPages] = useState<number>(
+    innovationCollection.totalPages
+  );
   const [nameParam, setNameParam] = useState<string>("");
   const [queryParams, setQueryParams] = useState({
     page: pageNo,
   });
-  const [innovations, setInnovations] = useState<IInnovationType[]>([]);
+  const [innovations, setInnovations] = useState<IInnovationType[]>(
+    innovationCollection.data
+  );
 
   const handleSuccess = (data: IGetInnovationResponse) => {
     setInnovations(data.data);
@@ -51,15 +58,6 @@ export const CollectionTable = () => {
     setQueryParams((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleClear = () => {
-    handleTagSelectChange("phase", "");
-    handleTagSelectChange("year", "");
-    handleTagSelectChange("country", "");
-    setQueryParams({
-      page: pageNo,
-    });
-  };
-
   const handleSearch = () => {
     if (nameParam == "") {
       setQueryParams({
@@ -82,7 +80,7 @@ export const CollectionTable = () => {
             <input
               type="text"
               className="border-0 outline-none bg-transparent w-full placeholder:text-[#888888]"
-              placeholder="Search by title, value chain, use, e.t.c"
+              placeholder="Search by title ..."
               value={nameParam}
               onChange={(e) => setNameParam(e.target.value)}
             />
@@ -109,29 +107,31 @@ export const CollectionTable = () => {
           </Button>
         </div>
         <div className="mb-5 flex flex-col gap-4 md:flex-row justify-between items-center">
-          <div className="flex gap-x-7 flex-wrap gap-y-4 justify-between md:justify-normal">
+          <div className="flex gap-x-3 md:gap-x-7 flex-wrap gap-y-4 justify-between md:justify-normal">
             <TagSelect
               name="Implementation phase"
-              optionsName="Phase"
+              optionsName="All"
               options={phaseOptions}
               onValueChange={(value) => handleTagSelectChange("phase", value)}
             />
             <TagSelect
               name="Year created"
+              optionsName="All"
               options={generateYears()}
               onValueChange={(value) => handleTagSelectChange("year", value)}
             />
             <TagSelect
               name="Country"
+              optionsName="All"
               options={generateCountryArray()}
               onValueChange={(value) => handleTagSelectChange("country", value)}
             />
-
-            {Object.keys(queryParams).length > 1 && (
-              <Button size="sm" onClick={handleClear}>
-                Clear
-              </Button>
-            )}
+            <TagSelect
+              name="Value Chain"
+              optionsName="All"
+              options={valueChainOptions}
+              onValueChange={(value) => handleTagSelectChange("chain", value)}
+            />
           </div>
 
           <div className="flex gap-x-2 justify-end w-full md:w-fit">
@@ -151,8 +151,12 @@ export const CollectionTable = () => {
             </Button>
           </div>
         </div>
-        {isLoading ? (
-          <Skeleton className="h-[300px] w-full" />
+        {isLoading && !innovations ? (
+          <div className="my-10">
+            {displayState === 1 && <CollectionTableSkeleton />}
+
+            {displayState === 2 && <CollectionGridSkeleton />}
+          </div>
         ) : (
           <div className="mt-10 mb-[100px]">
             {displayState === 1 && (

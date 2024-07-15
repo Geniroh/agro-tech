@@ -12,7 +12,7 @@ export async function GET(req: NextRequest) {
     const userId = session?.user?.id;
 
     const innovations = await db.innovation.findMany({
-      // where: { userId },
+      where: { userId },
       orderBy: { createdAt: "desc" },
     });
 

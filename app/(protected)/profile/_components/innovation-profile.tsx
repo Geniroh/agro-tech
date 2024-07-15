@@ -1,11 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { TagSelect } from "@/components/general/tag-select";
-import { useGetUserInnovation } from "@/hooks/useUserProfieData";
+import { useGetUserInnovation } from "@/hooks/useUserProfileData";
 import { DateDifference } from "@/components/general/date-diff-calculator";
 import { MessageSquareText, ThumbsDown, ThumbsUp } from "lucide-react";
 import { message } from "antd";
 import { useRouter } from "next/navigation";
-import { Skeleton } from "@/components/ui/skeleton";
+import { useAppContext } from "@/context/AppContext";
+import { UserInnovationSkeleton } from "@/components/skeletons/user-innovation-skeleton";
 
 const InnovationProfileCard = ({
   innovation,
@@ -29,26 +30,31 @@ const InnovationProfileCard = ({
         <div className="flex flex-col md:flex-row gap-6 items-start md:items-center justify-between">
           <div className="flex flex-col items-start md:items-center gap-3 ">
             <div className="flex items-center gap-3">
-              <div className="w-[32px] h-[32px] rounded-[8px] bg-mygreen flex justify-center items-center text-white"></div>
-              <div>{innovation.productName}</div>
+              <div
+                className="w-[32px] h-[32px] rounded-[8px] flex justify-center items-center text-white bg-cover bg-center bg-no-repeat"
+                style={{
+                  backgroundImage: `url(${innovation.productMedia[0].url})`,
+                }}
+              ></div>
+              <div>{innovation?.productName}</div>
             </div>
             <div className="flex items-center gap-1 text-muted-foreground text-[14px]">
-              Posted <DateDifference date={innovation.createdAt} />
+              Posted <DateDifference date={innovation?.createdAt} />
             </div>
           </div>
 
           <div className="">
-            {innovation.status === "approved" && (
+            {innovation?.status === "approved" && (
               <div className="bg-[#E6FEED] text-mygreen text-xs px-[15px] py-[5px] rounded-xl">
                 Live
               </div>
             )}
-            {innovation.status === "pending" && (
+            {innovation?.status === "pending" && (
               <div className="bg-[#F6EDFD] text-mygreen text-xs px-[15px] py-[5px] rounded-xl">
                 Pending Approval
               </div>
             )}
-            {innovation.status === "rejected" && (
+            {innovation?.status === "rejected" && (
               <div className="bg-[#CCCCCC] text-black text-xs px-[15px] py-[5px] rounded-xl">
                 Pending Approval
               </div>
@@ -56,9 +62,9 @@ const InnovationProfileCard = ({
           </div>
         </div>
 
-        <div>{innovation.productDescription}</div>
+        <div>{innovation?.productDescription}</div>
 
-        {innovation.status === "approved" && (
+        {innovation?.status === "approved" && (
           <div className="flex gap-x-2 md:gap-x-4">
             <>
               <button className="flex items-center text-xs">
@@ -67,7 +73,7 @@ const InnovationProfileCard = ({
                 >
                   <ThumbsUp size={13} />
                 </span>
-                <span>{innovation.likes}</span>
+                <span>{innovation?.likes}</span>
               </button>
 
               <button className="flex items-center text-xs">
@@ -76,14 +82,14 @@ const InnovationProfileCard = ({
                 >
                   <ThumbsDown size={13} />
                 </span>
-                <span>{innovation.dislikes}</span>
+                <span>{innovation?.dislikes}</span>
               </button>
 
               <button className="flex items-center text-xs">
                 <span className="p-2 rounded-full hover:bg-[#f2f2f2] flex justify-center items-center">
                   <MessageSquareText size={13} />
                 </span>
-                <span>{innovation.comments.length}</span>
+                <span>{innovation?.comments?.length}</span>
               </button>
             </>
           </div>
@@ -94,6 +100,7 @@ const InnovationProfileCard = ({
 };
 
 export const InnovationProfile = () => {
+  const { userInnovation, setUserInnovation } = useAppContext();
   const [activeSection, setActiveSection] = useState<number>(1);
   const [allInnovation, setAllInnovation] = useState<IInnovationType[]>([]);
   const [approvedInnovation, setApprovedInnovation] = useState<
@@ -103,26 +110,30 @@ export const InnovationProfile = () => {
     []
   );
 
-  const handleGetSuccess = (data: IInnovationType[]) => {
-    setAllInnovation(data);
-
-    let approved = data.filter(
+  useEffect(() => {
+    setAllInnovation(userInnovation);
+    const approved = userInnovation.filter(
       (innovation) => innovation.status === "approved"
     );
-    let pending = data.filter((innovation) => innovation.status === "pending");
+    const pending = userInnovation.filter(
+      (innovation) => innovation.status === "pending"
+    );
     setApprovedInnovation(approved);
     setPendingInnovation(pending);
+  }, [userInnovation]);
+
+  const handleGetSuccess = (data: IInnovationType[]) => {
+    setUserInnovation(data);
   };
 
-  const handleGetError = (err: any) => message.error("Network Error!");
+  const handleGetError = (err: any) => {
+    message.error("Network Error!");
+  };
 
-  const { data, isLoading } = useGetUserInnovation(
-    handleGetSuccess,
-    handleGetError
-  );
+  const { isLoading } = useGetUserInnovation(handleGetSuccess, handleGetError);
 
   if (isLoading) {
-    return <Skeleton className="w-full h-[200px]"></Skeleton>;
+    return <UserInnovationSkeleton />;
   }
 
   return (
@@ -168,7 +179,7 @@ export const InnovationProfile = () => {
       <div className="mt-10 space-y-6">
         {activeSection === 1 && (
           <>
-            {allInnovation.length >= 1 ? (
+            {allInnovation.length > 0 ? (
               <>
                 {allInnovation.map((innovation) => (
                   <InnovationProfileCard
@@ -187,7 +198,7 @@ export const InnovationProfile = () => {
         )}
         {activeSection === 2 && (
           <>
-            {approvedInnovation.length >= 1 ? (
+            {approvedInnovation.length > 0 ? (
               <>
                 {approvedInnovation.map((innovation) => (
                   <InnovationProfileCard
@@ -206,7 +217,7 @@ export const InnovationProfile = () => {
         )}
         {activeSection === 3 && (
           <>
-            {pendingInnovation.length >= 1 ? (
+            {pendingInnovation.length > 0 ? (
               <>
                 {pendingInnovation.map((innovation) => (
                   <InnovationProfileCard

@@ -27,12 +27,14 @@ import {
   useUpdateProfilePic,
   useDeleteProfilePic,
   useGetUserPost,
-} from "@/hooks/useUserProfieData";
+} from "@/hooks/useUserProfileData";
 import { Skeleton } from "@/components/ui/skeleton";
 import UserPosts from "./_components/user-posts";
+import { useAppContext } from "@/context/AppContext";
 
 const ProfilePage = () => {
-  const [profileUser, setProfileUser] = useState<IUser>();
+  const { userProfile } = useAppContext();
+  const [profileUser, setProfileUser] = useState<IUser>(userProfile);
   const [openDeletePic, setOpenDeletePic] = useState<boolean>(false);
   const [isUploading, setIsUploading] = useState<boolean>(false);
 
@@ -103,7 +105,13 @@ const ProfilePage = () => {
       />
 
       <div className="w-full flex flex-col items-center gap-y-10">
-        {isProfileLoading ? (
+        <Avatar className=" w-[126px] h-[126px]">
+          <AvatarImage src={profileUser?.image} alt="profile" />
+          <AvatarFallback>
+            <CgProfile size={30} />
+          </AvatarFallback>
+        </Avatar>
+        {/* {isProfileLoading ? (
           <Skeleton className="w-[126px] h-[126px] rounded-full flex justify-center items-center">
             <CgProfile size={30} />
           </Skeleton>
@@ -114,7 +122,7 @@ const ProfilePage = () => {
               <CgProfile size={30} />
             </AvatarFallback>
           </Avatar>
-        )}
+        )} */}
 
         <div className="flex gap-x-6">
           <ImgCrop rotationSlider>

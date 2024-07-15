@@ -19,15 +19,18 @@ export const Footer = () => {
           <h1 className="text-[24px] md:text-[28px] leading-[32px] mb-3 font-bold">
             Navigate
           </h1>
-          <div className="text-[16px] leading-[22px] font-semibold space-y-1">
+          <div className="text-[16px] leading-[22px] font-semibold space-y-1 md:space-y-3">
             <Link href="/" className="text-white hover:underline">
               <p>Home</p>
             </Link>
-            <Link href="/" className="text-white hover:underline">
+            <Link href="/discussion" className="text-white hover:underline">
               <p>Discussion Forum</p>
             </Link>
-            <Link href="/" className="text-white hover:underline">
+            <Link href="/analytics" className="text-white hover:underline">
               <p>Analytics</p>
+            </Link>
+            <Link href="/privacy-policy" className="text-white hover:underline">
+              <p>Privacy Policy</p>
             </Link>
           </div>
         </div>

@@ -98,14 +98,6 @@ const DiscussionPage = () => {
         <div className="max-w-[700px] mx-auto">
           <div className="flex items-center gap-x-3 mb-5">
             {user?.image ? (
-              // <Image
-              //   src={user?.image || ""}
-              //   className="rounded-full"
-              //   alt=""
-              //   width={40}
-              //   height={40}
-              // />
-
               <div
                 className="w-[40px] h-[40px] rounded-full bg-center bg-cover bg-no-repeat"
                 style={{ backgroundImage: `url(${user?.image})` }}

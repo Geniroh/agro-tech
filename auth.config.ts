@@ -57,7 +57,7 @@ export default {
                 role: user.role,
               },
               JWT_SECRET,
-              { expiresIn: "1h" }
+              { expiresIn: "2h" }
             );
 
             return {
@@ -80,10 +80,10 @@ export default {
   ],
   session: {
     strategy: "jwt",
-    maxAge: 24 * 60 * 60,
+    maxAge: 24 * 60 * 60 * 4,
   },
   jwt: {
-    maxAge: 24 * 60 * 60,
+    maxAge: 24 * 60 * 60 * 4,
   },
   callbacks: {
     async jwt({ token, user, account }) {

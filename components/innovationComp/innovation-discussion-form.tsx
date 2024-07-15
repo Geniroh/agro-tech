@@ -17,7 +17,6 @@ export const InnovationDiscussionForum = ({
   const [form] = Form.useForm();
   const [myComments, setMyComments] = useState<IInnovationComment[]>(comments);
   const [displayedComments, setDisplayedComments] = useState<number>(5);
-  const { setCommented } = useAppContext();
 
   const { mutate: addComment, data } = useAddDiscussionComment();
 
@@ -28,7 +27,6 @@ export const InnovationDiscussionForum = ({
         { id: innovationId, message: values.message },
         {
           onSuccess: (data) => {
-            setCommented(values.message);
             form.resetFields();
             setMyComments(data.comments);
             message.info("Commented");

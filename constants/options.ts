@@ -44,3 +44,6 @@ export const OCCUPATION_OPTIONS = [
 ];
 
 export const phaseOptions = PRODUCT_PHASE_OPTIONS.map((phase) => phase.value);
+export const valueChainOptions = VALUE_CHAIN_OPTIONS.map(
+  (option) => option.value
+);

@@ -53,7 +53,11 @@ export const FeaturedCard = ({
     <div
       className={`relative rounded-2xl h-[264px] md:h-[400px] w-full overflow-hidden ${className}`}
     >
-      <ReactPlayer
+      <video width="320" height="240" controls>
+        <source src={url} type="video/mp4" />
+        Your browser does not support the video tag.
+      </video>
+      {/* <ReactPlayer
         url={url}
         width="100%"
         height="100%"
@@ -71,7 +75,7 @@ export const FeaturedCard = ({
             },
           },
         }}
-      />
+      /> */}
       <div className="absolute top-0 left-0 w-full h-full p-8">
         <div className="flex flex-col justify-between w-full h-full relative z-20">
           <div>
