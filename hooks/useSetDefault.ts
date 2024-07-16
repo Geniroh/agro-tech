@@ -1,6 +1,7 @@
 import { useAppContext } from "@/context/AppContext";
 import {
   useGetUserInnovation,
+  useGetUserPost,
   useUserProfile,
 } from "@/hooks/useUserProfileData";
 import { useEffect } from "react";
@@ -18,6 +19,7 @@ export const useSetDefaultStates = () => {
     setFeaturedPosts,
     setAnalyticsInnovation,
     setChartData,
+    setUsersPosts,
   } = useAppContext();
 
   const handleGetSuccess = (data: IInnovationType[]) => {
@@ -50,6 +52,8 @@ export const useSetDefaultStates = () => {
   const { isLoading: isLoadingAnalytics, data: analyticsData } =
     useGetAnalyticsInnovation({});
 
+  const { data: userPosts, isLoading: isLoadingUserPosts } = useGetUserPost();
+
   const dependencies = [
     data,
     isLoading,
@@ -59,6 +63,8 @@ export const useSetDefaultStates = () => {
     isCollectionLoading,
     isLoadingFeatured,
     featuredData,
+    userPosts,
+    isLoadingUserPosts,
   ];
 
   useEffect(() => {
@@ -76,6 +82,9 @@ export const useSetDefaultStates = () => {
     }
     if (analyticsData && isLoadingAnalytics) {
       handleAnalyticsGet(analyticsData);
+    }
+    if (userPosts && isLoadingUserPosts) {
+      setUsersPosts(userPosts);
     }
   }, [...dependencies]);
 };

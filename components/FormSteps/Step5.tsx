@@ -234,7 +234,7 @@ const Step5: React.FC = () => {
                     onClick={addInputGroup}
                     icon={<PlusOutlined />}
                   >
-                    Add Instance
+                    Add Inventor
                   </Button>
                 </Form.Item>
               </div>

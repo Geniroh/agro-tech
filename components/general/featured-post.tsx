@@ -120,7 +120,7 @@ export const FeaturedPosts = () => {
               {featured.map((post) => (
                 <CarouselItem
                   key={post.id}
-                  className="pl-1 md:basis-1/2 lg:basis-1/4"
+                  className="pl-1 sm:basis-1/2 lg:basis-1/4"
                 >
                   <div className="p-1">
                     <FeaturedPostsCard post={post} key={post.id} />

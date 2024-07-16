@@ -1,6 +1,8 @@
 import { useFormContext } from "@/context/FormContext";
 import { message } from "antd";
-import axios from "axios";
+import { sendUploadSucess } from "@/actions/innovationEmails";
+import axiosInstance from "@/utils/axiosInstance";
+import { useSession } from "next-auth/react";
 
 interface FormData {
   [key: string]: any;
@@ -10,13 +12,19 @@ export const useFormSubmit = () => {
   const { formData, setFormData, setCurrentStep, setMySteps, setSubmitStatus } =
     useFormContext();
 
+  const session = useSession();
+
   const handleSubmit = async (data: FormData) => {
     try {
-      const { data: res } = await axios.post("/api/v1/innovation", data);
+      const { data: res } = await axiosInstance.post("/innovation", data);
 
       if (res.error) {
         throw new Error("There was an error in creating an innovation");
       }
+
+      await sendUploadSucess(
+        session?.data?.user?.email || "irochibuzor@gmail.com"
+      );
 
       // Clear local storage
       localStorage.removeItem("formData");

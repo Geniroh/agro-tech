@@ -14,6 +14,8 @@ interface AppContextType {
   setAnalyticsInnovation: (data: IInnovationType[]) => void;
   chartData: ChartData[];
   setChartData: (data: ChartData[]) => void;
+  usersPosts: IUserDiscussion[];
+  setUsersPosts: (data: IUserDiscussion[]) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -52,6 +54,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     IInnovationType[]
   >([]);
   const [chartData, setChartData] = useState<ChartData[]>([]);
+  const [usersPosts, setUsersPosts] = useState<IUserDiscussion[]>([]);
 
   return (
     <AppContext.Provider
@@ -68,6 +71,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setAnalyticsInnovation,
         chartData,
         setChartData,
+        usersPosts,
+        setUsersPosts,
       }}
     >
       {children}
