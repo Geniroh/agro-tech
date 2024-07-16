@@ -277,12 +277,14 @@ model InnovationReaction {
 }
 
 model FeaturedPosts {
-  id        String   @id @default(auto()) @map("_id") @db.ObjectId
-  title     String
-  mediaUrl  String
-  tag       String[]
-  createdAt DateTime @default(now())
-  updatedAt DateTime @default(now())
+  id             String   @id @default(auto()) @map("_id") @db.ObjectId
+  title          String
+  mediaUrl       String
+  tag            String[]
+  thumbnailImage String?
+  type           String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @default(now())
 
   @@map("featuredposts")
 }

@@ -22,8 +22,8 @@ import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-ca
 import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
 import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
 import { useGetAllDiscussion } from "@/hooks/useDiscussionData";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useAddUserDiscussion } from "@/hooks/useAddDiscussion";
+import { DiscussionCardSkeleton } from "@/components/skeletons/discussion-card-skeleton";
 
 const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
@@ -212,13 +212,13 @@ const DiscussionPage = () => {
           </div>
 
           <div className="pt-10 mt-10 pb-4 border-b flex justify-between">
-            <div className="flex gap-4">
+            <div className="flex gap-3 md:gap-4">
               <button
                 className={`${
                   activeSection == 1
                     ? "text-white bg-mygreen"
                     : "bg-transparent text-black"
-                } py-1 px-6 rounded-3xl`}
+                } py-1 px-4 md:px-6 rounded-3xl text-[14px] md:text-[16px]`}
                 onClick={() => setActiveSection(1)}
               >
                 All
@@ -228,7 +228,7 @@ const DiscussionPage = () => {
                   activeSection == 2
                     ? "text-white bg-mygreen"
                     : "bg-transparent text-black"
-                } py-1 px-6 rounded-3xl`}
+                } py-1 px-4 md:px-6 rounded-3xl text-[14px] md:text-[16px]`}
                 onClick={() => setActiveSection(2)}
               >
                 Innovations
@@ -238,7 +238,7 @@ const DiscussionPage = () => {
                   activeSection == 3
                     ? "text-white bg-mygreen"
                     : "bg-transparent text-black"
-                } py-1 px-6 rounded-3xl`}
+                } py-1 px-4 md:px-6 rounded-3xl text-[14px] md:text-[16px]`}
                 onClick={() => setActiveSection(3)}
               >
                 Discussion
@@ -247,8 +247,10 @@ const DiscussionPage = () => {
           </div>
 
           {isLoading ? (
-            <div>
-              <Skeleton className="w-full min-h-[300px]" />
+            <div className="flex flex-col gap-3">
+              {Array.from({ length: 3 }).map((_, i) => (
+                <DiscussionCardSkeleton key={i} />
+              ))}
             </div>
           ) : (
             <>

@@ -1,10 +1,10 @@
 "use client";
-import React, { useEffect } from "react";
+import Link from "next/link";
+import React from "react";
 
 const ErrorBoundary = ({ error }: { error: Error }) => {
-  useEffect(() => {
-    console.log(error.message);
-  }, []);
+  console.log(error.message);
+
   return (
     <div
       style={{
@@ -59,7 +59,15 @@ const ErrorBoundary = ({ error }: { error: Error }) => {
                   Aaaah! Something went wrong
                 </h1>
                 <p>Brace yourself till we get the Error fixed</p>
-                <p>You may also refresh the page or try again Later</p>
+                <p className="mb-3">
+                  You may also refresh the page or try again Later
+                </p>
+                <Link
+                  href="/"
+                  className="bg-mygreen text-white px-2 py-1 rounded-md mt-4"
+                >
+                  Go Home
+                </Link>
               </div>
             </p>
           </div>

@@ -132,3 +132,11 @@ html,body,:root {
   .ant-upload-list-item-name, .ant-upload-icon {
     display: none;
   }
+
+  @media (max-width: 767px) {
+  .ant-tour-content {
+    text-wrap: wrap;
+    max-width: 300px;
+    margin-inline: auto;
+  }
+}

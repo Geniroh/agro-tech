@@ -7,7 +7,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { LoginButton } from "@/components/auth/login-button";
 import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
-import { UserDropdownMenu } from "../auth/user-menu-button";
+import { UserDropdownMenu } from "@/components/auth/user-menu-button";
 import { Menu, X } from "lucide-react";
 
 const navLinks = [

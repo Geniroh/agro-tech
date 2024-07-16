@@ -71,7 +71,7 @@ export const CollectionTable = () => {
   return (
     <div>
       <div className="w-full">
-        <h1 className="w-full font-jakara text-3xl font-bold text-center mb-10 leading-[40px]">
+        <h1 className="w-full font-jakara text-[24px] md:text-2xl font-bold text-center mb-10 leading-[32px]">
           Collections
         </h1>
         <div className="flex flex-col md:flex-row gap-y-4 w-full items-center space-x-4 mb-10">
@@ -151,7 +151,7 @@ export const CollectionTable = () => {
             </Button>
           </div>
         </div>
-        {isLoading && !innovations ? (
+        {isLoading ? (
           <div className="my-10">
             {displayState === 1 && <CollectionTableSkeleton />}
 
