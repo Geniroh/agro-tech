@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -16,7 +16,7 @@ import { IoSendSharp } from "react-icons/io5";
 import Image from "next/image";
 import { useCurrentUser } from "@/hooks/current-user";
 import { getFirstName } from "@/utils/function";
-import { message } from "antd";
+import { message, Tour } from "antd";
 import { ClipLoader } from "react-spinners";
 import { CombinedReplyCard } from "@/components/discussionComp/combined-reply-card";
 import { InnovationReplyCard } from "@/components/discussionComp/innovation-reply-card";
@@ -24,6 +24,8 @@ import { UserReplyCard } from "@/components/discussionComp/user-reply-card";
 import { useGetAllDiscussion } from "@/hooks/useDiscussionData";
 import { useAddUserDiscussion } from "@/hooks/useAddDiscussion";
 import { DiscussionCardSkeleton } from "@/components/skeletons/discussion-card-skeleton";
+import { IoMdHelpCircle } from "react-icons/io";
+import type { TourProps } from "antd";
 
 const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
@@ -36,6 +38,10 @@ const DiscussionPage = () => {
   const [userDiscussion, setUserDiscussion] = useState<IUserDiscussion[]>([]);
   const [allDiscussion, setAllDiscussion] = useState<ICombinedDiscussion[]>([]);
   const user = useCurrentUser();
+
+  const ref1 = useRef(null);
+  const ref2 = useRef(null);
+  const ref3 = useRef(null);
 
   const handleGetAllDiscussionSuccess = (data: {
     userDiscussion: IUserDiscussion[];
@@ -57,6 +63,26 @@ const DiscussionPage = () => {
   );
   const { mutate: startDiscussion, isLoading: isLoadingDiscussion } =
     useAddUserDiscussion();
+
+  const [openTour, setOpenTour] = useState<boolean>(false);
+
+  const steps: TourProps["steps"] = [
+    {
+      title: "Create a discussion",
+      description: `Share your thoughts on the forum.`,
+      target: () => ref1.current,
+    },
+    {
+      title: "Innovation",
+      description: `Follow discussions about any innovation that interests you.`,
+      target: () => ref2.current,
+    },
+    {
+      title: "Discussion",
+      description: `See what other users are talking about, ask questions, and share ideas.`,
+      target: () => ref3.current,
+    },
+  ];
 
   const handleDiscussionCreate = async () => {
     const payload = {
@@ -82,7 +108,7 @@ const DiscussionPage = () => {
   };
 
   return (
-    <div>
+    <div className="relative">
       <div className="w-full container h-full pb-20">
         <BreadcrumbP
           fromHref="/"
@@ -116,7 +142,7 @@ const DiscussionPage = () => {
               </h1>
             </div>
           </div>
-          <div className="max-w-[782px] max-h-[700px] mx-auto">
+          <div className="max-w-[782px] max-h-[700px] mx-auto" ref={ref1}>
             <Dialog open={open} onOpenChange={setOpen}>
               <DialogTrigger asChild>
                 <div className="bg-myoffwhie py-2 px-6 rounded-3xl w-full flex items-center">
@@ -224,6 +250,7 @@ const DiscussionPage = () => {
                 All
               </button>
               <button
+                ref={ref2}
                 className={`${
                   activeSection == 2
                     ? "text-white bg-mygreen"
@@ -234,6 +261,7 @@ const DiscussionPage = () => {
                 Innovations
               </button>
               <button
+                ref={ref3}
                 className={`${
                   activeSection == 3
                     ? "text-white bg-mygreen"
@@ -281,6 +309,17 @@ const DiscussionPage = () => {
           )}
         </div>
       </div>
+
+      <Tour open={openTour} onClose={() => setOpenTour(false)} steps={steps} />
+
+      <Button
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
+        variant="default"
+        onClick={() => setOpenTour(true)}
+      >
+        <IoMdHelpCircle className="text-[18px] text-white" />{" "}
+        <span className="text-white">Help</span>
+      </Button>
     </div>
   );
 };

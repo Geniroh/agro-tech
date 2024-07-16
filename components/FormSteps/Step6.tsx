@@ -235,7 +235,7 @@ const Step6: React.FC = () => {
                     onClick={addInputGroup}
                     icon={<PlusOutlined />}
                   >
-                    Add Instance
+                    Add Supplier
                   </Button>
                 </Form.Item>
               </div>

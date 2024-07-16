@@ -71,7 +71,6 @@ export const RenderMediaList = ({
   const [selectedIndex, setSelectedIndex] = useState<number>(0);
   const [mediaList, setMediaList] = useState<Media[]>(media);
 
-  console.log(media);
   return (
     <div className="flex flex-col gap-10">
       <div className={featuredClassName}>
