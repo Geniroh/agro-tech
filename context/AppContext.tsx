@@ -10,6 +10,10 @@ interface AppContextType {
   setInnovationCollection: (data: IGetInnovationResponse) => void;
   featuredPosts: IFeaturedPosts[];
   setFeaturedPosts: (data: IFeaturedPosts[]) => void;
+  analyticsInnovation: IInnovationType[];
+  setAnalyticsInnovation: (data: IInnovationType[]) => void;
+  chartData: ChartData[];
+  setChartData: (data: ChartData[]) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -44,6 +48,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
     });
 
   const [featuredPosts, setFeaturedPosts] = useState<IFeaturedPosts[]>([]);
+  const [analyticsInnovation, setAnalyticsInnovation] = useState<
+    IInnovationType[]
+  >([]);
+  const [chartData, setChartData] = useState<ChartData[]>([]);
 
   return (
     <AppContext.Provider
@@ -56,6 +64,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({
         setInnovationCollection,
         featuredPosts,
         setFeaturedPosts,
+        analyticsInnovation,
+        setAnalyticsInnovation,
+        chartData,
+        setChartData,
       }}
     >
       {children}

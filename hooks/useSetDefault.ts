@@ -6,6 +6,8 @@ import {
 import { useEffect } from "react";
 import { useGetInnovation } from "./useInnovationData";
 import { useFeaturedPosts } from "./useFeaturedPostData";
+import { useGetAnalyticsInnovation } from "./useAnalyticsData";
+import { transformInnovationsToChartData } from "@/utils/function";
 
 export const useSetDefaultStates = () => {
   const {
@@ -14,6 +16,8 @@ export const useSetDefaultStates = () => {
     setInnovationCollection,
     innovationCollection,
     setFeaturedPosts,
+    setAnalyticsInnovation,
+    setChartData,
   } = useAppContext();
 
   const handleGetSuccess = (data: IInnovationType[]) => {
@@ -21,6 +25,14 @@ export const useSetDefaultStates = () => {
   };
   const handleGetProfileSuccess = (data: { user: IUser }) => {
     setUserProfile(data.user);
+  };
+  const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
+    setFeaturedPosts(data);
+  };
+  const handleAnalyticsGet = async (data: { data: IInnovationType[] }) => {
+    setAnalyticsInnovation(data.data);
+    const res = transformInnovationsToChartData(data.data);
+    setChartData(res);
   };
 
   const { data: profileData, isLoading: isProfileLoading } = useUserProfile(
@@ -31,13 +43,12 @@ export const useSetDefaultStates = () => {
   const { data: collectionData, isLoading: isCollectionLoading } =
     useGetInnovation({ page: innovationCollection.page });
 
-  const handleGetFeaturedPosts = async (data: IFeaturedPosts[]) => {
-    setFeaturedPosts(data);
-  };
-
   const { isLoading: isLoadingFeatured, data: featuredData } = useFeaturedPosts(
     handleGetFeaturedPosts
   );
+
+  const { isLoading: isLoadingAnalytics, data: analyticsData } =
+    useGetAnalyticsInnovation({});
 
   const dependencies = [
     data,
@@ -62,6 +73,9 @@ export const useSetDefaultStates = () => {
     }
     if (featuredData && isLoadingFeatured) {
       setFeaturedPosts(featuredData);
+    }
+    if (analyticsData && isLoadingAnalytics) {
+      handleAnalyticsGet(analyticsData);
     }
   }, [...dependencies]);
 };

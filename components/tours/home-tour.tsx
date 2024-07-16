@@ -47,18 +47,22 @@ export const HomeTour = ({
     },
   ];
 
-  const [isMobile, setIsMobile] = useState(window.innerWidth <= 767);
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    const handleResize = () => {
+    if (typeof window !== "undefined") {
       setIsMobile(window.innerWidth <= 767);
-    };
 
-    window.addEventListener("resize", handleResize);
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 767);
+      };
 
-    return () => {
-      window.removeEventListener("resize", handleResize);
-    };
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
   }, []);
   return (
     <>

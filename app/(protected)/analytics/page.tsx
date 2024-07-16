@@ -15,47 +15,66 @@ import { TagSelect3 } from "@/components/general/tag-select3";
 import { Button } from "@/components/ui/button";
 import { IoMdHelpCircle } from "react-icons/io";
 import { ClipLoader } from "react-spinners";
+import { useAppContext } from "@/context/AppContext";
 
 export default function AnalyticsPage() {
-  const [innovation, setInnovations] = useState<IInnovationType[]>([]);
-  const [count, setCount] = useState<number>(0);
-  const [barChartData, setBarChartData] = useState<ChartData[]>([]);
+  const {
+    analyticsInnovation,
+    chartData,
+    setAnalyticsInnovation,
+    setChartData,
+  } = useAppContext();
+  const [innovation, setInnovations] =
+    useState<IInnovationType[]>(analyticsInnovation);
+  const [count, setCount] = useState<number>(analyticsInnovation.length);
+  const [barChartData, setBarChartData] = useState<ChartData[]>(chartData);
   const [queryParams, setQueryParams] = useState({});
   const ref1 = useRef(null);
   const ref2 = useRef(null);
   const ref3 = useRef(null);
   const ref4 = useRef(null);
   const ref5 = useRef(null);
+  const ref6 = useRef(null);
+  const ref7 = useRef(null);
 
   const [open, setOpen] = useState<boolean>(false);
 
   const steps: TourProps["steps"] = [
     {
       title: "Filter",
-      description: `Filter the data you see on this page by year & month. \n Filter the data you see on this page by value chain. \n Filter the data you see on this page by country & state.
-`,
+      description: `Filter the data you see on this page by year & month.`,
       target: () => ref1.current,
+    },
+    {
+      title: "Filter",
+      description: `Filter the data you see on this page by value chain.`,
+      target: () => ref2.current,
+    },
+    {
+      title: "Filter",
+      description: `Filter the data you see on this page by country & state.`,
+      target: () => ref3.current,
     },
     {
       title: "Map",
       description:
         "Zoom in to see the number of innovations from your country of choice",
-      target: () => ref2.current,
+      target: () => ref4.current,
     },
     {
       title: "Total Innovation",
       description: "The number of innovations available on STAVMiA.",
-      target: () => ref3.current,
+      target: () => ref5.current,
     },
     {
       title: "Value Chain",
       description: "Innovations on STAVMiA categorized by value chain",
-      target: () => ref4.current,
+      target: () => ref6.current,
     },
     {
       title: "Innovation per year",
       description: "Innovations on STAVMiA categorized by year of invention.",
-      target: () => ref5.current,
+      target: () => ref7.current,
     },
   ];
 
@@ -75,6 +94,9 @@ export default function AnalyticsPage() {
       setCount(data.totalCount);
       const res = transformInnovationsToChartData(data.data);
       setBarChartData(res);
+
+      setAnalyticsInnovation(data.data);
+      setChartData(res);
     },
     (error) => {
       message.error("Network Error");
@@ -109,39 +131,42 @@ export default function AnalyticsPage() {
         <div className="flex flex-col md:flex-row gap-6 md:h-[90%] h-full">
           <div className="h-full w-full md:w-[40%]">
             <div className="w-full h-full">
-              <div
-                className="w-full h-[70px] flex justify-between md:px-[10px] mb-2 gap-x-2"
-                ref={ref1}
-              >
-                <TagSelect3
-                  name="Filter By"
-                  optionsName="Date"
-                  options={yearOptions}
-                  onValueChange={(value) =>
-                    handleTagSelectChange("year", value)
-                  }
-                  loading={isLoading}
-                />
-                <TagSelect3
-                  name="Filter By"
-                  optionsName="Chain"
-                  options={valueOptions}
-                  onValueChange={(value) =>
-                    handleTagSelectChange("chain", value)
-                  }
-                  loading={isLoading}
-                />
-                <TagSelect3
-                  name="Filter By"
-                  optionsName="Location"
-                  options={countryOPtions}
-                  onValueChange={(value) =>
-                    handleTagSelectChange("country", value)
-                  }
-                  loading={isLoading}
-                />
-                <div ref={ref2}></div>
+              <div className="w-full h-[70px] flex justify-between md:px-[10px] mb-2 gap-x-2">
+                <div ref={ref1}>
+                  <TagSelect3
+                    name="Filter By"
+                    optionsName="Date"
+                    options={yearOptions}
+                    onValueChange={(value) =>
+                      handleTagSelectChange("year", value)
+                    }
+                    loading={isLoading}
+                  />
+                </div>
+                <div ref={ref2}>
+                  <TagSelect3
+                    name="Filter By"
+                    optionsName="Chain"
+                    options={valueOptions}
+                    onValueChange={(value) =>
+                      handleTagSelectChange("chain", value)
+                    }
+                    loading={isLoading}
+                  />
+                </div>
+                <div ref={ref3}>
+                  <TagSelect3
+                    name="Filter By"
+                    optionsName="Location"
+                    options={countryOPtions}
+                    onValueChange={(value) =>
+                      handleTagSelectChange("country", value)
+                    }
+                    loading={isLoading}
+                  />
+                </div>
               </div>
+              <div className="w-full h-1" ref={ref4}></div>
               <div className="h-[calc(100%-85px)] hidden md:block">
                 <DynamicChloropethMap innovations={innovation} />
               </div>
@@ -149,20 +174,20 @@ export default function AnalyticsPage() {
           </div>
           <div className="md:w-[60%] w-full mx-auto h-full">
             <div className="flex flex-col gap-4">
-              <div ref={ref3} className="w-full">
+              <div ref={ref5} className="w-full">
                 <InnovationBar innovations={innovation} count={count} />
               </div>
               <div className="flex flex-col md:flex-row gap-4 h-full">
                 <div
                   className="md:w-[40%] max-h-[500px] min-h-[300px] h-full"
-                  ref={ref4}
+                  ref={ref6}
                 >
                   <DonutChartCard innovations={innovation} />
                 </div>
-                <div ref={ref2} className="md:hidden h-[400px] max-h-[550px]">
+                <div className="md:hidden h-[400px] max-h-[550px]">
                   <DynamicChloropethMap innovations={innovation} />
                 </div>
-                <div className="md:w-[60%] flex" ref={ref5}>
+                <div className="md:w-[60%] flex" ref={ref7}>
                   <BarChartCard
                     title="Innovation per year"
                     subtitle="Keep track of revenue performance for the beach house for the last 12 month"
@@ -183,13 +208,14 @@ export default function AnalyticsPage() {
         </div>
       </div>
       <Tour open={open} onClose={() => setOpen(false)} steps={steps} />
+
       <Button
-        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0"
-        variant="outline"
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
+        variant="default"
         onClick={() => setOpen(true)}
       >
-        <IoMdHelpCircle className="text-[18px] text-mygreen" />{" "}
-        <span className="text-mygreen">Help</span>
+        <IoMdHelpCircle className="text-[18px] text-white" />{" "}
+        <span className="text-white">Help</span>
       </Button>
     </main>
   );

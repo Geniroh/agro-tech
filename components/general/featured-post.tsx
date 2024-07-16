@@ -35,7 +35,7 @@ const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
       <DialogTrigger asChild>
         <div>
           <div
-            className=" w-full h-[300px] rounded-md bg-cover bg-no-repeat bg-center cursor-pointer mb-2"
+            className=" w-full h-[200px] md:h-[300px] rounded-md bg-cover bg-no-repeat bg-center cursor-pointer mb-2"
             style={{
               backgroundImage: `url(${post?.thumbnailImage || post?.mediaUrl})`,
               // marginInline: "10px",

@@ -2,7 +2,6 @@ import React from "react";
 import { DateDifference } from "../general/date-diff-calculator";
 import { useRouter } from "next/navigation";
 import { ReactionButtons } from "../general/reaction-buttons";
-import UserAvatar from "@/components/user-avatar";
 
 export const InnovationReplyCard = ({
   discussion,
@@ -10,9 +9,6 @@ export const InnovationReplyCard = ({
   discussion: IInnovationDiscussion;
 }) => {
   const router = useRouter();
-
-  console.log(discussion);
-
   return (
     <div className="py-4 pt-6 border-b">
       <div
