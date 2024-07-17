@@ -37,7 +37,6 @@ export const ReactionButtons = ({
   const [clickedIcon, setClickedIcon] = useState<"like" | "dislike" | null>(
     null
   );
-  const router = useRouter();
 
   const { mutate: handleReaction } = useHandleReaction();
   const { data: comments, refetch: refetchComments } =
@@ -52,6 +51,7 @@ export const ReactionButtons = ({
       {
         onSuccess: (data) => {
           let customMessage = data?.message;
+          console.log(data);
           if (type === "innovationDiscussion") {
             setMyLikes(data.comment.likes);
             setMyDisLikes(data.comment.dislikes);
@@ -69,7 +69,7 @@ export const ReactionButtons = ({
             message.info(customMessage || "disliked");
           }
         },
-        onError: () => {
+        onError: (error) => {
           message.error("Network error");
         },
       }

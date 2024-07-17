@@ -1,7 +1,6 @@
-import { getFirstName } from "@/utils/function";
 import React, { useState } from "react";
 import { DateDifference } from "../general/date-diff-calculator";
-import { ReactionButtons } from "../general/reaction-buttons";
+// import { ReactionButtons } from "../general/reaction-buttons";
 import UserAvatar from "@/components/user-avatar";
 
 export const DiscussionUserReply = ({
@@ -17,9 +16,6 @@ export const DiscussionUserReply = ({
         <div className="flex gap-6 items-center">
           <div className="flex items-center gap-3">
             <UserAvatar email={reply?.user?.email || ""} />
-            {/* <div className="w-[32px] h-[32px] rounded-full bg-mygreen flex justify-center items-center text-white">
-              {getFirstName(reply.user?.name || reply?.user?.email)[0]}
-            </div> */}
             <div>{reply?.user?.name || reply?.user?.email}</div>
             <div className="text-muted-foreground text-[14px]">Replied</div>
           </div>
@@ -31,7 +27,7 @@ export const DiscussionUserReply = ({
 
         <div>{reply.message}</div>
 
-        <div className="flex gap-x-2 md:gap-x-4">
+        {/* <div className="flex gap-x-2 md:gap-x-4">
           <>
             <ReactionButtons
               dislikes={reply.dislikes}
@@ -43,7 +39,7 @@ export const DiscussionUserReply = ({
               showReplyBtn={false}
             />
           </>
-        </div>
+        </div> */}
       </div>
     </div>
   );

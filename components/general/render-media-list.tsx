@@ -31,17 +31,17 @@ export const MediaDisplay = ({ media, className }: RenderMediaProps) => {
   if (imageExtensions.includes(extension)) {
     return (
       <div
-        className={`w-full bg-cover bg-center bg-no-repeat h-[350px] md:h-[450px] lg:h-[600px] `}
+        className={`w-full bg-cover bg-center bg-no-repeat h-[250px] md:h-[450px] lg:h-[450px] `}
         style={{ backgroundImage: `url(${media.url})` }}
       ></div>
     );
   }
 
   if (videoExtensions.includes(extension)) {
-    const videoThumbnail = `${media.url}#t=0.5`;
-
     return (
-      <div className={`relative ${className}`}>
+      <div
+        className={`w-full bg-cover bg-center bg-no-repeat h-[250px] md:h-[450px] lg:h-[450px] ${className}`}
+      >
         <ReactPlayer
           url={media.url}
           // light={videoThumbnail}

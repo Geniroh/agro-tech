@@ -23,6 +23,7 @@ import { useGetInnovationDiscussion } from "@/hooks/useDiscussionData";
 import { RiExternalLinkFill } from "react-icons/ri";
 import Link from "next/link";
 import { RenderMediaList } from "@/components/general/render-media-list";
+import { InnovationSkeleton } from "@/components/skeletons/innovation-skeleton";
 
 const InnovationPage = () => {
   const router = useRouter();
@@ -60,15 +61,7 @@ const InnovationPage = () => {
   );
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col space-y-3 w-full container mb-5">
-        <Skeleton className="h-[300px] w-full mt-10" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-    );
+    return <InnovationSkeleton />;
   }
 
   if (isError) {
@@ -83,13 +76,7 @@ const InnovationPage = () => {
   return (
     <>
       {!data ? (
-        <div className="flex flex-col space-y-3 w-full container mb-5">
-          <Skeleton className="h-[300px] w-full mt-10" />
-          <div className="space-y-2">
-            <Skeleton className="h-4 w-full" />
-            <Skeleton className="h-4 w-[200px]" />
-          </div>
-        </div>
+        <InnovationSkeleton />
       ) : (
         <div className="container pb-20">
           <BreadcrumbP
@@ -182,7 +169,7 @@ const InnovationPage = () => {
             />
 
             <div className="flex gap-x-2 md:gap-x-4">
-              <ShareButton link={`innovation/${innovation_id}`} />
+              <ShareButton link={`innovations/${innovation_id}`} />
 
               <button
                 className="flex items-center text-xs"
@@ -196,7 +183,7 @@ const InnovationPage = () => {
             </div>
           </div>
 
-          <div className="mt-16">
+          <div className="mt-8">
             {/* {!data?.productMedia[0].url ? (
               <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
                 --- No data ----
@@ -212,7 +199,7 @@ const InnovationPage = () => {
             )} */}
             <RenderMediaList
               media={data?.productMedia}
-              featuredClassName="w-full max-w-[900px] mx-auto"
+              featuredClassName="w-full max-w-[600px] lg:max-w-[800px] mx-auto"
               listClassName="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
             />
           </div>

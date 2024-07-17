@@ -51,10 +51,10 @@ export const HomeTour = ({
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setIsMobile(window.innerWidth <= 767);
+      setIsMobile(window.innerWidth <= 900);
 
       const handleResize = () => {
-        setIsMobile(window.innerWidth <= 767);
+        setIsMobile(window.innerWidth <= 900);
       };
 
       window.addEventListener("resize", handleResize);
@@ -137,13 +137,6 @@ export const HomeTour = ({
             </div>
           </div>
 
-          <div className="flex flex-col justify-center items-center md:hidden">
-            <div className="w-1 h-1" ref={isMobile ? ref1 : null}></div>
-            <div className="w-1 h-1" ref={isMobile ? ref2 : null}></div>
-            <div className="w-1 h-1" ref={isMobile ? ref3 : null}></div>
-            <div className="w-1 h-1" ref={isMobile ? ref4 : null}></div>
-          </div>
-
           <div>
             <main className="container mx-auto">
               <div className="w-full py-16">
@@ -166,6 +159,13 @@ export const HomeTour = ({
                     Join us in transforming agriculture in Africa!
                   </h2>
                 </div>
+              </div>
+
+              <div className="flex flex-col justify-center items-center md:hidden">
+                <div className="w-1 h-1" ref={isMobile ? ref1 : null}></div>
+                <div className="w-1 h-1" ref={isMobile ? ref2 : null}></div>
+                <div className="w-1 h-1" ref={isMobile ? ref3 : null}></div>
+                <div className="w-1 h-1" ref={isMobile ? ref4 : null}></div>
               </div>
 
               <div className="mt-[20px]" ref={!isMobile ? ref2 : null}>

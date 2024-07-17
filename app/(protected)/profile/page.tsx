@@ -28,7 +28,7 @@ import {
   useDeleteProfilePic,
   useGetUserPost,
 } from "@/hooks/useUserProfileData";
-import { Skeleton } from "@/components/ui/skeleton";
+
 import UserPosts from "./_components/user-posts";
 import { useAppContext } from "@/context/AppContext";
 
