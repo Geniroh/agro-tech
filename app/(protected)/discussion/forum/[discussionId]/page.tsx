@@ -14,6 +14,7 @@ import { useAddUserDiscussionComment } from "@/hooks/useAddDiscussion";
 import { DiscussionUserReply } from "@/components/discussionComp/discussion-user-comment";
 import UserAvatar from "@/components/user-avatar";
 import { DiscussionForumSkeleton } from "@/components/skeletons/discussion-forum-skeleton";
+import { ClipLoader } from "react-spinners";
 
 const UserDiscussionPage = () => {
   const params = useParams<{ discussionId: string }>();
@@ -21,6 +22,7 @@ const UserDiscussionPage = () => {
   const [form] = Form.useForm();
   const [discussion, setDiscussion] = useState<IUserDiscussion>();
   const [comments, setComments] = useState<IInnovationComment[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   const handleGetSuccess = (data: IUserDiscussion) => {
     setDiscussion(data);
@@ -34,9 +36,11 @@ const UserDiscussionPage = () => {
     handleGetError
   );
 
-  const { mutate: addComment } = useAddUserDiscussionComment();
+  const { mutate: addComment, isLoading: loadingComment } =
+    useAddUserDiscussionComment();
 
   const handleComments = async () => {
+    setLoading(true);
     try {
       const values = await form.validateFields();
       addComment(
@@ -55,6 +59,7 @@ const UserDiscussionPage = () => {
     } catch (error) {
       message.error("You didn't enter any message");
     }
+    setLoading(false);
   };
 
   if (isLoading) {
@@ -73,7 +78,7 @@ const UserDiscussionPage = () => {
             toHref="/discussion"
             toTitle={`Discussion`}
             fromHref="/discussion"
-            fromTitle="Back to HomePage/ ForumPage"
+            fromTitle="Back to ForumPage"
           />
 
           <div className="max-w-[782px] mx-auto">
@@ -107,7 +112,7 @@ const UserDiscussionPage = () => {
               />
 
               <div className="flex gap-x-4">
-                <ShareButton link={`discussion/innovation/${discussionId}`} />
+                <ShareButton link={`discussion/forum/${discussionId}`} />
               </div>
             </div>
 
@@ -120,12 +125,19 @@ const UserDiscussionPage = () => {
                     placeholder="Add a comment"
                     className="w-full"
                     size="large"
+                    disabled={loadingComment}
                     onPressEnter={handleComments}
                     suffix={
-                      <IoMdSend
-                        className="text-mygreen cursor-pointer"
-                        onClick={handleComments}
-                      />
+                      <span>
+                        {loadingComment ? (
+                          <ClipLoader size={13} />
+                        ) : (
+                          <IoMdSend
+                            className="text-mygreen cursor-pointer"
+                            onClick={handleComments}
+                          />
+                        )}
+                      </span>
                     }
                   />
                 </Form.Item>

@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { DateDifference } from "../general/date-diff-calculator";
-import { ReactionButtons } from "../general/reaction-buttons";
+// import { ReactionButtons } from "../general/reaction-buttons";
 import UserAvatar from "@/components/user-avatar";
 
 export const DiscussionUserReply = ({
@@ -27,7 +27,7 @@ export const DiscussionUserReply = ({
 
         <div>{reply.message}</div>
 
-        <div className="flex gap-x-2 md:gap-x-4">
+        {/* <div className="flex gap-x-2 md:gap-x-4">
           <>
             <ReactionButtons
               dislikes={reply.dislikes}
@@ -39,7 +39,7 @@ export const DiscussionUserReply = ({
               showReplyBtn={false}
             />
           </>
-        </div>
+        </div> */}
       </div>
     </div>
   );

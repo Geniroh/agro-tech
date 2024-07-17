@@ -5,7 +5,7 @@ import React from "react";
 const InnovationPage = () => {
   return (
     <main className="container">
-      <div
+      {/* <div
         className="mt-10 w-full h-[200px] md:h-[300px] max-w-[1200px] mx-auto bg-center bg-cover bg-no-repeat relative flex justify-center items-center"
         style={{ backgroundImage: "url('/images/agro-people-bg.png')" }}
       >
@@ -36,9 +36,9 @@ const InnovationPage = () => {
             transforming agriculture in Africa! `}
           </p>
         </div>
-      </div>
+      </div> */}
 
-      <div className="mt-[100px] pb-[120px]">
+      <div className="mt-[40px] pb-[120px]">
         <CollectionTable />
       </div>
     </main>

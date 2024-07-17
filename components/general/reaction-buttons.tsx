@@ -71,7 +71,6 @@ export const ReactionButtons = ({
         },
         onError: (error) => {
           message.error("Network error");
-          console.log(error);
         },
       }
     );

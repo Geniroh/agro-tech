@@ -41,14 +41,13 @@ export const DiscussionForumSkeleton = () => {
             </div>
 
             <div>
-              <Skeleton className="w-full border shadow-sm rounded-md mt-5 max-w-[1000px] mx-auto h-[35px] flex items-center justify-between px-2" />
+              <Skeleton className="w-full border shadow-sm rounded-md mt-5 max-w-[1000px] mx-auto h-[20px] flex items-center justify-between px-2" />
             </div>
-          </div>
-
-          <div className="space-y-4 mt-6">
-            {Array.from({ length: 4 }).map((_, i) => (
-              <UserCommentSkeleton key={i} />
-            ))}
+            <div className="space-y-4 mt-6">
+              {Array.from({ length: 4 }).map((_, i) => (
+                <UserCommentSkeleton key={i} />
+              ))}
+            </div>
           </div>
         </div>
       </main>

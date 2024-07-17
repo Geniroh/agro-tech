@@ -63,7 +63,7 @@ const onEachFeature = (
       const target = e.target;
       target.setStyle({
         weight: 5,
-        color: "#666",
+        // color: "#666",
         dashArray: "",
         fillOpacity: 0.7,
       });

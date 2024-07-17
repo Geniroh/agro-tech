@@ -15,6 +15,7 @@ import NoContent from "@/components/loaders/no-content";
 import { IoMdSend } from "react-icons/io";
 import { ReactionButtons } from "@/components/general/reaction-buttons";
 import { DiscussionInnovationComment } from "@/components/discussionComp/discussion-innovation-comment";
+import { InnovationSkeleton } from "@/components/skeletons/innovation-skeleton";
 
 const InnovationDiscussionPage = () => {
   const params = useParams<{ innovationId: string }>();
@@ -68,15 +69,7 @@ const InnovationDiscussionPage = () => {
   };
 
   if (isLoading || isDiscussionLoading) {
-    return (
-      <div className="flex flex-col space-y-3 w-full container">
-        <Skeleton className="h-[300px] w-full mt-10" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-    );
+    return <InnovationSkeleton />;
   }
 
   if (isError) {
@@ -171,7 +164,7 @@ const InnovationDiscussionPage = () => {
           </div>
         </main>
       ) : (
-        <NoContent message="No discussion found!" />
+        <InnovationSkeleton />
       )}
     </>
   );
