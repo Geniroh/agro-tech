@@ -13,6 +13,7 @@ import { ReactionButtons } from "@/components/general/reaction-buttons";
 import { useAddUserDiscussionComment } from "@/hooks/useAddDiscussion";
 import { DiscussionUserReply } from "@/components/discussionComp/discussion-user-comment";
 import UserAvatar from "@/components/user-avatar";
+import { DiscussionForumSkeleton } from "@/components/skeletons/discussion-forum-skeleton";
 
 const UserDiscussionPage = () => {
   const params = useParams<{ discussionId: string }>();
@@ -57,15 +58,7 @@ const UserDiscussionPage = () => {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex flex-col space-y-3 w-full container">
-        <Skeleton className="h-[300px] w-full mt-10" />
-        <div className="space-y-2">
-          <Skeleton className="h-4 w-full" />
-          <Skeleton className="h-4 w-[200px]" />
-        </div>
-      </div>
-    );
+    return <DiscussionForumSkeleton />;
   }
 
   if (isError) {
@@ -84,13 +77,16 @@ const UserDiscussionPage = () => {
           />
 
           <div className="max-w-[782px] mx-auto">
-            <div className="flex items-center gap-x-4">
-              {/* <div className="w-[32px] h-[32px] rounded-full bg-mygreen"></div> */}
-              <UserAvatar email={discussion?.user?.email || ""} />
-              <div>{discussion?.user?.name || discussion?.user?.email}</div>
-              <div className="text-[14px]">Created A Discussion posted </div>
-              <div className="text-muted-foreground text-[14px]">
-                <DateDifference date={discussion?.createdAt || ""} />
+            <div className="flex flex-col md:flex-row md:items-center gap-4">
+              <div className="flex items-center gap-4">
+                <UserAvatar email={discussion?.user?.email || ""} />
+                <div>{discussion?.user?.name || discussion?.user?.email}</div>
+              </div>
+              <div className="flex flex-col md:flex-row md:items-center md:gap-4">
+                <div className="text-[14px]">Created A Discussion posted </div>
+                <div className="text-muted-foreground text-[14px]">
+                  <DateDifference date={discussion?.createdAt || ""} />
+                </div>
               </div>
             </div>
 

@@ -1,5 +1,5 @@
 "use client";
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import BreadcrumbP from "@/components/general/my-breadcrumb";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -26,6 +26,7 @@ import { useAddUserDiscussion } from "@/hooks/useAddDiscussion";
 import { DiscussionCardSkeleton } from "@/components/skeletons/discussion-card-skeleton";
 import { IoMdHelpCircle } from "react-icons/io";
 import type { TourProps } from "antd";
+import UserAvatar from "@/components/user-avatar";
 
 const DiscussionPage = () => {
   const [activeSection, setActiveSection] = useState<number>(1);
@@ -107,6 +108,24 @@ const DiscussionPage = () => {
     } catch (error) {}
   };
 
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setIsMobile(window.innerWidth <= 900);
+
+      const handleResize = () => {
+        setIsMobile(window.innerWidth <= 900);
+      };
+
+      window.addEventListener("resize", handleResize);
+
+      return () => {
+        window.removeEventListener("resize", handleResize);
+      };
+    }
+  }, []);
+
   return (
     <div className="relative">
       <div className="w-full container h-full pb-20">
@@ -123,19 +142,7 @@ const DiscussionPage = () => {
 
         <div className="max-w-[700px] mx-auto">
           <div className="flex items-center gap-x-3 mb-5">
-            {user?.image ? (
-              <div
-                className="w-[40px] h-[40px] rounded-full bg-center bg-cover bg-no-repeat"
-                style={{ backgroundImage: `url(${user?.image})` }}
-              ></div>
-            ) : (
-              <Avatar className=" w-[40px] h-[40px]">
-                <AvatarImage src={user?.image || ""} alt="profile" />
-                <AvatarFallback className="bg-[#9430E3] text-white">
-                  {getFirstName(user?.name)[0]}
-                </AvatarFallback>
-              </Avatar>
-            )}
+            <UserAvatar email={user?.email || ""} />
             <div>
               <h1 className="text-sm font-semibold text-myblack">
                 {user?.name}
@@ -261,7 +268,7 @@ const DiscussionPage = () => {
                 Innovations
               </button>
               <button
-                ref={ref3}
+                ref={!isMobile ? ref3 : null}
                 className={`${
                   activeSection == 3
                     ? "text-white bg-mygreen"
@@ -281,7 +288,7 @@ const DiscussionPage = () => {
               ))}
             </div>
           ) : (
-            <>
+            <div ref={isMobile ? ref3 : null}>
               {activeSection === 1 && (
                 <>
                   {allDiscussion.map((discussion, i) => (
@@ -305,7 +312,7 @@ const DiscussionPage = () => {
                   ))}
                 </>
               )}
-            </>
+            </div>
           )}
         </div>
       </div>
