@@ -11,6 +11,7 @@ import { CiEdit } from "react-icons/ci";
 import { MdEditOff } from "react-icons/md";
 import { useSession } from "next-auth/react";
 import { sendEditRequest } from "@/actions/innovationEmails";
+import axiosInstance from "@/utils/axiosInstance";
 
 const InnovationProfileCard = ({
   innovation,
@@ -41,7 +42,15 @@ const InnovationProfileCard = ({
           innovation.productName,
           values.message
         );
-        message.success("Request sent!");
+        const { data } = await axiosInstance.post("/edit", {
+          email: userEmail,
+          innovationId: innovation.id,
+          title: innovation.productName,
+        });
+
+        if (data) {
+          message.success("Request sent!");
+        }
 
         setSendEdit(false);
       }

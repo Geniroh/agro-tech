@@ -228,3 +228,13 @@ interface IFeaturedPosts {
   createdAt: string;
   updatedAt: string;
 }
+
+interface IEditRequest {
+  email: string;
+  innovationId: string;
+  expires: string;
+  status: string;
+  title: string;
+  token: string;
+  id: string;
+}

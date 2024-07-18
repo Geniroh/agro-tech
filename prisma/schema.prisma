@@ -288,3 +288,15 @@ model FeaturedPosts {
 
   @@map("featuredposts")
 }
+
+model EditInnovation {
+  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  email        String
+  token        String    @unique
+  expires      DateTime?
+  status       String    @default("unapprove")
+  title        String
+  innovationId String
+
+  @@map("editInnovation")
+}
