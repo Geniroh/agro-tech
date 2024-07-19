@@ -290,11 +290,11 @@ model FeaturedPosts {
 }
 
 model EditInnovation {
-  id           String    @id @default(auto()) @map("_id") @db.ObjectId
+  id           String   @id @default(auto()) @map("_id") @db.ObjectId
   email        String
-  token        String    @unique
-  expires      DateTime?
-  status       String    @default("unapprove")
+  token        String   @unique
+  expires      DateTime
+  status       String   @default("unapprove")
   title        String
   innovationId String
 

@@ -1,5 +1,5 @@
 import { RuleObject } from "antd/lib/form";
-import { countriesData } from "@/data/country-region";
+import { countriesData, ICountry } from "@/data/country-region";
 import { countryCurrencies } from "@/data/country-currency";
 import { parsePhoneNumberFromString, CountryCode } from "libphonenumber-js";
 
@@ -113,6 +113,27 @@ export const validatePhoneNumber = (
   } else {
     callback("Please enter a valid phone number");
   }
+};
+
+export const generateCountryOptions = (countries: ICountry[]) => {
+  return countries.map((country) => ({
+    value: country.countryName,
+    label: country.countryName,
+  }));
+};
+
+export const getCountryCurrency = (countryString: string) => {
+  const currency = countryCurrencies.filter(
+    (country) => country.country == countryString
+  );
+  return currency[0].currency_code || "NGN";
+};
+
+export const getCurrencyOptions = () => {
+  return countryCurrencies.map((currency) => ({
+    value: currency.currency_code,
+    label: currency.currency_code,
+  }));
 };
 
 //CHARTS FUNCTION
