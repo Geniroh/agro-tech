@@ -5,28 +5,29 @@ export async function sendMail(
   toEmail: string,
   otpText: string
 ) {
-  var transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: process.env.NODEMAILER_EMAIL,
-      pass: process.env.NODEMAILER_PW,
-    },
-  });
+  await new Promise((resolve, reject) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      auth: {
+        user: process.env.NODEMAILER_EMAIL,
+        pass: process.env.NODEMAILER_PW,
+      },
+    });
+    var mailOptions = {
+      from: process.env.NODEMAILER_EMAIL,
+      to: toEmail,
+      subject: subject,
+      html: otpText,
+    };
 
-  var mailOptions = {
-    from: process.env.NODEMAILER_EMAIL,
-    to: toEmail,
-    subject: subject,
-    html: otpText,
-  };
-
-  transporter.sendMail(mailOptions, function (error: any) {
-    if (error) {
-      throw new Error(error);
-    } else {
-      console.log("Email Sent");
-      return true;
-    }
+    transporter.sendMail(mailOptions, function (error: any) {
+      if (error) {
+        throw new Error(error);
+      } else {
+        console.log("Email Sent");
+        return true;
+      }
+    });
   });
 }
 
