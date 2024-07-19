@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/auth";
 import Joi from "joi";
 
@@ -44,5 +44,41 @@ export async function GET(
   } catch (error) {
     console.error(error);
     return NextResponse.json({ error: "Failed to get innovation" });
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const body = await req.json();
+    const session = await auth();
+    const innovationId = params.id;
+    if (!session) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const updatedInnovation = await db.innovation.update({
+      where: { id: innovationId },
+      data: {
+        ...body,
+        status: "pending",
+      },
+    });
+
+    return NextResponse.json(
+      {
+        message: "Updated successfully",
+        updatedInnovation,
+      },
+      { status: 200 }
+    );
+  } catch (error) {
+    console.error(error);
+    return NextResponse.json(
+      { error: "Failed to update innovation" },
+      { status: 500 }
+    );
   }
 }

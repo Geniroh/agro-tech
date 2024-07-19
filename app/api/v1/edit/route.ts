@@ -38,6 +38,7 @@ export async function POST(req: NextRequest, res: NextResponse) {
         innovationId,
         title,
         token,
+        expires: new Date(),
       },
     });
 
