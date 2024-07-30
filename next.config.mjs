@@ -1,21 +1,70 @@
+// /** @type {import('next').NextConfig} */
+// const nextConfig = {
+//     images: {
+//         remotePatterns: [
+//           {
+//             protocol: 'https',
+//             hostname: 'stavmia.nyc3.cdn.digitaloceanspaces.com',
+//             port: '',
+//             pathname: '/**',
+//           },
+//           {
+//             protocol: 'https',
+//             hostname: '"lh3.googleusercontent.com"',
+//             port: '',
+//             pathname: '/**',
+//           },
+//         ],
+//       },
+// };
+
+// export default nextConfig;
+
+
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        remotePatterns: [
+  async headers() {
+    return [
+      {
+        // Routes this applies to
+        source: "/api/(.*)",
+        headers: [
           {
-            protocol: 'https',
-            hostname: 'stavmia-bucket.nyc3.cdn.digitaloceanspaces.com',
-            port: '',
-            pathname: '/**',
+            key: "Access-Control-Allow-Origin",
+            value: "*",
+            // DOES NOT WORK
+            value: process.env.ALLOWED_ORIGIN,
+          },
+          // Allows for specific methods accepted
+          {
+            key: "Access-Control-Allow-Methods",
+            value: "GET, POST, PUT, DELETE, OPTIONS",
           },
           {
-            protocol: 'https',
-            hostname: '"lh3.googleusercontent.com"',
-            port: '',
-            pathname: '/**',
+            key: "Access-Control-Allow-Headers",
+            value: "Content-Type, Authorization",
           },
         ],
       },
+    ];
+  },
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'stavmia.nyc3.cdn.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: '"lh3.googleusercontent.com"',
+        port: '',
+        pathname: '/**',
+      },
+    ],
+  },
 };
 
-export default nextConfig;
+module.exports = nextConfig;
