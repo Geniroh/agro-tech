@@ -32,9 +32,9 @@ const nextConfig = {
         headers: [
           {
             key: "Access-Control-Allow-Origin",
-            value: "*",
+            // value: "*",
             // DOES NOT WORK
-            value: process.env.ALLOWED_ORIGIN,
+            value: "https://stavmia.org",
           },
           // Allows for specific methods accepted
           {
@@ -67,4 +67,4 @@ const nextConfig = {
   },
 };
 
-module.exports = nextConfig;
+export default nextConfig;
