@@ -49,6 +49,7 @@ interface IInnovationType {
   productName: string;
   yearInvented: string;
   country: string;
+  month?: string;
   cost: number;
   likes: number;
   status?: string;

@@ -72,7 +72,7 @@ const MultiStepForm = () => {
               Upload Successful <FaCheckCircle className="text-mygreen" />
             </DialogTitle>
             <DialogDescription className="text-[#242424]">
-              Review will take 2-3 days. Once approved you will receive an email
+              Review will take 2-5 days. Once approved you will receive an email
               and your innovation would be posted on the platform!
             </DialogDescription>
           </DialogHeader>

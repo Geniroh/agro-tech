@@ -3,6 +3,7 @@ import { message } from "antd";
 import { sendUploadSucess } from "@/actions/innovationEmails";
 import axiosInstance from "@/utils/axiosInstance";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 interface FormData {
   [key: string]: any;
@@ -11,6 +12,7 @@ interface FormData {
 export const useFormSubmit = () => {
   const { formData, setFormData, setCurrentStep, setMySteps, setSubmitStatus } =
     useFormContext();
+  const router = useRouter();
 
   const session = useSession();
 
@@ -23,7 +25,7 @@ export const useFormSubmit = () => {
       }
 
       await sendUploadSucess(
-        session?.data?.user?.email || "irochibuzor@gmail.com"
+        session?.data?.user?.email || "contact.stavmia@gmail.com"
       );
 
       // Clear local storage
@@ -39,6 +41,7 @@ export const useFormSubmit = () => {
       setMySteps(1);
 
       setSubmitStatus(true);
+      router.push("/");
     } catch (error) {
       console.error("Form submission failed", error);
       message.error("There was an error submitting Innovation");

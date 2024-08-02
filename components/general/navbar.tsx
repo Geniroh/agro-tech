@@ -1,5 +1,5 @@
-"use client";
-import React, { forwardRef, useState, useEffect } from "react";
+// "use client";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { FaUser } from "react-icons/fa";
@@ -9,6 +9,7 @@ import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "@/components/auth/user-menu-button";
 import { Menu, X } from "lucide-react";
+import Image from "next/image";
 
 const navLinks = [
   { href: "/", name: "Home" },
@@ -16,11 +17,7 @@ const navLinks = [
   { href: "/analytics", name: "Analytics" },
 ];
 
-interface NavbarProps {
-  ref2?: any;
-}
-
-const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
+const Navbar: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
@@ -40,7 +37,14 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
             <Menu />
           </Button>
           <div>
-            <Link href="/">
+            <Link href="/" className="flex items-center">
+              <Image
+                src="/images/leaf.png"
+                alt=""
+                className="h-[30px] hidden md:block"
+                width={30}
+                height={30}
+              />
               <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
                 STAVMiA
               </div>
@@ -49,10 +53,7 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
         </div>
 
         <div>
-          <div
-            className="hidden lg:flex gap-6 text-[16px] justify-center"
-            ref={props.ref2}
-          >
+          <div className="hidden lg:flex gap-6 text-[16px] justify-center">
             {navLinks.map((link) => {
               const isActive =
                 link.href === "/"
@@ -75,7 +76,7 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
           </div>
         </div>
 
-        <div className="flex justify-end items-center" ref={ref}>
+        <div className="flex justify-end items-center">
           <div className="flex gap-x-3">
             {session ? (
               <div className="flex items-center gap-x-3">
@@ -129,6 +130,15 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
           />
         </div>
         <div className="px-6 py-4 flex flex-col">
+          <div className="w-full flex justify-center">
+            <Image
+              src="/images/leaf.png"
+              alt=""
+              className="h-[30px]"
+              width={30}
+              height={30}
+            />
+          </div>
           <div className="px-3 py-2 text-[28px] font-black-ops w-full text-center rounded-lg tracking-wider text-mygreen">
             STAVMiA
           </div>
@@ -173,8 +183,6 @@ const Navbar = forwardRef<HTMLDivElement, NavbarProps>((props, ref) => {
       </div>
     </div>
   );
-});
-
-Navbar.displayName = "Navbar";
+};
 
 export { Navbar };

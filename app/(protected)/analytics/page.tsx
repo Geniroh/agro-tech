@@ -16,6 +16,8 @@ import { Button } from "@/components/ui/button";
 import { IoMdHelpCircle } from "react-icons/io";
 import { ClipLoader } from "react-spinners";
 import { useAppContext } from "@/context/AppContext";
+import BreadcrumbP from "@/components/general/my-breadcrumb";
+import Link from "next/link";
 
 export default function AnalyticsPage() {
   const {
@@ -123,7 +125,17 @@ export default function AnalyticsPage() {
             <ClipLoader size={15} /> Getting Innovations Data...
           </span>
         ) : (
-          "Analytics"
+          <div
+            className={`flex justify-center items-center text-[16px] leading-[20px] gap-x-2 my-10 font-semibold flex-wrap`}
+          >
+            <Link href="/" className="text-[#888888] hover:text-mygreen">
+              Back to HomePage
+            </Link>
+            /
+            <Link href="" className="text-myblack hover:text-mygreen">
+              Analytics
+            </Link>
+          </div>
         )}
       </h1>
 
