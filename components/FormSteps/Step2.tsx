@@ -92,7 +92,7 @@ const Step2: React.FC = () => {
     >
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Implementation Phase
+          Implementation Phase <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_phase"
@@ -113,7 +113,7 @@ const Step2: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Product Usage
+          Product Usage <span className="text-red-600">*</span>
         </h3>
         <Item
           name="product_usage"
@@ -131,7 +131,7 @@ const Step2: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Product Description
+          Product Description <span className="text-red-600">*</span>
         </h3>
         <Item
           name="product_description"
@@ -152,7 +152,7 @@ const Step2: React.FC = () => {
       <div>
         <div className="w-full items-center justify-between flex">
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Product Media
+            Product Media <span className="text-red-600">*</span>
           </h3>
           {/* <span className="text-mygreen cursor-pointer">Use links?</span> */}
         </div>

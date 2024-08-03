@@ -59,46 +59,6 @@ const Step8: React.FC = () => {
     }
   };
 
-  // const handleNextStep = async () => {
-  //   setLoading(true);
-  //   try {
-  //     const values = await form.validateFields();
-  //     saveData(values);
-
-  //     await handleSubmit({ ...formData, ...values });
-  //   } catch (error) {
-  //     message.error("Please fill in all required fields");
-  //   }
-  //   setLoading(false);
-  // };
-
-  // const saveData = (values: any) => {
-  //   setFormData({ ...formData, ...values });
-  // };
-
-  // const prevStep = () => {
-  //   if (currentStep > 0) {
-  //     setCurrentStep(currentStep - 1);
-  //   }
-  // };
-
-  // const handleSaveStep = async () => {
-  //   try {
-  //     const values = await form.validateFields();
-  //     if (values && typeof window !== "undefined") {
-  //       localStorage.setItem(
-  //         "formData",
-  //         JSON.stringify({ ...formData, ...values })
-  //       );
-  //       localStorage.setItem("currentStep", currentStep.toString());
-  //       localStorage.setItem("totalSteps", mySteps.toString());
-  //     }
-  //     message.success("Your progress has been saved");
-  //   } catch (error) {
-  //     message.error("Please fill in all required fields");
-  //   }
-  // };
-
   useEffect(() => {
     form.setFieldsValue(formData);
   }, [formData, form]);
@@ -113,7 +73,8 @@ const Step8: React.FC = () => {
       >
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Is this product gender friendly ?
+            Is this product gender friendly ?{" "}
+            <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isGenderFriendly"

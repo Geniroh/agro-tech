@@ -98,7 +98,7 @@ model Innovation {
   currency                 String                 @default("NG")
   cost                     Float?
   userId                   String
-  month                    String
+  month                    String?
   productChain             String[]
   productPhase             String
   status                   String                 @default("pending")

@@ -87,7 +87,7 @@ const Step1: React.FC = () => {
     >
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Innovation Name
+          Innovation Name <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_name"
@@ -105,7 +105,7 @@ const Step1: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Year Invented
+          Year Invented <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_year"
@@ -131,13 +131,10 @@ const Step1: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">Month</h3>
-        <Item
-          name="innovation_month"
-          rules={[
-            { required: true, message: "Please select the Innovation month" },
-          ]}
-        >
+        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          Month{" "}
+        </h3>
+        <Item name="innovation_month">
           <Select
             placeholder="Select Innovation Month"
             className="w-full"
@@ -150,7 +147,7 @@ const Step1: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Country
+          Country <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_country"
@@ -206,7 +203,7 @@ const Step1: React.FC = () => {
 
       <div>
         <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-          Value Chains
+          Value Chains <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_value_chain"

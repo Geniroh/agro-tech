@@ -62,7 +62,7 @@ export const sendVerificationEmail = async (email: string, token: string) => {
             gap: 10px;
             font-size: 24px;
             font-weight: 600; flex-direction:column;">
-                <img src="https://stavmia-bucket.nyc3.cdn.digitaloceanspaces.com/StavmiaLogo.png" alt="" style="height: 50px; width: 100px">
+                <img src="https://stavmia.nyc3.digitaloceanspaces.com/publicLogo.png" alt="" style="height: 50px; width: 100px">
                 <div></div>
             </div>
     
@@ -121,7 +121,7 @@ export const sendPasswordResetEmail = async (email: string, token: string) => {
             gap: 10px;
             font-size: 24px;
             font-weight: 600; flex-direction:column;">
-                <img src="https://stavmia-bucket.nyc3.cdn.digitaloceanspaces.com/StavmiaLogo.png" alt="" style="height: 50px; width: 100px">
+                <img src="https://stavmia.nyc3.digitaloceanspaces.com/publicLogo.png" alt="" style="height: 50px; width: 100px">
                 <div></div>
             </div>
     
@@ -178,7 +178,7 @@ export const sendUploadRequest = async (email: string, name: string) => {
         gap: 10px;
         font-size: 24px;
         font-weight: 600; flex-direction:column;">
-            <img src="https://stavmia-bucket.nyc3.cdn.digitaloceanspaces.com/StavmiaLogo.png" alt="" style="height: 50px; width: 100px">
+            <img src="https://stavmia.nyc3.digitaloceanspaces.com/publicLogo.png" alt="" style="height: 50px; width: 100px">
             <div>Innovation Uploaded</div>
         </div>
 
@@ -236,7 +236,7 @@ export const sendUploadAlert = async (email: string, name: string) => {
         gap: 10px;
         font-size: 24px;
         font-weight: 600; flex-direction:column;">
-            <img src="https://stavmia-bucket.nyc3.cdn.digitaloceanspaces.com/StavmiaLogo.png" alt="" style="height: 50px; width: 100px">
+            <img src="https://stavmia.nyc3.digitaloceanspaces.com/publicLogo.png" alt="" style="height: 50px; width: 100px">
             <div>Innovation Alert</div>
         </div>
 
@@ -305,7 +305,7 @@ export const sendEditEmail = async (
         gap: 10px;
         font-size: 24px;
         font-weight: 600; flex-direction:column;">
-            <img src="https://stavmia-bucket.nyc3.cdn.digitaloceanspaces.com/StavmiaLogo.png" alt="" style="height: 50px; width: 100px">
+            <img src="https://stavmia.nyc3.digitaloceanspaces.com/publicLogo.png" alt="" style="height: 50px; width: 100px">
         </div>
          <div>Edit Alert</div>
 

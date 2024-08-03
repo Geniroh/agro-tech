@@ -126,6 +126,7 @@ const Step5: React.FC = () => {
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
             Are you an Inventor on this Product?
+            <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isInventor"

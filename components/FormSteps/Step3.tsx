@@ -132,7 +132,8 @@ const Step3: React.FC = () => {
       >
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-5">
-            Do you have Usage Example to Show?
+            Do you have Usage Example to Show?{" "}
+            <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isUsageExample"

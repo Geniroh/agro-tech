@@ -21,7 +21,7 @@ const innovationSchema = Joi.object({
   innovation_name: Joi.string().required(),
   innovation_year: Joi.string().required(),
   innovation_country: Joi.string().required(),
-  innovation_month: Joi.string().required(),
+  innovation_month: Joi.string().optional(),
   innovation_cost: Joi.number().optional().allow(null),
   innovation_value_chain: Joi.array().items(Joi.string()).required(),
   innovation_phase: Joi.string().required(),

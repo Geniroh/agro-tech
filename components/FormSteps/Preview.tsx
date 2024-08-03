@@ -160,7 +160,7 @@ const StepPreview: React.FC = () => {
                 <AccordionContent className="mt-5 px-6">
                   {formData?.isInstruction ? (
                     <ul className="flex flex-col gap-4">
-                      {formData?.instruction.map((step: any, i: number) => (
+                      {formData?.instructions?.map((step: any, i: number) => (
                         <li key={i}>
                           <span className="font-semibold">
                             {" "}

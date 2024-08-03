@@ -126,7 +126,7 @@ const Step6: React.FC = () => {
       >
         <div>
           <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Do you have a Supplier?
+            Do you have a Supplier? <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isSupplier"

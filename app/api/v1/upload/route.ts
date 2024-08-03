@@ -62,7 +62,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
         const fileRecord = {
           name: uniqueFileName,
           size: file.size.toString(),
-          url: `https://${bucketName}.nyc3.cdn.digitaloceanspaces.com/${uniqueFileName}`,
+          url: `https://${bucketName}.nyc3.digitaloceanspaces.com/${uniqueFileName}`,
           type: file.type,
         };
 
