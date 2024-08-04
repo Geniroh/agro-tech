@@ -131,13 +131,13 @@ const Step3: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-5">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-5">
             Do you have Usage Example to Show?{" "}
             <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isUsageExample"
-            rules={[{ required: true, message: "Please Select an Option" }]}
+            rules={[{ required: true, message: "Please select an option" }]}
           >
             <Select
               size="large"
@@ -156,9 +156,10 @@ const Step3: React.FC = () => {
               {inputGroups.map((group, index) => (
                 <div key={index}>
                   <div>
-                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
                       {index + 1}
-                      {")"} Instance Media Upload
+                      {")"} Instance Media Upload{" "}
+                      <span className="text-red-600">*</span>
                     </h3>
 
                     <Item
@@ -179,15 +180,16 @@ const Step3: React.FC = () => {
                         onChange={handleFileChange}
                       />
                     </Item>
-                    <div className="text-[10px] text-muted-foreground flex gap-x-2 items-center flex-wrap mb-3">
+                    <div className="text-[12px] text-muted-foreground flex gap-x-2 items-center flex-wrap mb-3">
                       <span>Media:</span> <span>{mediaFiles[index]?.name}</span>
                     </div>
                   </div>
 
                   <div>
-                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
                       {index + 1}
-                      {")"} Add very Brief Description
+                      {")"} Add very Brief Description{" "}
+                      <span className="text-red-600">*</span>
                     </h3>
 
                     <Item

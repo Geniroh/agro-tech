@@ -8,11 +8,13 @@ import {
   reverseArrayToInventorObject,
 } from "@/utils/multi-step";
 import {
+  countryCodeToShortCode,
   createValidatePhoneNumber,
   getCountryCode,
   validateEmail,
 } from "@/utils/function";
 import { CountryCode } from "libphonenumber-js";
+import CustomPhoneNumberInput from "../general/phone-number-input";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -124,13 +126,13 @@ const Step5: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
             Are you an Inventor on this Product?
-            <span className="text-red-600">*</span>
+            <span className="text-red-600"> *</span>
           </h3>
           <Item
             name="isInventor"
-            rules={[{ required: true, message: "Please Select an Option" }]}
+            rules={[{ required: true, message: "Please select an option" }]}
           >
             <Select
               size="large"
@@ -152,8 +154,8 @@ const Step5: React.FC = () => {
               {inputGroups.map((group, index) => (
                 <div key={index}>
                   <div>
-                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                      Name
+                    <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
+                      Name <span className="text-red-600"> *</span>
                     </h3>
 
                     <Item
@@ -163,15 +165,15 @@ const Step5: React.FC = () => {
                     >
                       <Input
                         variant="filled"
-                        placeholder="Please Enter Your Name"
+                        placeholder="Please enter your name"
                         size="large"
                       />
                     </Item>
                   </div>
 
                   <div>
-                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                      Email
+                    <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
+                      Email <span className="text-red-600"> *</span>
                     </h3>
 
                     <Item
@@ -187,14 +189,14 @@ const Step5: React.FC = () => {
                     >
                       <Input
                         variant="filled"
-                        placeholder="Please Enter Your Email"
+                        placeholder="name@example.com"
                         size="large"
                       />
                     </Item>
                   </div>
 
                   <div>
-                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
                       Phone
                     </h3>
 
@@ -202,17 +204,34 @@ const Step5: React.FC = () => {
                       className="w-full"
                       name={`inventor_${index + 1}_contact`}
                       rules={[
-                        // { required: true, message: "Required" },
                         {
                           validator: createValidatePhoneNumber(code),
                           message: "Please enter a valid phone number",
                         },
                       ]}
                     >
-                      <Input
+                      {/* REPLACE THIS INPUT WITH CUSTOM PHONE NUMBER INPUT */}
+                      {/* <Input
                         variant="filled"
                         placeholder="Please Enter Your Contact"
                         size="large"
+                      /> */}
+
+                      <CustomPhoneNumberInput
+                        defaultCountry={countryCodeToShortCode(
+                          formData?.currency || "NGN"
+                        )}
+                        defaultValue={
+                          formData?.inventor
+                            ? formData?.inventor[index]?.inventor_contact
+                            : null
+                        }
+                        name={`inventor_${index + 1}_contact`}
+                        onChange={(value) =>
+                          form.setFieldsValue({
+                            [`inventor_${index + 1}_contact`]: value,
+                          })
+                        }
                       />
                     </Item>
                   </div>

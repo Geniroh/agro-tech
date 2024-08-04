@@ -8,12 +8,14 @@ import {
   reverseArrayToSupplierObject,
 } from "@/utils/multi-step";
 import {
+  countryCodeToShortCode,
   createValidatePhoneNumber,
   getCountryCode,
   validateEmail,
   validatePhoneNumber,
 } from "@/utils/function";
 import { CountryCode } from "libphonenumber-js";
+import CustomPhoneNumberInput from "../general/phone-number-input";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -26,6 +28,8 @@ const Step6: React.FC = () => {
   const [showInputs, setShowInputs] = useState<boolean>(false);
   const [inputGroups, setInputGroups] = useState<number[]>([]);
   const [code, setCode] = useState<CountryCode>("NG");
+
+  console.log(formData);
 
   const handleSelectChange = (value: boolean) => {
     setShowInputs(value);
@@ -125,12 +129,12 @@ const Step6: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
             Do you have a Supplier? <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isSupplier"
-            rules={[{ required: true, message: "Please Select an Option" }]}
+            rules={[{ required: true, message: "Please select an option" }]}
           >
             <Select
               size="large"
@@ -146,13 +150,13 @@ const Step6: React.FC = () => {
         {showInputs && (
           <>
             <div>
-              <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+              <h2 className="text-muted-foreground text-[12px] leading-[18px] mb-3">
                 Please provide details below.
               </h2>
               {inputGroups.map((group, index) => (
                 <div key={index}>
                   <div>
-                    <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
                       Name
                     </h3>
 
@@ -209,10 +213,27 @@ const Step6: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input
+                      {/* <Input
                         variant="filled"
                         placeholder="Please Enter Your Contact"
                         size="large"
+                      /> */}
+
+                      <CustomPhoneNumberInput
+                        defaultCountry={countryCodeToShortCode(
+                          formData?.currency || "NGN"
+                        )}
+                        defaultValue={
+                          formData?.supplier
+                            ? formData?.supplier[index]?.supplier_contact
+                            : null
+                        }
+                        name={`supplier_${index + 1}_contact`}
+                        onChange={(value) =>
+                          form.setFieldsValue({
+                            [`supplier_${index + 1}_contact`]: value,
+                          })
+                        }
                       />
                     </Item>
                   </div>

@@ -37,11 +37,12 @@ const Step2: React.FC = () => {
     }[]
   ) => {
     const fileList = [...fileDataArray, ...mediaFiles];
-    setMediaFiles(fileList);
+
     if (fileDataArray.some((file) => file.url === null)) {
-      message.error("Some files failed to upload.");
+      // message.error("Some files failed to upload.");
     } else {
       message.success("Files uploaded successfully.");
+      setMediaFiles(fileList);
       setFormData({ ...formData, product_media: fileList });
     }
   };
@@ -91,18 +92,18 @@ const Step2: React.FC = () => {
       initialValues={{ ...formData }}
     >
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Implementation Phase <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_phase"
           rules={[
-            { required: true, message: "Please select an Innovation Phase" },
+            { required: true, message: "Please select an innovation phase" },
           ]}
         >
           <Select
             showSearch
-            placeholder="Select Implementation Phase"
+            placeholder="Select implementation phase"
             variant="filled"
             className="w-full"
             size="large"
@@ -112,25 +113,25 @@ const Step2: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Product Usage <span className="text-red-600">*</span>
         </h3>
         <Item
           name="product_usage"
           rules={[
-            { required: true, message: "Please Enter Product Description" },
+            { required: true, message: "Please enter product description" },
           ]}
         >
           <Input
             size="large"
-            placeholder="Please Enter Product Use"
+            placeholder="Please enter product use"
             variant="filled"
           />
         </Item>
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Product Description <span className="text-red-600">*</span>
         </h3>
         <Item
@@ -140,7 +141,7 @@ const Step2: React.FC = () => {
           ]}
         >
           <TextArea
-            placeholder="Please Enter A Brief Description Of Product"
+            placeholder="Please enter a brief description of the product"
             className="bg-[#fafafa]"
             variant="filled"
             size="large"
@@ -151,7 +152,7 @@ const Step2: React.FC = () => {
 
       <div>
         <div className="w-full items-center justify-between flex">
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
             Product Media <span className="text-red-600">*</span>
           </h3>
           {/* <span className="text-mygreen cursor-pointer">Use links?</span> */}
@@ -169,8 +170,8 @@ const Step2: React.FC = () => {
           />
         </Item>
         <div className="flex justify-between">
-          <div className="text-[10px] text-muted-foreground flex gap-x-2 items-center flex-wrap">
-            <span className="text-[12px] text-[#000]">Media:</span>
+          <div className="text-[12px] text-muted-foreground flex gap-x-2 items-center flex-wrap">
+            <span className="text-[14px] text-[#000]">Media:</span>
             {mediaFiles.map((file, i) => (
               <span key={i}>{file.name}</span>
             ))}

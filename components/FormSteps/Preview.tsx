@@ -36,7 +36,7 @@ const StepPreview: React.FC = () => {
   };
 
   return (
-    <div>
+    <div className="w-full">
       <div className="my-10 flex justify-end gap-4">
         <Button
           className="text-white bg-[#329632] rounded-xl text-[16px] leading-[22px] font-bold disabled:cursor-not-allowed"
@@ -58,7 +58,8 @@ const StepPreview: React.FC = () => {
           Submit Innovation
         </Button>
       </div>
-      <div className="container pb-20">
+
+      <div className="pb-20 w-full">
         <div className="w-full">
           <div>
             <h1 className="w-full text-center text-4xl font-playfair font-semibold">

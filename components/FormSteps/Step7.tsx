@@ -115,7 +115,7 @@ const Step7: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
             Does this product Have HSE Guidelines?{" "}
             <span className="text-red-600">*</span>
           </h3>
@@ -132,14 +132,15 @@ const Step7: React.FC = () => {
 
         {selectValue && (
           <div>
-            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+            <h2 className="text-muted-foreground text-[12px] leading-[18px] mb-3">
               Please Provide all Necessary HSE Guidelines
             </h2>
             {guidelines.map((guideline, index) => (
               <div key={index}>
                 <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                    {index + 1}
+                  <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
+                    Guideline {index + 1}{" "}
+                    <span className="text-red-600">*</span>
                   </h3>
 
                   <Item
@@ -148,7 +149,7 @@ const Step7: React.FC = () => {
                   >
                     <Input
                       value={guideline.name}
-                      placeholder="Please Enter Info"
+                      placeholder="Please enter guideline"
                       size="large"
                       onChange={(e) =>
                         handleGuidelineChange(index, "name", e.target.value)

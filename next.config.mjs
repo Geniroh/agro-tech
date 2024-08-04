@@ -1,27 +1,3 @@
-// /** @type {import('next').NextConfig} */
-// const nextConfig = {
-//     images: {
-//         remotePatterns: [
-//           {
-//             protocol: 'https',
-//             hostname: 'stavmia.nyc3.cdn.digitaloceanspaces.com',
-//             port: '',
-//             pathname: '/**',
-//           },
-//           {
-//             protocol: 'https',
-//             hostname: '"lh3.googleusercontent.com"',
-//             port: '',
-//             pathname: '/**',
-//           },
-//         ],
-//       },
-// };
-
-// export default nextConfig;
-
-
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   async headers() {
@@ -33,7 +9,6 @@ const nextConfig = {
           {
             key: "Access-Control-Allow-Origin",
             // value: "*",
-            // DOES NOT WORK
             value: "https://stavmia.org",
           },
           // Allows for specific methods accepted
@@ -53,7 +28,13 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'stavmia.nyc3.cdn.digitaloceanspaces.com',
+        hostname: 'stavmia.nyc3.digitaloceanspaces.com',
+        port: '',
+        pathname: '/**',
+      },
+      {
+        protocol: 'https',
+        hostname: 'stavmia.nyc3.cdn.digitaloceanspaces',
         port: '',
         pathname: '/**',
       },

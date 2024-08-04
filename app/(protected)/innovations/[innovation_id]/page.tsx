@@ -9,7 +9,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Skeleton } from "@/components/ui/skeleton";
+import currencyToSymbolMap from "currency-symbol-map";
 import { useRouter, useParams } from "next/navigation";
 import { RenderMedia } from "@/components/general/render-media";
 import { ShareButton } from "@/components/general/share-button";
@@ -124,7 +124,9 @@ const InnovationPage = () => {
                 <span className="text-muted-foreground mr-2">Cost:</span>
                 <span>
                   {data?.cost
-                    ? data.currency + " " + data.cost
+                    ? currencyToSymbolMap(data?.currency || "NGN") +
+                      " " +
+                      data?.cost.toLocaleString()
                     : "Not available"}
                 </span>
               </div>
@@ -310,7 +312,7 @@ const InnovationPage = () => {
                         {data.productInventor.map((inventor, i) => (
                           <div
                             key={i}
-                            className="text-[14px] leading-[22px] mb-3"
+                            className="text-[14px] leading-[20px] mb-3"
                           >
                             <h2 className="text-[#888888] text-[16px] mb-2">
                               Contact {i + 1}

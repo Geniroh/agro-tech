@@ -136,6 +136,21 @@ export const getCurrencyOptions = () => {
   }));
 };
 
+export const countryCodeToShortCode = (code: string) => {
+  const country = countryCurrencies.find(
+    (country) => country.currency_code === code
+  );
+  if (country) {
+    const shortCode = countriesData.find(
+      (countries) => countries.countryName === country.country
+    );
+
+    return shortCode?.countryShortCode || "NG";
+  } else {
+    return "NG";
+  }
+};
+
 //CHARTS FUNCTION
 export const transformInnovationsToChartData = (
   innovations: IInnovationType[]

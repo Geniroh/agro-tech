@@ -32,7 +32,7 @@ const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
       </Link>
       <div className="mt-5 max-w-[378px] mx-auto">
         <div className="flex items-start justify-between mb-4">
-          <Link href={`/innovation/${innovation.id}`}>
+          <Link href={`/innovations/${innovation.id}`}>
             <h1 className="text-[18px] leading-[27px] font-semibold md:underline">
               {innovation.productName}
             </h1>

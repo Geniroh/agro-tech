@@ -72,13 +72,13 @@ const Step8: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
             Is this product gender friendly ?{" "}
             <span className="text-red-600">*</span>
           </h3>
           <Item
             name="isGenderFriendly"
-            rules={[{ required: true, message: "Please Select an Option" }]}
+            rules={[{ required: true, message: "Please select an option" }]}
           >
             <Select size="large" onChange={handleSelectChange}>
               <Option value={true}>Yes</Option>
@@ -90,7 +90,7 @@ const Step8: React.FC = () => {
         {selectValue && (
           <div>
             <div>
-              <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+              <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
                 Briefly describe how this technology is inclusive of the female
                 gender.
               </h3>

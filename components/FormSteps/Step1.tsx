@@ -1,11 +1,13 @@
 "use client";
+import "/node_modules/flag-icons/css/flag-icons.min.css";
 import React, { useEffect, useState } from "react";
 import { useFormContext } from "@/context/FormContext";
-import { Input, Form, Select, Button, message } from "antd";
+import { Input, Form, Select, Button, message, Space } from "antd";
 import { countriesData, ICountry } from "@/data/country-region";
 import { MONTH_OPTIONS, VALUE_CHAIN_OPTIONS } from "@/constants/options";
 import { countryCurrencies } from "@/data/country-currency";
-import { generateYearOptions } from "@/utils/function";
+import { generateYearOptions, countryCodeToShortCode } from "@/utils/function";
+import currencyToSymbolMap from "currency-symbol-map";
 
 const { Item } = Form;
 
@@ -86,36 +88,36 @@ const Step1: React.FC = () => {
       initialValues={{ ...formData }}
     >
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Innovation Name <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_name"
           rules={[
-            { required: true, message: "Please enter the Innovation name" },
+            { required: true, message: "Please enter the innovation name" },
           ]}
         >
           <Input
             size="large"
-            placeholder="Please Enter the Name of the Innovation Here"
+            placeholder="Please enter the name of the innovation here"
             variant="filled"
           />
         </Item>
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Year Invented <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_year"
           rules={[
-            { required: true, message: "Please select the Innovation year" },
+            { required: true, message: "Please select the innovation year" },
           ]}
         >
           <Select
             showSearch
-            placeholder="Select Innovation Year"
+            placeholder="Please select innovation Year"
             optionFilterProp="label"
             className="w-full"
             variant="filled"
@@ -131,12 +133,12 @@ const Step1: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Month{" "}
         </h3>
         <Item name="innovation_month">
           <Select
-            placeholder="Select Innovation Month"
+            placeholder="Select innovation month"
             className="w-full"
             size="large"
             options={MONTH_OPTIONS}
@@ -146,7 +148,7 @@ const Step1: React.FC = () => {
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Country <span className="text-red-600">*</span>
         </h3>
         <Item
@@ -155,7 +157,7 @@ const Step1: React.FC = () => {
         >
           <Select
             showSearch
-            placeholder="Select A Country"
+            placeholder="Select a country"
             optionFilterProp="label"
             className="w-full"
             size="large"
@@ -173,8 +175,14 @@ const Step1: React.FC = () => {
 
       <div>
         <div className="flex items-center justify-between">
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-            Cost ({countryCode})
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
+            Cost{" "}
+            <span
+              className={`fi fi-${countryCodeToShortCode(
+                countryCode
+              ).toLowerCase()} w-[20px] h-full rounded-2xl`}
+            ></span>
+            {costAvailable && <span className="text-red-600"> *</span>}
           </h3>
           <span
             className="text-mygreen cursor-pointer"
@@ -188,26 +196,31 @@ const Step1: React.FC = () => {
           <Item
             name="innovation_cost"
             rules={[
-              { message: "Please Enter Product Cost", required: costAvailable },
+              { message: "Please enter product cost", required: costAvailable },
             ]}
           >
             <Input
               size="large"
               type="number"
               variant="filled"
-              placeholder="How Much Does This Innovation Cost"
+              placeholder="How much does this innovation cost"
+              addonBefore={
+                <span className="font-bold">
+                  {currencyToSymbolMap(countryCode)}
+                </span>
+              }
             />
           </Item>
         )}
       </div>
 
       <div>
-        <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+        <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
           Value Chains <span className="text-red-600">*</span>
         </h3>
         <Item
           name="innovation_value_chain"
-          rules={[{ required: true, message: "Please select a Value Chain" }]}
+          rules={[{ required: true, message: "Please select a value Chain" }]}
         >
           <Select
             mode="tags"
@@ -215,7 +228,7 @@ const Step1: React.FC = () => {
             size="large"
             className="w-full"
             variant="filled"
-            placeholder="Select a Value Chain"
+            placeholder="Select a value chain"
             filterSort={(optionA, optionB) =>
               (optionA?.label ?? "")
                 .toLowerCase()

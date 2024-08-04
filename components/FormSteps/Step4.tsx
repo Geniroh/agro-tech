@@ -121,7 +121,7 @@ const Step4: React.FC = () => {
           </h3>
           <Item
             name="isInstruction"
-            rules={[{ required: true, message: "Please Select an Option" }]}
+            rules={[{ required: true, message: "Please select an option" }]}
           >
             <Select
               size="large"
@@ -137,13 +137,13 @@ const Step4: React.FC = () => {
 
         {selectValue && (
           <div>
-            <h2 className="text-muted-foreground text-[14px] leading-[20px] mb-3">
+            <h2 className="text-muted-foreground text-[12px] leading-[18px] mb-3">
               Please provide the Instructions in steps.
             </h2>
             {stepInstructions.map((instruction, index) => (
               <div key={index}>
                 <div>
-                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                  <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
                     Step {index + 1}
                   </h3>
                   <Item
@@ -152,7 +152,7 @@ const Step4: React.FC = () => {
                   >
                     <Input
                       value={instruction.instruction_step}
-                      placeholder="Please Enter Info"
+                      placeholder="Please enter instruction"
                       size="large"
                       variant="filled"
                       onChange={(e) =>
