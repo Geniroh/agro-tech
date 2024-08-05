@@ -7,29 +7,46 @@ interface InnovationCardProps {
 }
 
 const InnovationCard: React.FC<InnovationCardProps> = ({ innovation }) => {
+  const mediaUrl = innovation.productMedia[0].url;
+  const isVideo = /\.(mp4|webm|ogg)$/.test(mediaUrl); // Check if the media is a video
+
   return (
-    <div>
+    <div className="">
       <Link href={`/innovations/${innovation.id}`}>
         <div
-          className={`w-full max-w-[378px] mx-auto h-[230px] md:h-[250px] bg-no-repeat bg-cover bg-center rounded-2xl p-8 relative bg-[#a8cda1]`}
-          style={{ backgroundImage: `url(${innovation.productMedia[0].url})` }}
+          className={`w-full max-w-[378px] mx-auto h-[230px] md:h-[250px] bg-no-repeat bg-cover bg-center rounded-2xl bg-[#a8cda1] relative`}
         >
-          <div className="flex flex-col justify-end w-full h-full relative z-20">
+          {isVideo ? (
+            <video
+              className="w-full h-full object-cover rounded-2xl"
+              src={mediaUrl}
+              // controls
+              muted
+              autoPlay
+              loop
+            />
+          ) : (
+            <div
+              className="w-full h-full bg-no-repeat bg-cover bg-center rounded-2xl"
+              style={{ backgroundImage: `url(${mediaUrl})` }}
+            />
+          )}
+
+          <div className="flex flex-col justify-end w-full  absolute top-[80%] left-[10px] max-w-[300px] z-20">
             <div className="flex items-center gap-3 flex-wrap">
               {innovation.productUse.split(",").map((use, i) => (
                 <span
                   key={i}
-                  className="bg-white text-[12px] md:text-[14px] leading-[16px] md:leading-[19px] py-[3px] px-[8px] rounded-md text-center"
+                  className="bg-white text-[12px] leading-[19px] py-[3px] px-[8px] rounded-md text-center"
                 >
                   {use}
                 </span>
               ))}
             </div>
           </div>
-
-          <div className="absolute top-0 left-0 w-full h-full bg-black/10 rounded-2xl"></div>
         </div>
       </Link>
+
       <div className="mt-5 max-w-[378px] mx-auto">
         <div className="flex items-start justify-between mb-4">
           <Link href={`/innovations/${innovation.id}`}>
