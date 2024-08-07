@@ -25,8 +25,6 @@ export default function Home() {
               Mechanization in Africa
             </h1>
 
-            <div>Hello world {process.env.NEXT_PUBLIC_FRONTEND_URL}</div>
-
             <h2 className="text-[14px] md:text-[18px] leading-[24px] md:leading-[27px] font-normal text-myblack mt-3 text-center md:text-left">
               Welcome to STAVMiA, the central hub for agricultural innovations
               across Africa! Helping farmers, processors, input suppliers,

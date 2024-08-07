@@ -27,7 +27,7 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
 }) => {
   let url: string;
   if (type === "internal") {
-    url = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/${link}`;
+    url = `${process.env.FRONTEND_URL}/${link}`;
   } else {
     url = link;
   }

@@ -246,7 +246,7 @@ export const sendUploadAlert = async (email: string, name: string) => {
             <p>There is an uploaded innovation from ${name}</p>
         </div>
 
-        <a href="${process.env.NEXT_PUBLIC_ADMIN_URL}">
+        <a href="${process.env.ADMIN_URL}">
             <button style="background-color: #53a350;
             border-radius: 8px;
             border: 1px solid  #53a350;
@@ -317,7 +317,7 @@ export const sendEditEmail = async (
             <p>Message: ${message}</p>
         </div>
 
-        <a href="${process.env.NEXT_PUBLIC_ADMIN_URL}">
+        <a href="${process.env.ADMIN_URL}">
             <button style="background-color: #53a350;
             border-radius: 8px;
             border: 1px solid  #53a350;
