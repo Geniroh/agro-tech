@@ -26,8 +26,9 @@ export const ShareButton: React.FC<ShareButtonProps> = ({
   link,
 }) => {
   let url: string;
+  const home = process.env.FRONTEND_URL || "https://stavmia.org";
   if (type === "internal") {
-    url = `${process.env.FRONTEND_URL}/${link}`;
+    url = `${home}/${link}`;
   } else {
     url = link;
   }
