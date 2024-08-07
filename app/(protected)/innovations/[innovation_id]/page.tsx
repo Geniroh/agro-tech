@@ -171,7 +171,10 @@ const InnovationPage = () => {
             />
 
             <div className="flex gap-x-2 md:gap-x-4">
-              <ShareButton link={`innovations/${innovation_id}`} />
+              <ShareButton
+                link={`innovations/${innovation_id}`}
+                type="internal"
+              />
 
               <button
                 className="flex items-center text-xs"

@@ -115,7 +115,7 @@ const Step4: React.FC = () => {
         initialValues={{ ...formData }}
       >
         <div>
-          <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+          <h3 className="text-[14px] leading-[20px] font-semibold mb-3">
             Do you have User Instructions ?{" "}
             <span className="text-red-600">*</span>
           </h3>

@@ -280,7 +280,7 @@ export async function POST(request: NextRequest): Promise<NextResponse> {
           },
         });
 
-        await upload.done();
+        const fileDone = await upload.done();
 
         const fileRecord = {
           name: uniqueFileName,
