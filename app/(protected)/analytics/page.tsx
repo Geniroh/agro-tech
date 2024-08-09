@@ -44,7 +44,7 @@ export default function AnalyticsPage() {
   const steps: TourProps["steps"] = [
     {
       title: "Filter",
-      description: `Filter the data you see on this page by year & month.`,
+      description: `Filter the data you see on this page by year`,
       target: () => ref1.current,
     },
     {
@@ -54,7 +54,7 @@ export default function AnalyticsPage() {
     },
     {
       title: "Filter",
-      description: `Filter the data you see on this page by country & state.`,
+      description: `Filter the data you see on this page by country`,
       target: () => ref3.current,
     },
     {
@@ -178,8 +178,8 @@ export default function AnalyticsPage() {
                   />
                 </div>
               </div>
-              <div className="w-full h-1" ref={ref4}></div>
-              <div className="h-[calc(100%-85px)] hidden md:block">
+              {/* <div className="w-full h-1" ref={ref4}></div> */}
+              <div className="h-[calc(100%-85px)] hidden md:block" ref={ref4}>
                 <DynamicChloropethMap innovations={innovation} />
               </div>
             </div>
