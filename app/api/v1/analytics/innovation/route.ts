@@ -113,6 +113,8 @@ export async function GET(req: NextRequest) {
       where.month = { contains: filters.month };
     }
 
+    where.status = "approved";
+
     const [innovations, totalCount] = await Promise.all([
       db.innovation.findMany({
         where,
