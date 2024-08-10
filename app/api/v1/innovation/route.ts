@@ -129,6 +129,8 @@ export async function GET(req: NextRequest) {
     const where: any = {};
     if (filters.name) {
       where.productName = { contains: filters.name, mode: "insensitive" };
+      where.productPhase = { contains: filters.name };
+      where.productChain = { has: filters.name };
     }
     if (filters.phase) {
       where.productPhase = { contains: filters.phase };
@@ -140,7 +142,7 @@ export async function GET(req: NextRequest) {
       where.yearInvented = { contains: filters.year };
     }
     if (filters.chain) {
-      where.productChain = { has: filters.chain }; // Filters for productChain array
+      where.productChain = { has: filters.chain };
     }
 
     where.status = "approved";

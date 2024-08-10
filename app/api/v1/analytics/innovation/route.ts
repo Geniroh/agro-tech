@@ -107,7 +107,7 @@ export async function GET(req: NextRequest) {
       where.yearInvented = { contains: filters.year };
     }
     if (filters.chain) {
-      where.productChain = { has: filters.chain }; // Filters for productChain array
+      where.productChain = { has: filters.chain };
     }
     if (filters.month) {
       where.month = { contains: filters.month };
