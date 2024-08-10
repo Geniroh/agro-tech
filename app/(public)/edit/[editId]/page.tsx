@@ -16,6 +16,7 @@ import { Form, Input, Button, Select, InputNumber, message } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useMutation, useQuery } from "react-query";
+import currencyToSymbolMap from "currency-symbol-map";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -181,7 +182,21 @@ const EditFormPage = () => {
             </h3>
 
             <div className="w-full flex">
-              <Form.Item name="currency">
+              <Form.Item name="cost">
+                <Input
+                  size="large"
+                  type="number"
+                  variant="filled"
+                  placeholder="How much does this innovation cost"
+                  className="w-full"
+                  addonBefore={
+                    <span className="font-bold">
+                      {currencyToSymbolMap(innovation?.currency || countryCode)}
+                    </span>
+                  }
+                />
+              </Form.Item>
+              {/* <Form.Item name="currency">
                 <Select
                   size="large"
                   className="w-full"
@@ -201,7 +216,7 @@ const EditFormPage = () => {
                   variant="filled"
                   size="large"
                 />
-              </Form.Item>
+              </Form.Item> */}
             </div>
           </div>
 
