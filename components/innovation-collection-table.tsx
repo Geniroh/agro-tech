@@ -80,7 +80,7 @@ export const CollectionTable = () => {
             <input
               type="text"
               className="border-0 outline-none bg-transparent w-full placeholder:text-[#888888]"
-              placeholder="Search by title, value chain, implementation phase ..."
+              placeholder="Search by title ..."
               value={nameParam}
               onChange={(e) => setNameParam(e.target.value)}
             />

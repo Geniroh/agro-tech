@@ -63,7 +63,7 @@ const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
               ))}
             </div>
             <div>
-              <div className="min-h-[350px]">
+              <div className="min-h-[350px] w-full">
                 {imageExtensions.includes(extension) ? (
                   <div
                     className="min-h-[350px] w-full bg-cover bg-no-repeat"
@@ -75,6 +75,7 @@ const FeaturedPostsCard = ({ post }: { post: IFeaturedPosts }) => {
                     light={post.thumbnailImage}
                     width="100%"
                     height={350}
+                    playing={true}
                   />
                 )}
               </div>

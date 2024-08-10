@@ -129,8 +129,8 @@ export async function GET(req: NextRequest) {
     const where: any = {};
     if (filters.name) {
       where.productName = { contains: filters.name, mode: "insensitive" };
-      where.productPhase = { contains: filters.name };
-      where.productChain = { has: filters.name };
+      // where.productPhase = { contains: filters.name };
+      // where.productChain = { has: filters.name };
     }
     if (filters.phase) {
       where.productPhase = { contains: filters.phase };
