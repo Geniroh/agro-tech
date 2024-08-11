@@ -111,18 +111,6 @@ const ProfilePage = () => {
             <CgProfile size={30} />
           </AvatarFallback>
         </Avatar>
-        {/* {isProfileLoading ? (
-          <Skeleton className="w-[126px] h-[126px] rounded-full flex justify-center items-center">
-            <CgProfile size={30} />
-          </Skeleton>
-        ) : (
-          <Avatar className=" w-[126px] h-[126px]">
-            <AvatarImage src={profileUser?.image} alt="profile" />
-            <AvatarFallback>
-              <CgProfile size={30} />
-            </AvatarFallback>
-          </Avatar>
-        )} */}
 
         <div className="flex gap-x-6">
           <ImgCrop rotationSlider>
