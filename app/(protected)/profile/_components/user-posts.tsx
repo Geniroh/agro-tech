@@ -6,6 +6,7 @@ import UserAvatar from "@/components/user-avatar";
 import { useAppContext } from "@/context/AppContext";
 import {
   useDeleteUserPost,
+  useGetUserDiscussion,
   useUpdateDiscussionTitle,
 } from "@/hooks/useDiscussionData";
 import {
@@ -41,14 +42,7 @@ const UserPostCard = ({ discussion }: { discussion: IUserDiscussion }) => {
   const [editTitleMsg, setEditTitleMsg] = useState<string>(
     discussion?.title || ""
   );
-  const { isLoading: isPostDeleteLoading, mutateAsync } = useDeleteUserPost(
-    (data: any) => {
-      message.success("Post deleted");
-    },
-    () => {
-      message.error("Network error");
-    }
-  );
+  const { isLoading: isPostDeleteLoading, mutateAsync } = useDeleteUserPost();
 
   const { isLoading: isPostEditLoading, mutateAsync: mutateAsyncEdit } =
     useUpdateDiscussionTitle();
@@ -62,9 +56,11 @@ const UserPostCard = ({ discussion }: { discussion: IUserDiscussion }) => {
           { id, title: editTitleMsg },
           {
             onSuccess: (data) => {
-              console.log({ data });
               message.success("Post updated");
               setShowEdit(false);
+            },
+            onError: (err) => {
+              console.log(err);
             },
           }
         );
@@ -74,9 +70,18 @@ const UserPostCard = ({ discussion }: { discussion: IUserDiscussion }) => {
 
   const handleDelete = async (id: string) => {
     try {
-      await mutateAsync(id);
+      await mutateAsync(id, {
+        onSuccess: (data) => {
+          message.success("Post deleted");
+          setShowDelete(false);
+        },
+        onError: (error) => {
+          message.error("Network error");
+          console.log(error);
+        },
+      });
     } catch (error) {
-      message.error("You didn't enter any message");
+      console.log(error);
     }
   };
 
@@ -175,11 +180,9 @@ const UserPostCard = ({ discussion }: { discussion: IUserDiscussion }) => {
           ) : (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                {/* <Button variant="outline" className="px-0"> */}
                 <button>
                   <BsThreeDotsVertical size={16} className="cursor-pointer" />
                 </button>
-                {/* </Button> */}
               </DropdownMenuTrigger>
               <DropdownMenuContent className="w-56">
                 <DropdownMenuGroup>
@@ -242,30 +245,8 @@ const UserPosts = () => {
     setUsersPosts(data);
   };
 
-  const { isLoading } = useGetUserPost(handleGetPostSuccess);
+  const { isLoading, data } = useGetUserPost(handleGetPostSuccess);
 
-  // const handleDiscussionDelete = async (data: any) => {
-  //   console.log(data)
-  //   message.success("POst deleted")
-  // }
-
-  // const deleteUserPost = async (id: string) => {
-
-  // };
-
-  // const { mutateAsync, isLoading: isSubmitting } = useMutation(
-  //   updateInnovation,
-  //   {
-  //     onSuccess: () => {
-  //       message.success("Edited");
-  //       router.push("/");
-  //     },
-  //     onError: (error: any) => {
-  //       console.error("Failed to update:", error);
-  //       message.error("Failed to edit");
-  //     },
-  //   }
-  // );
   const router = useRouter();
 
   if (isLoading && userPost.length < 1) {
@@ -274,15 +255,20 @@ const UserPosts = () => {
 
   return (
     <div>
-      {/* <TagSelect name="Sort By" options={["Recent", "Older"]} /> */}
       <div>
-        {/* {data && ( */}
-        <div className="space-y-6 mt-10">
-          {userPost.map((discussion) => (
-            <UserPostCard key={discussion?.id} discussion={discussion} />
-          ))}
-        </div>
-        {/* )} */}
+        {data && data.length < 1 ? (
+          <div className="space-y-6 mt-10 w-full">
+            <h2 className="text-center w-full flex justify-center items-center min-h-[60px]">
+              --- No Data ---
+            </h2>
+          </div>
+        ) : (
+          <div className="space-y-6 mt-10">
+            {userPost.map((discussion) => (
+              <UserPostCard key={discussion?.id} discussion={discussion} />
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

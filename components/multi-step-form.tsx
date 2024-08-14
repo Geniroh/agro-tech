@@ -22,6 +22,7 @@ import Step6 from "@/components/FormSteps/Step6";
 import Step7 from "@/components/FormSteps/Step7";
 import Step8 from "@/components/FormSteps/Step8";
 import StepPreview from "@/components/FormSteps/Preview";
+import { useRouter } from "next/navigation";
 
 const steps = [
   { component: Step1, label: "Step 1" },
@@ -48,12 +49,15 @@ const MultiStepForm = () => {
 
   const StepComponent = steps[currentStep].component;
 
+  const router = useRouter();
+
   useEffect(() => {
     setMySteps(steps.length);
   }, [setMySteps]);
 
   const handleSuccessClose = () => {
     setSubmitStatus(false);
+    router.push("/");
   };
 
   useEffect(() => {}, [submitStatus]);

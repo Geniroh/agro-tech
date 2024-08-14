@@ -198,6 +198,48 @@ export async function PUT(
   }
 }
 
+// export async function DELETE(
+//   req: NextRequest,
+//   { params }: { params: { id: string } }
+// ) {
+//   try {
+//     const { error, value } = deleteSchema.validate(params);
+//     if (error) {
+//       return NextResponse.json(
+//         { error: error.details[0].message },
+//         { status: 400 }
+//       );
+//     }
+
+//     const { id } = value;
+
+//     const session = await auth();
+//     if (!session) {
+//       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+//     }
+//     const userId = session.user.id;
+
+//     console.log({ id, userId });
+
+//     const deletedDiscussion = await db.discussion.delete({
+//       where: { id, userId },
+//     });
+
+//     return NextResponse.json(
+//       {
+//         message: "Discussion deleted successfully",
+//         discussion: deletedDiscussion,
+//       },
+//       { status: 200 }
+//     );
+//   } catch (error) {
+//     return NextResponse.json(
+//       { error: "Failed to delete discussion" },
+//       { status: 500 }
+//     );
+//   }
+// }
+
 export async function DELETE(
   req: NextRequest,
   { params }: { params: { id: string } }
@@ -219,6 +261,8 @@ export async function DELETE(
     }
     const userId = session.user.id;
 
+    console.log({ id, userId });
+
     const deletedDiscussion = await db.discussion.delete({
       where: { id, userId },
     });
@@ -231,6 +275,7 @@ export async function DELETE(
       { status: 200 }
     );
   } catch (error) {
+    console.log(error);
     return NextResponse.json(
       { error: "Failed to delete discussion" },
       { status: 500 }

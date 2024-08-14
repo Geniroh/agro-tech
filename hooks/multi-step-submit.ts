@@ -41,7 +41,6 @@ export const useFormSubmit = () => {
       setMySteps(1);
 
       setSubmitStatus(true);
-      router.push("/");
     } catch (error) {
       console.error("Form submission failed", error);
       message.error("There was an error submitting Innovation");

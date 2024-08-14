@@ -80,7 +80,12 @@ export const useDeleteUserPost = (onSuccess?: any, onError?: ErrorHandler) => {
   const queryClient = useQueryClient();
   return useMutation((id: string) => deleteUserDiscussion(id), {
     onError,
-    onSuccess,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries(["get-user-discussion"]);
+      if (onSuccess) {
+        onSuccess(data, variables, context);
+      }
+    },
   });
 };
 

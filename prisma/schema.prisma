@@ -139,7 +139,7 @@ model Reply {
 
   user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
   discussionId String     @db.ObjectId
-  Discussion   Discussion @relation(fields: [discussionId], references: [id])
+  Discussion   Discussion @relation(fields: [discussionId], references: [id], onDelete: Cascade)
 
   @@map("replies")
 }
