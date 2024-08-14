@@ -82,7 +82,7 @@ export const RegisterForm = () => {
               </div>
             </Button>
 
-            <Button
+            {/* <Button
               size="lg"
               className="w-full"
               variant="outline"
@@ -91,7 +91,7 @@ export const RegisterForm = () => {
               <div className="flex gap-x-2">
                 <FaSquareFacebook className="h-5 w-5 text-[#1877f2]" />
               </div>
-            </Button>
+            </Button> */}
           </div>
           <div className="w-full my-5 font-semibold text-center">Or</div>
 

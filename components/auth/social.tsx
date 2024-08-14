@@ -48,7 +48,7 @@ export const Social = () => {
                 </div>
             </Button> */}
 
-        <Button
+        {/* <Button
           size="lg"
           className="w-full"
           variant="outline"
@@ -58,7 +58,7 @@ export const Social = () => {
             <FaSquareFacebook className="h-5 w-5 text-[#1877f2]" />
             <span>Sign In with Facebook</span>
           </div>
-        </Button>
+        </Button> */}
 
         {/* <Button
                 size="lg"
