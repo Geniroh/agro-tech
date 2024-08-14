@@ -206,6 +206,12 @@ interface IUserDiscussion {
   comments: IUserDiscussionReply[];
 }
 
+interface IUserDiscussionReplySubReply {
+  email: string;
+  message: string;
+  createdAt: Date;
+}
+
 interface IUserDiscussionReply {
   id: string;
   message: string;
@@ -214,6 +220,7 @@ interface IUserDiscussionReply {
   dislikes: number;
   createdAt: string;
   updatedAt: string;
+  subReplies?: IUserDiscussionReplySubReply[];
   user?: IUser;
   discussionId: string;
   Discussion?: IUserDiscussion;

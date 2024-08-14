@@ -34,7 +34,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'stavmia.nyc3.cdn.digitaloceanspaces',
+        hostname: 'stavmia.nyc3.cdn.digitaloceanspaces.com',
         port: '',
         pathname: '/**',
       },

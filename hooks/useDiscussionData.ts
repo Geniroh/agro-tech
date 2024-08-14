@@ -107,3 +107,57 @@ export const useUpdateDiscussionTitle = () => {
     },
   });
 };
+
+const getAllDiscussionCommentReply = async ({
+  discussionId,
+  replyId,
+}: {
+  discussionId: string;
+  replyId: string;
+}) => {
+  const { data } = await axiosInstance.get<IUserDiscussionReply[]>(
+    `/discussion/${discussionId}/reply/${replyId}`
+  );
+  return data;
+};
+
+export const useGetDiscussionCommentReply = (
+  discussionId: string,
+  replyId: string,
+  onSuccess?: (data: IUserDiscussionReply) => void
+) => {
+  return useQuery(
+    ["get-all-discussion-comment-reply", discussionId, replyId],
+    () => getAllDiscussionCommentReply({ discussionId, replyId }),
+    {
+      enabled: !!discussionId && !!replyId,
+      onSuccess,
+    }
+  );
+};
+
+const addUserDiscussionCommentReply = async ({
+  discussionId,
+  replyId,
+  reply,
+}: {
+  discussionId: string;
+  replyId: string;
+  reply: string;
+}) => {
+  const { data } = await axiosInstance.post<IUserDiscussionReply>(
+    `discussion/${discussionId}/reply`,
+    { replyId, reply }
+  );
+  return data;
+};
+
+export const useAddDiscussionCommentReply = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation(addUserDiscussionCommentReply, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("get-all-discussion-comment-reply");
+    },
+  });
+};
