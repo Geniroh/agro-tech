@@ -31,7 +31,9 @@ axiosInstance.interceptors.response.use(
         // Handle unauthorized error, for example, redirect to login
         message.error("Unauthorized! Please log in again.");
       } else {
-        message.error(error.response.data.message || "An error occurred");
+        if (error.response.data.message) {
+          message.error(error.response.data.message);
+        }
       }
     } else if (error.request) {
       // Request was made but no response received

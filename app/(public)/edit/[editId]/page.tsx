@@ -9,31 +9,20 @@ import axiosInstance from "@/utils/axiosInstance";
 import { PlusOutlined, DeleteOutlined } from "@ant-design/icons";
 
 import {
-  countryCodeToShortCode,
   generateCountryOptions,
   generateYearOptions,
   getCountryCurrency,
   getCurrencyOptions,
 } from "@/utils/function";
-import {
-  Form,
-  Input,
-  Button,
-  Select,
-  InputNumber,
-  message,
-  Upload,
-} from "antd";
+import { Form, Input, Button, Select, message, Space } from "antd";
 import { useParams, useRouter } from "next/navigation";
 import React, { useState } from "react";
 import { useMutation, useQuery } from "react-query";
 import currencyToSymbolMap from "currency-symbol-map";
 import { Progress } from "@/components/ui/progress";
-import { RenderMedia } from "@/components/general/render-media";
-import { UploadOutlined } from "@ant-design/icons";
-import ReactPlayer from "react-player";
 import { RenderMediaUrl } from "@/components/general/render-media-url";
 import "/node_modules/flag-icons/css/flag-icons.min.css";
+import { StyledFileInput } from "@/components/general/upload-input";
 
 const { TextArea } = Input;
 const { Option } = Select;
@@ -52,6 +41,18 @@ const EditFormPage = () => {
   const [showIsInventor, setShowIsInventor] = useState<boolean>(false);
   const [showIsSupplier, setShowIsSupplier] = useState<boolean>(false);
   const [showIsInstruction, setShowIsInstruction] = useState<boolean>(false);
+  const [showIsGuideline, setShowIsGuideline] = useState<boolean>(false);
+  const [showIsGenderFriendly, setShowGenderFriendly] =
+    useState<boolean>(false);
+  const [productMediaEdit, setAllowProductMediaEdit] = useState<boolean>(false);
+  const [canFill, setCanFill] = useState<boolean>(true);
+
+  const [formData, setFormData] = useState<any>({});
+
+  console.log({ formData });
+  const [mediaFiles, setMediaFiles] = useState<any[]>(
+    formData.product_media || []
+  );
 
   const checkRequest = async (id: string) => {
     const { data } = await axiosInstance.get(`/edit/${id}`);
@@ -65,16 +66,18 @@ const EditFormPage = () => {
       enabled: !!editId,
       onError: (error) => {
         console.log(error);
+        setCanFill(false);
       },
       onSuccess: (data: IInnovationType) => {
-        console.log({ data });
         form.setFieldsValue(data);
         setInnovation(data);
         setMediaList(data?.productMedia);
         setShowIsExample(data?.isExample);
-        setShowIsInstruction(data?.isInventor);
+        setShowIsInstruction(data?.isInstruction);
         setShowIsInventor(data?.isInventor);
         setShowIsSupplier(data?.isSupplier);
+        setShowIsGuideline(data?.isHSEGuidelines);
+        setShowGenderFriendly(data?.isGenderFriendly || false);
       },
     }
   );
@@ -96,11 +99,6 @@ const EditFormPage = () => {
     }
   };
 
-  const handleChange = (info: any) => {
-    console.log(info.fileList);
-    setMediaList(info.fileList);
-  };
-
   const { mutateAsync, isLoading: isSubmitting } = useMutation(
     updateInnovation,
     {
@@ -116,8 +114,11 @@ const EditFormPage = () => {
   );
 
   const onFinish = (values: any) => {
-    console.log({ values });
-    // mutateAsync(values);
+    const payload = {
+      ...formData,
+      cost: Number(formData?.cost),
+    };
+    mutateAsync(payload);
   };
 
   const prevStep = () => {
@@ -127,7 +128,29 @@ const EditFormPage = () => {
   };
 
   const handleNext = () => {
-    setEditSteps(editSteps + 1);
+    form.validateFields().then((values) => {
+      setFormData({ ...formData, ...values });
+      setEditSteps(editSteps + 1);
+    });
+  };
+
+  const handleFileChange = (
+    fileDataArray: {
+      url: string | null;
+      name: string | null;
+      size: number | null;
+      type: string | null;
+    }[]
+  ) => {
+    const fileList = [...fileDataArray, ...mediaFiles];
+
+    if (fileDataArray.some((file) => file.url === null)) {
+    } else {
+      message.success("Files uploaded successfully.");
+      setMediaFiles(fileList);
+      setAllowProductMediaEdit(false);
+      setFormData({ ...formData, productMedia: fileList });
+    }
   };
 
   return (
@@ -141,7 +164,7 @@ const EditFormPage = () => {
       </h3>
 
       <div className="max-w-[600px] mx-auto">
-        <Progress value={(editSteps / 3) * 100} className="mb-3" />
+        <Progress value={(editSteps / 7) * 100} className="mb-3" />
         <Form
           form={form}
           layout="vertical"
@@ -155,7 +178,11 @@ const EditFormPage = () => {
                   Innovation Name
                 </h3>
                 <Form.Item name="productName">
-                  <Input variant="filled" size="large" />
+                  <Input
+                    variant="filled"
+                    size="large"
+                    placeholder="Enter innovation name"
+                  />
                 </Form.Item>
               </div>
 
@@ -230,22 +257,24 @@ const EditFormPage = () => {
                 </h3>
 
                 <div className="w-full flex">
-                  <Form.Item name="cost">
-                    <Input
-                      size="large"
-                      type="number"
-                      variant="filled"
-                      placeholder="How much does this innovation cost"
-                      className="w-full block"
-                      addonBefore={
-                        <span className="font-bold">
-                          {currencyToSymbolMap(
-                            innovation?.currency || countryCode
-                          )}
-                        </span>
-                      }
-                    />
-                  </Form.Item>
+                  <Space className="w-full">
+                    <Form.Item name="cost">
+                      <Input
+                        size="large"
+                        type="number"
+                        variant="filled"
+                        placeholder="How much does this innovation cost"
+                        className="w-full block"
+                        addonBefore={
+                          <span className="font-bold">
+                            {currencyToSymbolMap(
+                              innovation?.currency || countryCode
+                            )}
+                          </span>
+                        }
+                      />
+                    </Form.Item>
+                  </Space>
                 </div>
               </div>
 
@@ -270,6 +299,19 @@ const EditFormPage = () => {
                 </Form.Item>
               </div>
 
+              <Button
+                onClick={handleNext}
+                size="large"
+                className="w-full bg-secondary text-white"
+                disabled={!canFill || isLoading}
+              >
+                Next
+              </Button>
+            </>
+          )}
+
+          {editSteps === 2 && (
+            <>
               <div>
                 <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
                   Implementation Phase
@@ -295,79 +337,97 @@ const EditFormPage = () => {
                 </Form.Item>
               </div>
 
-              {/* <div>
-                <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                  Product Media
-                </h3>
-
-                <div className="py-5 rounded-md border border-[#F5F5F5] w-full flex gap-3 flex-wrap items-center px-5 mb-3">
-                  {innovation &&
-                    innovation?.productMedia?.map((item, i) => (
-                      <RenderMediaUrl
-                        url={item.url}
-                        className="w-[48px] h-[48px]"
-                        key={i}
-                      />
-                    ))}
-                </div>
-              </div> */}
-
               <div>
                 <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                  Product Description
+                  About Product
                 </h3>
                 <Form.Item name="productDescription">
                   <TextArea rows={4} variant="filled" size="large" />
                 </Form.Item>
               </div>
 
-              <Button
-                type="default"
-                block
-                className="w-full mb-3 mt-8"
-                size="large"
-                onClick={handleNext}
-              >
-                Next
-              </Button>
-              {/* <div>
-                <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                  Is this product gender friendly ?
-                </h3>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <h3 className="text-[16px] leading-[24px] font-semibold">
+                    Product Media
+                  </h3>
+                  <span
+                    className="text-mygreen cursor-pointer"
+                    onClick={() => setAllowProductMediaEdit(!productMediaEdit)}
+                  >
+                    {!productMediaEdit ? "Edit Media" : "View Media"}
+                  </span>
+                </div>
 
-                <Form.Item name="isGenderFriendly" label="Is Gender Friendly">
-                  <Select variant="filled" size="large">
-                    <Option value={true}>Yes</Option>
-                    <Option value={false}>No</Option>
-                  </Select>
-                </Form.Item>
+                {!productMediaEdit ? (
+                  <div className="py-5 rounded-md border border-[#F5F5F5] w-full flex gap-3 flex-wrap items-center px-5 mb-3">
+                    {formData?.productMedia ? (
+                      <>
+                        {formData?.productMedia?.map((item: any, i: number) => (
+                          <RenderMediaUrl
+                            url={item.url}
+                            className="w-[48px] h-[48px]"
+                            key={i}
+                          />
+                        ))}
+                      </>
+                    ) : (
+                      <>
+                        {innovation &&
+                          innovation?.productMedia?.map((item, i) => (
+                            <RenderMediaUrl
+                              url={item.url}
+                              className="w-[48px] h-[48px]"
+                              key={i}
+                            />
+                          ))}
+                      </>
+                    )}
+                  </div>
+                ) : (
+                  <>
+                    <Form.Item name="productMedia">
+                      <StyledFileInput
+                        id={"product_media"}
+                        name={"productMedia"}
+                        placeholder="Click to add images/videos of product"
+                        defaultValue=""
+                        onChange={handleFileChange}
+                      />
+                    </Form.Item>
+                  </>
+                )}
               </div>
 
-              <div>
-                <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                  Briefly describe how this technology is inclusive of the
-                  female gender.
-                </h3>
+              <div className="space-y-4 mt-5">
+                <Button onClick={prevStep} size="large" className="w-full ">
+                  Previous
+                </Button>
 
-                <Form.Item name="productGenderDescription">
-                  <TextArea rows={4} variant="filled" size="large" />
-                </Form.Item>
-              </div> */}
+                <Button
+                  onClick={handleNext}
+                  size="large"
+                  type="primary"
+                  className="w-full"
+                >
+                  Next
+                </Button>
+              </div>
             </>
           )}
 
-          {editSteps === 2 && (
+          {editSteps === 3 && (
             <>
               <div>
                 <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                  Do you have Usage Example to Show?
+                  Do you have User Instructions ?
                 </h3>
                 <Form.Item name="isInstruction">
                   <Select
                     size="large"
                     variant="filled"
                     onChange={(value) => {
-                      setShowIsExample(value);
+                      setShowIsInstruction(value);
                     }}
                   >
                     <Option value={true}>Yes</Option>
@@ -376,9 +436,9 @@ const EditFormPage = () => {
                 </Form.Item>
               </div>
 
-              {showIsExample && (
+              {showIsInstruction && (
                 <Form.List
-                  name="instructions"
+                  name="productInstruction"
                   initialValue={innovation?.productInstruction}
                 >
                   {(fields, { add, remove }) => (
@@ -388,7 +448,7 @@ const EditFormPage = () => {
                           <Form.Item
                             {...field}
                             label={
-                              <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
                                 {`Instruction Step ${index + 1}`}
                               </h3>
                             }
@@ -400,7 +460,11 @@ const EditFormPage = () => {
                               },
                             ]}
                           >
-                            <Input placeholder="Enter instruction step" />
+                            <Input
+                              placeholder="Enter instruction step"
+                              variant="filled"
+                              size="large"
+                            />
                           </Form.Item>
 
                           <div className="w-full flex justify-end">
@@ -430,23 +494,20 @@ const EditFormPage = () => {
                 </Form.List>
               )}
 
-              <div className="space-y-4 mb-3 mt-8">
+              <div className="space-y-4 mt-5">
                 <Button
-                  type="text"
-                  block
-                  className="w-full"
-                  size="large"
                   onClick={prevStep}
+                  size="large"
+                  className="w-full bg-secondary text-white"
                 >
                   Previous
                 </Button>
 
                 <Button
-                  type="default"
-                  block
-                  className="w-full"
-                  size="large"
                   onClick={handleNext}
+                  size="large"
+                  type="primary"
+                  className="w-full bg-secondary text-white"
                 >
                   Next
                 </Button>
@@ -454,7 +515,7 @@ const EditFormPage = () => {
             </>
           )}
 
-          {editSteps === 3 && (
+          {editSteps === 4 && (
             <>
               <div>
                 <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
@@ -471,58 +532,10 @@ const EditFormPage = () => {
                   </Select>
                 </Form.Item>
               </div>
-              {/* 
-              {innovation &&
-                innovation.productInventor.map((inventor, index) => (
-                  <div key={index}>
-                    <Form.Item
-                      label={`Inventor Name ${index + 1}`}
-                      name={`inventor_name_${index}`}
-                      initialValue={inventor.inventor_name}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input inventor name",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter inventor name" />
-                    </Form.Item>
-
-                    <Form.Item
-                      label={`Inventor Contact ${index + 1}`}
-                      name={`inventor_contact_${index}`}
-                      initialValue={inventor.inventor_contact}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input inventor contact",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter inventor contact" />
-                    </Form.Item>
-
-                    <Form.Item
-                      label={`Inventor Email ${index + 1}`}
-                      name={`inventor_email_${index}`}
-                      initialValue={inventor.inventor_email}
-                      rules={[
-                        {
-                          required: true,
-                          type: "email",
-                          message: "Please input a valid email",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter inventor email" />
-                    </Form.Item>
-                  </div>
-                ))} */}
 
               {showIsInventor && (
                 <Form.List
-                  name="inventors"
+                  name="productInventor"
                   initialValue={innovation?.productInventor}
                 >
                   {(fields, { add, remove }) => (
@@ -531,7 +544,11 @@ const EditFormPage = () => {
                         <div key={field.key}>
                           <Form.Item
                             {...field}
-                            label={`Inventor Name ${index + 1}`}
+                            label={
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`Inventor Name ${index + 1}`}
+                              </h3>
+                            }
                             name={[field.name, "inventor_name"]}
                             rules={[
                               {
@@ -549,14 +566,12 @@ const EditFormPage = () => {
 
                           <Form.Item
                             {...field}
-                            label={`Inventor Contact ${index + 1}`}
+                            label={
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`Inventor Contact ${index + 1}`}
+                              </h3>
+                            }
                             name={[field.name, "inventor_contact"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input inventor contact",
-                              },
-                            ]}
                           >
                             <Input
                               placeholder="Enter inventor contact"
@@ -567,11 +582,14 @@ const EditFormPage = () => {
 
                           <Form.Item
                             {...field}
-                            label={`Inventor Email ${index + 1}`}
+                            label={
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`Inventor Email ${index + 1}`}
+                              </h3>
+                            }
                             name={[field.name, "inventor_email"]}
                             rules={[
                               {
-                                required: true,
                                 type: "email",
                                 message: "Please input a valid email",
                               },
@@ -592,22 +610,8 @@ const EditFormPage = () => {
                               icon={<DeleteOutlined />}
                             />
                           </div>
-
-                          {/* <Button
-                          type="dashed"
-                          onClick={() => remove(field.name)}
-                          block
-                        >
-                          <DeleteOutlined />
-                        </Button> */}
                         </div>
                       ))}
-                      {/* 
-                    <Form.Item>
-                      <Button type="dashed" onClick={() => add()} block>
-                        Add Inventor
-                      </Button>
-                    </Form.Item> */}
 
                       <Form.Item>
                         <Button
@@ -625,23 +629,20 @@ const EditFormPage = () => {
                 </Form.List>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-4 mt-5">
                 <Button
-                  type="default"
-                  block
-                  className="w-full mb-3"
-                  size="large"
                   onClick={prevStep}
+                  size="large"
+                  className="w-full bg-secondary text-white"
                 >
                   Previous
                 </Button>
 
                 <Button
-                  type="default"
-                  block
-                  className="w-full mb-3"
-                  size="large"
                   onClick={handleNext}
+                  size="large"
+                  type="primary"
+                  className="w-full bg-secondary text-white"
                 >
                   Next
                 </Button>
@@ -649,7 +650,7 @@ const EditFormPage = () => {
             </>
           )}
 
-          {editSteps === 4 && (
+          {editSteps === 5 && (
             <>
               <div>
                 <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
@@ -666,58 +667,10 @@ const EditFormPage = () => {
                   </Select>
                 </Form.Item>
               </div>
-              {/* 
-              {innovation &&
-                innovation.productInventor.map((inventor, index) => (
-                  <div key={index}>
-                    <Form.Item
-                      label={`Inventor Name ${index + 1}`}
-                      name={`inventor_name_${index}`}
-                      initialValue={inventor.inventor_name}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input inventor name",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter inventor name" />
-                    </Form.Item>
-
-                    <Form.Item
-                      label={`Inventor Contact ${index + 1}`}
-                      name={`inventor_contact_${index}`}
-                      initialValue={inventor.inventor_contact}
-                      rules={[
-                        {
-                          required: true,
-                          message: "Please input inventor contact",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter inventor contact" />
-                    </Form.Item>
-
-                    <Form.Item
-                      label={`Inventor Email ${index + 1}`}
-                      name={`inventor_email_${index}`}
-                      initialValue={inventor.inventor_email}
-                      rules={[
-                        {
-                          required: true,
-                          type: "email",
-                          message: "Please input a valid email",
-                        },
-                      ]}
-                    >
-                      <Input placeholder="Enter inventor email" />
-                    </Form.Item>
-                  </div>
-                ))} */}
 
               {showIsSupplier && (
                 <Form.List
-                  name="inventors"
+                  name="productSupplier"
                   initialValue={innovation?.productSupplier}
                 >
                   {(fields, { add, remove }) => (
@@ -726,17 +679,21 @@ const EditFormPage = () => {
                         <div key={field.key}>
                           <Form.Item
                             {...field}
-                            label={`Inventor Name ${index + 1}`}
+                            label={
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`Supplier Name ${index + 1}`}
+                              </h3>
+                            }
                             name={[field.name, "supplier_name"]}
                             rules={[
                               {
                                 required: true,
-                                message: "Please input inventor name",
+                                message: "Please input supplier name",
                               },
                             ]}
                           >
                             <Input
-                              placeholder="Enter inventor name"
+                              placeholder="Enter supplier name"
                               variant="filled"
                               size="large"
                             />
@@ -744,17 +701,15 @@ const EditFormPage = () => {
 
                           <Form.Item
                             {...field}
-                            label={`Inventor Contact ${index + 1}`}
+                            label={
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`Supplier Contact ${index + 1}`}
+                              </h3>
+                            }
                             name={[field.name, "supplier_contact"]}
-                            rules={[
-                              {
-                                required: true,
-                                message: "Please input inventor contact",
-                              },
-                            ]}
                           >
                             <Input
-                              placeholder="Enter inventor contact"
+                              placeholder="Enter supplier contact"
                               variant="filled"
                               size="large"
                             />
@@ -762,18 +717,21 @@ const EditFormPage = () => {
 
                           <Form.Item
                             {...field}
-                            label={`Inventor Email ${index + 1}`}
+                            label={
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`Supplier Email ${index + 1}`}
+                              </h3>
+                            }
                             name={[field.name, "supplier_email"]}
                             rules={[
                               {
-                                required: true,
                                 type: "email",
                                 message: "Please input a valid email",
                               },
                             ]}
                           >
                             <Input
-                              placeholder="Enter inventor email"
+                              placeholder="Enter supplier email"
                               variant="filled"
                               size="large"
                             />
@@ -806,23 +764,20 @@ const EditFormPage = () => {
                 </Form.List>
               )}
 
-              <div className="space-y-4">
+              <div className="space-y-4 mt-5">
                 <Button
-                  type="default"
-                  block
-                  className="w-full mb-3"
-                  size="large"
                   onClick={prevStep}
+                  size="large"
+                  className="w-full bg-secondary text-white"
                 >
                   Previous
                 </Button>
 
                 <Button
-                  type="default"
-                  block
-                  className="w-full mb-3"
-                  size="large"
                   onClick={handleNext}
+                  size="large"
+                  type="primary"
+                  className="w-full bg-secondary text-white"
                 >
                   Next
                 </Button>
@@ -830,18 +785,18 @@ const EditFormPage = () => {
             </>
           )}
 
-          {editSteps === 5 && (
+          {editSteps === 6 && (
             <>
               <div>
                 <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
                   Does this product Have HSE Guidelines?
                 </h3>
-                <Form.Item name="isInstruction">
+                <Form.Item name="isHSEGuidelines">
                   <Select
                     size="large"
                     variant="filled"
                     onChange={(value) => {
-                      setShowIsInstruction(value);
+                      setShowIsGuideline(value);
                     }}
                   >
                     <Option value={true}>Yes</Option>
@@ -850,10 +805,10 @@ const EditFormPage = () => {
                 </Form.Item>
               </div>
 
-              {showIsExample && (
+              {showIsGuideline && (
                 <Form.List
-                  name="instructions"
-                  initialValue={innovation?.productInstruction}
+                  name="productGuidelines"
+                  initialValue={innovation?.productGuidelines}
                 >
                   {(fields, { add, remove }) => (
                     <>
@@ -862,19 +817,23 @@ const EditFormPage = () => {
                           <Form.Item
                             {...field}
                             label={
-                              <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
-                                {`Instruction Step ${index + 1}`}
+                              <h3 className="text-[16px] leading-[24px] font-semibold">
+                                {`${index + 1}`}
                               </h3>
                             }
-                            name={[field.name, "instruction_step"]}
+                            name={[field.name, "name"]}
                             rules={[
                               {
                                 required: true,
-                                message: "Please input the instruction step",
+                                message: "Please enter guideline",
                               },
                             ]}
                           >
-                            <Input placeholder="Enter instruction step" />
+                            <Input
+                              placeholder="Enter guideline"
+                              variant="filled"
+                              size="large"
+                            />
                           </Form.Item>
 
                           <div className="w-full flex justify-end">
@@ -896,7 +855,7 @@ const EditFormPage = () => {
                           onClick={() => add()}
                           icon={<PlusOutlined />}
                         >
-                          Add Instruction
+                          Add Guideline
                         </Button>
                       </Form.Item>
                     </>
@@ -904,23 +863,20 @@ const EditFormPage = () => {
                 </Form.List>
               )}
 
-              <div className="space-y-4 mb-3 mt-8">
+              <div className="space-y-4 mt-5">
                 <Button
-                  type="text"
-                  block
-                  className="w-full"
-                  size="large"
                   onClick={prevStep}
+                  size="large"
+                  className="w-full bg-secondary text-white"
                 >
                   Previous
                 </Button>
 
                 <Button
-                  type="default"
-                  block
-                  className="w-full"
-                  size="large"
                   onClick={handleNext}
+                  size="large"
+                  type="primary"
+                  className="w-full bg-secondary text-white"
                 >
                   Next
                 </Button>
@@ -928,21 +884,60 @@ const EditFormPage = () => {
             </>
           )}
 
-          <div className="space-y-4">
-            <Form.Item>
-              <Button
-                type="primary"
-                block
-                className="w-full"
-                size="large"
-                htmlType="submit"
-                disabled={isSubmitting || isLoading}
-                loading={isSubmitting}
-              >
-                Submit
-              </Button>
-            </Form.Item>
-          </div>
+          {editSteps === 7 && (
+            <>
+              <div>
+                <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                  Is this product gender friendly ?
+                </h3>
+
+                <Form.Item name="isGenderFriendly" label="Is Gender Friendly">
+                  <Select
+                    variant="filled"
+                    size="large"
+                    onChange={(value) => setShowGenderFriendly(value)}
+                  >
+                    <Option value={true}>Yes</Option>
+                    <Option value={false}>No</Option>
+                  </Select>
+                </Form.Item>
+              </div>
+
+              {showIsGenderFriendly && (
+                <div>
+                  <h3 className="text-[16px] leading-[24px] font-semibold mb-3">
+                    Briefly describe how this technology is inclusive of the
+                    female gender.
+                  </h3>
+
+                  <Form.Item name="productGenderDescription">
+                    <TextArea rows={4} variant="filled" size="large" />
+                  </Form.Item>
+                </div>
+              )}
+
+              <div className="space-y-4 mt-5">
+                <Button
+                  onClick={prevStep}
+                  size="large"
+                  className="w-full bg-secondary text-white"
+                >
+                  Previous
+                </Button>
+
+                <Button
+                  onClick={form.submit}
+                  size="large"
+                  type="primary"
+                  className="w-full bg-primary text-white"
+                  disabled={isSubmitting || isLoading || !canFill}
+                  loading={isSubmitting}
+                >
+                  Submit
+                </Button>
+              </div>
+            </>
+          )}
         </Form>
       </div>
     </div>
