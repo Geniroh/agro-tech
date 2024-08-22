@@ -24,7 +24,7 @@ export const Footer = () => {
               <p>Home</p>
             </Link>
             <Link href="/discussion" className="text-white hover:underline">
-              <p>Discussion Forum</p>
+              <p>Forum</p>
             </Link>
             <Link href="/analytics" className="text-white hover:underline">
               <p>Analytics</p>

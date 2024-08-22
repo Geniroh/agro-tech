@@ -82,7 +82,7 @@ export const InnovationSkeleton = () => {
         <div>
           <div className="mt-10">
             <h2 className="text-2xl text-muted-foreground">Description</h2>
-            <Skeleton className="w-[80%] h-5" />
+            <Skeleton className="w-[100%] h-5" />
           </div>
 
           <div className="mt-10">
@@ -92,45 +92,42 @@ export const InnovationSkeleton = () => {
             <Accordion type="single" collapsible className="w-full">
               <AccordionItem value="item-1">
                 <AccordionTrigger className="px-3 font-semibold">
-                  How to Use
+                  <Skeleton className="w-[100%] h-3" />
                 </AccordionTrigger>
                 <AccordionContent className="mt-5 px-6"></AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-2">
                 <AccordionTrigger className="px-3 font-semibold">
-                  Contact Supplier
+                  <Skeleton className="w-[100%] h-3" />
                 </AccordionTrigger>
                 <AccordionContent className="mt-5 px-6 space-y-4"></AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-3">
                 <AccordionTrigger className="px-3 font-semibold">
-                  Contact Inventor
+                  <Skeleton className="w-[100%] h-3" />
                 </AccordionTrigger>
                 <AccordionContent className="mt-5 px-6"></AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-4">
                 <AccordionTrigger className="px-3 font-semibold">
-                  Usage Examples
+                  <Skeleton className="w-[100%] h-3" />
                 </AccordionTrigger>
                 <AccordionContent className="mt-5 px-6"></AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-5">
                 <AccordionTrigger className="px-3 font-semibold">
-                  HSE Guideline
+                  <Skeleton className="w-[100%] h-3" />
                 </AccordionTrigger>
                 <AccordionContent className="mt-5 px-6"></AccordionContent>
               </AccordionItem>
 
               <AccordionItem value="item-6">
                 <AccordionTrigger className="px-3 font-semibold">
-                  <div className="flex gap-2 items-center">
-                    <span>Gender Friendly</span>
-                    <FaCheckCircle className="text-mygreen" />
-                  </div>
+                  <Skeleton className="w-[100%] h-3" />
                 </AccordionTrigger>
                 <AccordionContent className="mt-5 px-6"></AccordionContent>
               </AccordionItem>

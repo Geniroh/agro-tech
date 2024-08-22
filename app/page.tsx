@@ -8,6 +8,7 @@ import { useState } from "react";
 import { HomeTour } from "@/components/tours/home-tour";
 import { FeaturedPosts } from "@/components/general/featured-post";
 import { useSetDefaultStates } from "@/hooks/useSetDefault";
+import HomeHero from "@/components/general/home-hero";
 
 export default function Home() {
   const [show, setShow] = useState<boolean>(false);
@@ -15,9 +16,10 @@ export default function Home() {
 
   return (
     <div>
-      <Navbar />
+      <HomeHero />
+      {/* <Navbar /> */}
       <main className="container mx-auto">
-        <div className="w-full py-16">
+        {/* <div className="w-full py-16">
           <div className="">
             <h1 className="text-[24px] md:text-[32px] font-jakara font-bold  leading-[32px] md:leading-[42px] text-center md:text-left">
               Sustainable <span className="text-mygreen"> Technologies</span>{" "}
@@ -35,9 +37,9 @@ export default function Home() {
               agro productivity. Join us in transforming agriculture in Africa!
             </h2>
           </div>
-        </div>
+        </div> */}
 
-        <div className="mt-[20px]">
+        <div className="mt-[50px] md:mt-[100px]">
           <CollectionTable />
         </div>
 
@@ -47,7 +49,7 @@ export default function Home() {
       </main>
 
       <Button
-        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen"
+        className="flex gap-x-2 fixed top-[90%] right-0 shadow-xl text-[10px] md:text-[14px] mr-5 md:mr-0 bg-mygreen z-30"
         variant="default"
         onClick={() => setShow(true)}
       >

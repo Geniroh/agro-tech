@@ -1,11 +1,67 @@
+"use client";
 import { useAppContext } from "@/context/AppContext";
 import { Form, Input, message, Button } from "antd";
 import { useState } from "react";
 import { IoMdSend } from "react-icons/io";
 import { ReactionButtons } from "../general/reaction-buttons";
-import { getFirstName } from "@/utils/function";
 import { useAddDiscussionComment } from "@/hooks/useAddComment";
 import Link from "next/link";
+import { useFetchInnovationReplies } from "@/hooks/useRepliesData";
+import { RiExternalLinkFill } from "react-icons/ri";
+import UserAvatar from "@/components/user-avatar";
+import { useRouter } from "next/navigation";
+import { ClipLoader } from "react-spinners";
+
+const InnovationDiscussionComment = ({
+  comment,
+  innovationId,
+}: {
+  comment: IInnovationComment;
+  innovationId: string;
+}) => {
+  const [replies, setReplies] = useState<IInnovationCommentReply[]>([]);
+
+  const handleGetReplySuccess = (data: IGetInnovationDisussionReplies) =>
+    setReplies(data.replies);
+
+  const { isLoading } = useFetchInnovationReplies(
+    innovationId,
+    comment.id,
+    handleGetReplySuccess
+  );
+
+  const router = useRouter();
+  return (
+    <div
+      className="min-h-[56px] flex flex-col md:flex-row items-start md:items-end justify-between"
+      key={comment.id}
+    >
+      <div className="flex items-start gap-3">
+        <UserAvatar email={comment.email || comment.username} />
+
+        <div
+          className="flex flex-col justify-between text-[16px] leading-[24px] cursor-pointer"
+          onClick={() => router.push(`/discussion/innovation/${innovationId}`)}
+        >
+          <span className="font-semibold">{comment.username}</span>
+          <span>{comment.message}</span>
+        </div>
+      </div>
+
+      <div className="flex items-center">
+        <ReactionButtons
+          dislikes={comment.dislikes || 0}
+          likes={comment.likes || 0}
+          replies={replies.length || 0}
+          type="innovationDiscussion"
+          id={innovationId}
+          isCommentId={comment.id}
+          showReplyBtn={false}
+        />
+      </div>
+    </div>
+  );
+};
 
 export const InnovationDiscussionForum = ({
   innovationId,
@@ -18,9 +74,9 @@ export const InnovationDiscussionForum = ({
   const [myComments, setMyComments] = useState<IInnovationComment[]>(comments);
   const [displayedComments, setDisplayedComments] = useState<number>(5);
 
-  const { mutate: addComment, data } = useAddDiscussionComment();
+  const { mutate: addComment, data, isLoading } = useAddDiscussionComment();
 
-  const handleDisucssions = async () => {
+  const handleDiscussions = async () => {
     try {
       const values = await form.validateFields();
       addComment(
@@ -54,12 +110,21 @@ export const InnovationDiscussionForum = ({
             className="w-full"
             variant="filled"
             size="large"
-            onPressEnter={handleDisucssions}
+            disabled={isLoading}
+            onPressEnter={handleDiscussions}
             suffix={
-              <IoMdSend
-                className="text-mygreen cursor-pointer"
-                onClick={handleDisucssions}
-              />
+              <div>
+                {isLoading ? (
+                  <span>
+                    <ClipLoader size={15} />
+                  </span>
+                ) : (
+                  <IoMdSend
+                    className="text-mygreen cursor-pointer"
+                    onClick={handleDiscussions}
+                  />
+                )}
+              </div>
             }
           />
         </Form.Item>
@@ -69,38 +134,23 @@ export const InnovationDiscussionForum = ({
       <>
         <div className="md:ml-10 space-y-10">
           {myComments.slice(0, displayedComments).map((comment, i) => (
-            <div
-              className="min-h-[56px] flex flex-col md:flex-row items-start md:items-end justify-between"
+            <InnovationDiscussionComment
+              comment={comment}
+              innovationId={innovationId}
               key={i}
-            >
-              <div className="flex items-center gap-3">
-                <div className="w-[40px] h-[40px] rounded-full bg-mygreen flex justify-center items-center text-white">
-                  {getFirstName(comment.username)[0]}
-                </div>
-
-                <div className="flex flex-col justify-between text-[16px] leading-[24px]">
-                  <span className="font-semibold">{comment.username}</span>
-                  <span>{comment.message}</span>
-                </div>
-              </div>
-
-              <div className="flex items-center">
-                <ReactionButtons
-                  dislikes={comment.dislikes || 0}
-                  likes={comment.likes || 0}
-                  // replies={0}
-                  type="innovationDiscussion"
-                  id={innovationId}
-                  isCommentId={comment.id}
-                  showReplyBtn={false}
-                />
-
-                <Link href={`/discussion/innovation/${innovationId}`}>
-                  <span className="text-xs cursor-pointer">Reply</span>
-                </Link>
-              </div>
-            </div>
+            />
           ))}
+        </div>
+
+        <div className="text-center mt-4">
+          <Button type="link">
+            <Link href={`/discussion/innovation/${innovationId}`}>
+              <h2 className="text-lg text-muted-foreground mt-10 flex gap-4 items-center">
+                Join this discussion
+                <RiExternalLinkFill size={15} />
+              </h2>
+            </Link>
+          </Button>
         </div>
 
         {myComments.length > displayedComments && (

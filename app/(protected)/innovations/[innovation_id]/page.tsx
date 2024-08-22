@@ -24,6 +24,7 @@ import { RiExternalLinkFill } from "react-icons/ri";
 import Link from "next/link";
 import { RenderMediaList } from "@/components/general/render-media-list";
 import { InnovationSkeleton } from "@/components/skeletons/innovation-skeleton";
+import { ClipLoader } from "react-spinners";
 
 const InnovationPage = () => {
   const router = useRouter();
@@ -54,7 +55,7 @@ const InnovationPage = () => {
     handleGetInnovationError
   );
 
-  useGetInnovationDiscussion(
+  const { isLoading: isLoadingComments } = useGetInnovationDiscussion(
     innovation_id,
     handleGetDiscussionSuccess,
     handleGetDiscussionError
@@ -83,7 +84,7 @@ const InnovationPage = () => {
             fromHref="/"
             fromTitle="Back to Home"
             toHref=""
-            toTitle="Upload Invention Page"
+            toTitle="Innovation Page"
           />
 
           <div className="w-full">
@@ -189,47 +190,14 @@ const InnovationPage = () => {
           </div>
 
           <div className="mt-8">
-            {/* {!data?.productMedia[0].url ? (
-              <div className="text-center text-muted-foreground h-[100px] flex justify-center items-center">
-                --- No data ----
-              </div>
-            ) : (
-              <div className="flex justify-center max-w-[900px] h-[350px] md:h-[550px] mx-auto">
-                <RenderMedia
-                  media={data?.productMedia[0]}
-                  className="w-[1000px] h-[600px]"
-                  key={data?.productMedia[0].name}
-                />
-              </div>
-            )} */}
             <RenderMediaList
               media={data?.productMedia}
               featuredClassName="w-full max-w-[600px] lg:max-w-[800px] mx-auto"
-              listClassName="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
+              listClassName="rounded-md h-[120px] w-[90px] md:h-[120px] md:w-[150px] lg:w-full lg:h-[200px]"
             />
           </div>
 
           <div>
-            {/* <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 mt-10">
-              {data?.productMedia ? (
-                data.productMedia.map((media, i) => (
-                  <>
-                    {media.url && (
-                      <RenderMedia
-                        media={media}
-                        key={i}
-                        className="rounded-md h-[95px] w-[68px] md:h-[120px] md:w-full lg:h-[200px]"
-                      />
-                    )}
-                  </>
-                ))
-              ) : (
-                <div className="text-center text-muted-foreground">
-                  --- No data ----
-                </div>
-              )}
-            </div> */}
-
             <div className="mt-10">
               <h2 className="text-2xl text-muted-foreground">Description</h2>
               <p className="leading-8">{data?.productDescription}</p>
@@ -239,7 +207,11 @@ const InnovationPage = () => {
               <h2 className="text-2xl text-muted-foreground mb-5">
                 Additional Info
               </h2>
-              <Accordion type="single" collapsible className="w-full">
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full bg-[#fbf9f9bc]"
+              >
                 <AccordionItem value="item-1">
                   <AccordionTrigger className="px-3 font-semibold">
                     How to Use
@@ -423,10 +395,18 @@ const InnovationPage = () => {
               </Link>
             )}
 
-            <InnovationDiscussionForum
-              innovationId={data?.id}
-              comments={comments || []}
-            />
+            {isLoadingComments ? (
+              <div className="min-h-[200px] w-full flex items-center justify-center">
+                <h2 className="flex gap-2 items-center">
+                  <ClipLoader size={20} /> Loading Comments{" "}
+                </h2>
+              </div>
+            ) : (
+              <InnovationDiscussionForum
+                innovationId={data?.id}
+                comments={comments || []}
+              />
+            )}
           </div>
         </div>
       )}

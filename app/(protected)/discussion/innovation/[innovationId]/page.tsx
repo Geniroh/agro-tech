@@ -5,7 +5,6 @@ import BreadcrumbP from "@/components/general/my-breadcrumb";
 import { DateDifference } from "@/components/general/date-diff-calculator";
 import Link from "next/link";
 import { RenderMedia } from "@/components/general/render-media";
-import { Skeleton } from "@/components/ui/skeleton";
 import { ShareButton } from "@/components/general/share-button";
 import { useGetInnovationById } from "@/hooks/useInnovationData";
 import { useAddDiscussionComment } from "@/hooks/useAddComment";
@@ -47,7 +46,7 @@ const InnovationDiscussionPage = () => {
     handleGetDiscussionError
   );
 
-  const handleDisucssions = async () => {
+  const handleDiscussions = async () => {
     try {
       const values = await form.validateFields();
       addComment(
@@ -85,7 +84,7 @@ const InnovationDiscussionPage = () => {
               toHref="/discussion"
               toTitle={`${data.productName} discussion`}
               fromHref="/home"
-              fromTitle="Back to HomePage/ ForumPage"
+              fromTitle="Back to Home"
             />
 
             <div className="max-w-[782px] mx-auto">
@@ -139,11 +138,11 @@ const InnovationDiscussionPage = () => {
                       placeholder="Add a comment"
                       className="w-full"
                       size="large"
-                      onPressEnter={handleDisucssions}
+                      onPressEnter={handleDiscussions}
                       suffix={
                         <IoMdSend
                           className="text-mygreen cursor-pointer"
-                          onClick={handleDisucssions}
+                          onClick={handleDiscussions}
                         />
                       }
                     />

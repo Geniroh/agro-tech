@@ -108,7 +108,7 @@ export const FeaturedPosts = () => {
     <main>
       <div className="mb-10">
         <h1 className="w-full font-jakara text-[24px] md:text-2xl font-bold text-left mb-10 leading-[32px]">
-          Featured Posts
+          Spotlights & Inspirations
         </h1>
         <div className="px-10">
           <Carousel

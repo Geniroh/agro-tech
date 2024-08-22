@@ -2,19 +2,20 @@
 import { Button } from "@/components/ui/button";
 import { IoIosSearch } from "react-icons/io";
 import { TagSelect } from "@/components/general/tag-select";
-import { CircleX, LayoutGrid, List } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   CollectionDataTableP,
   CollectionDataImageGrid,
 } from "@/components/data/collections-table";
-import { message } from "antd";
+import { Input, message } from "antd";
 import { phaseOptions, valueChainOptions } from "@/constants/options";
 import { generateCountryArray, generateYears } from "@/utils/function";
 import { useGetInnovation } from "@/hooks/useInnovationData";
 import { CollectionTableSkeleton } from "@/components/skeletons/collection-table-skeleton";
 import { CollectionGridSkeleton } from "./skeletons/collection-grid-skeleton";
 import { useAppContext } from "@/context/AppContext";
+import { LayoutGrid, List } from "lucide-react";
+import { debounce } from "lodash";
 
 export const CollectionTable = () => {
   const { innovationCollection } = useAppContext();
@@ -58,50 +59,44 @@ export const CollectionTable = () => {
     setQueryParams((prev) => ({ ...prev, [field]: value }));
   };
 
-  const handleSearch = () => {
-    if (nameParam == "") {
+  const debouncedSearch = debounce(() => {
+    if (nameParam.trim() === "") {
       setQueryParams({
         page: pageNo,
       });
     } else {
-      handleTagSelectChange("name", nameParam);
+      setQueryParams((prev) => ({ ...prev, name: nameParam }));
     }
-  };
+  }, 300);
+
+  useEffect(() => {
+    debouncedSearch();
+    return () => debouncedSearch.cancel();
+  }, [nameParam]);
 
   return (
     <div>
       <div className="w-full">
         <h1 className="w-full font-jakara text-[24px] md:text-2xl font-bold text-center mb-10 leading-[32px]">
-          Collections
+          Innovation Gallery
         </h1>
         <div className="flex flex-col md:flex-row gap-y-4 w-full items-center space-x-4 mb-10">
-          <div className="w-full py-2 px-6 rounded-xl flex gap-x-3 items-center bg-[#fafafa]">
-            <IoIosSearch />
-            <input
-              type="text"
-              className="border-0 outline-none bg-transparent w-full placeholder:text-[#888888]"
+          <div className="w-full">
+            <Input
+              className="border-0 outline-none bg-transparent placeholder:text-[#888888] w-full py-2 px-6 rounded-xl flex"
               placeholder="Search by title ..."
               value={nameParam}
               onChange={(e) => setNameParam(e.target.value)}
+              prefix={<IoIosSearch />}
+              variant="filled"
+              size="large"
+              allowClear
             />
-
-            {nameParam.length > 0 && (
-              <CircleX
-                size={13}
-                className="text-myblack cursor-pointer"
-                onClick={() => {
-                  setQueryParams({
-                    page: pageNo,
-                  });
-                  setNameParam("");
-                }}
-              />
-            )}
           </div>
           <Button
             type="submit"
             className="px-6 bg-mygreen"
-            onClick={handleSearch}
+            onClick={debouncedSearch}
           >
             Click here to search
           </Button>

@@ -7,6 +7,8 @@ import { useFetchInnovationReplies } from "@/hooks/useRepliesData";
 import { useAddDiscussionReply } from "@/hooks/useAddComment";
 import { ReactionButtons } from "../general/reaction-buttons";
 import UserAvatar from "@/components/user-avatar";
+import { ClipLoader } from "react-spinners";
+import { FaReply } from "react-icons/fa6";
 
 export const DiscussionInnovationComment = ({
   comment,
@@ -55,7 +57,8 @@ export const DiscussionInnovationComment = ({
     comment.id,
     handleGetReplySuccess
   );
-  const { mutate: addReply } = useAddDiscussionReply();
+  const { mutate: addReply, isLoading: isLoadingReply } =
+    useAddDiscussionReply();
 
   return (
     <div>
@@ -88,10 +91,10 @@ export const DiscussionInnovationComment = ({
             showReplyBtn={false}
           />
           <span
-            className="text-xs cursor-pointer"
+            className="text-xs cursor-pointer flex items-center gap-1"
             onClick={() => setShowReplyField(!showReplyField)}
           >
-            Reply
+            Reply <FaReply />
           </span>
         </div>
         {showReplyField && (
@@ -103,11 +106,20 @@ export const DiscussionInnovationComment = ({
                   className="w-full my-0 py-0"
                   size="middle"
                   onPressEnter={handleCommentReply}
+                  disabled={isLoadingReply}
                   suffix={
-                    <IoMdSend
-                      className="text-mygreen cursor-pointer"
-                      onClick={handleCommentReply}
-                    />
+                    <div>
+                      {isLoadingReply ? (
+                        <span>
+                          <ClipLoader size={15} />
+                        </span>
+                      ) : (
+                        <IoMdSend
+                          className="text-mygreen cursor-pointer"
+                          onClick={handleCommentReply}
+                        />
+                      )}
+                    </div>
                   }
                 />
               </Form.Item>

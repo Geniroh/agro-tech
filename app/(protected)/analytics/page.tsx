@@ -129,7 +129,7 @@ export default function AnalyticsPage() {
             className={`flex justify-center items-center text-[16px] leading-[20px] gap-x-2 my-10 font-semibold flex-wrap`}
           >
             <Link href="/" className="text-[#888888] hover:text-mygreen">
-              Back to HomePage
+              Back to Home
             </Link>
             /
             <Link href="" className="text-myblack hover:text-mygreen">

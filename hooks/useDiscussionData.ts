@@ -30,6 +30,7 @@ export const useGetInnovationDiscussion = (
     {
       onError,
       onSuccess,
+      keepPreviousData: true,
     }
   );
 };

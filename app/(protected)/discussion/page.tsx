@@ -131,13 +131,13 @@ const DiscussionPage = () => {
       <div className="w-full container h-full pb-20">
         <BreadcrumbP
           fromHref="/"
-          fromTitle="Back to Home Page"
+          fromTitle="Back to Home"
           toHref="/discussion"
-          toTitle="Forum Page"
+          toTitle="Forum"
         />
 
         <h1 className="w-full text-center text-2xl md:text-4xl font-playfair font-semibold my-10">
-          Discussion Forum
+          Forum
         </h1>
 
         <div className="max-w-[700px] mx-auto">

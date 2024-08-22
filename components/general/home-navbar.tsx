@@ -9,6 +9,7 @@ import { RegisterButton } from "@/components/auth/register-button";
 import { useSession } from "next-auth/react";
 import { UserDropdownMenu } from "@/components/auth/user-menu-button";
 import { Menu, X } from "lucide-react";
+import { TiThMenu } from "react-icons/ti";
 import Image from "next/image";
 
 const navLinks = [
@@ -17,35 +18,61 @@ const navLinks = [
   { href: "/analytics", name: "Analytics" },
 ];
 
-const Navbar: React.FC = () => {
+const Navbar2: React.FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const [isOpen, setIsOpen] = useState(false);
   const { data: session, status } = useSession();
+  const [scrolling, setScrolling] = useState(false);
 
-  useEffect(() => {}, [session, status]);
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setScrolling(true);
+      } else {
+        setScrolling(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
 
   return (
-    <div className="border-b shadow-sm border-b-white relative md:sticky top-0 bg-white z-40 px-5">
-      <nav className="w-full h-[70px] grid grid-cols-3 items-center max-w-[1200px] mx-auto">
+    <div
+      className={`relative md:sticky top-0 z-40 px-5 transition-colors duration-300 ${
+        scrolling ? "bg-white shadow-md" : "bg-transparent"
+      }`}
+    >
+      <div className="w-full h-[70px] grid grid-cols-3 items-center max-w-[1200px] mx-auto">
         <div className="flex items-center gap-3">
-          <Button
-            variant="outline"
-            className="lg:hidden"
-            onClick={() => setIsOpen(true)}
-          >
-            <Menu />
-          </Button>
           <div>
             <Link href="/" className="flex items-center">
-              <Image
-                src="/images/leaf.png"
-                alt=""
-                className="h-[30px] hidden md:block"
-                width={30}
-                height={30}
-              />
-              <div className="px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider text-mygreen">
+              {!scrolling ? (
+                <Image
+                  src="/images/logo-white.png"
+                  alt=""
+                  className="h-[30px] "
+                  width={30}
+                  height={30}
+                />
+              ) : (
+                <Image
+                  src="/images/leaf.png"
+                  alt=""
+                  className="h-[30px] hidden"
+                  width={30}
+                  height={30}
+                />
+              )}
+              <div
+                className={`px-3 py-2 text-[28px] font-black-ops w-fit rounded-lg tracking-wider ${
+                  !scrolling ? "text-white" : "text-mygreen"
+                }`}
+              >
                 STAVMiA
               </div>
             </Link>
@@ -64,8 +91,12 @@ const Navbar: React.FC = () => {
                   href={link.href}
                   className={
                     isActive
-                      ? "text-mygreen font-open-sans font-semibold"
-                      : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+                      ? `${
+                          scrolling ? "text-mygreen" : "text-black"
+                        } font-open-sans font-semibold`
+                      : `${
+                          scrolling ? "text-black" : "text-white"
+                        } hover:text-mygreen font-open-sans font-semibold`
                   }
                   key={link.name}
                 >
@@ -76,7 +107,7 @@ const Navbar: React.FC = () => {
           </div>
         </div>
 
-        <div className="flex justify-end items-center">
+        <div className="flex justify-end items-center gap-2">
           <div className="flex gap-x-3">
             {session ? (
               <div className="flex items-center gap-x-3">
@@ -113,8 +144,16 @@ const Navbar: React.FC = () => {
               </div>
             )}
           </div>
+          <Button
+            variant="outline"
+            className="lg:hidden"
+            onClick={() => setIsOpen(true)}
+            size="sm"
+          >
+            <TiThMenu size={20} className="text-black" />
+          </Button>
         </div>
-      </nav>
+      </div>
 
       {/* Mobile Menu */}
       <div
@@ -150,7 +189,7 @@ const Navbar: React.FC = () => {
                 className={`${
                   pathname === link.href
                     ? "text-mygreen font-open-sans font-semibold"
-                    : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+                    : "text-black hover:text-mygreen font-open-sans font-semibold"
                 } min-h-[15px] flex items-center py-3 justify-center w-full border-b border-b-mygreen`}
               >
                 {link.name}
@@ -162,7 +201,7 @@ const Navbar: React.FC = () => {
               className={`${
                 pathname === "/innovations"
                   ? "text-mygreen font-open-sans font-semibold"
-                  : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+                  : "text-black hover:text-mygreen font-open-sans font-semibold"
               } min-h-[15px] flex items-center py-3 justify-center w-full border-b border-b-mygreen`}
             >
               View Innovation
@@ -173,7 +212,7 @@ const Navbar: React.FC = () => {
               className={`${
                 pathname === "/upload"
                   ? "text-mygreen font-open-sans font-semibold"
-                  : "text-mygray hover:text-mygreen font-open-sans font-semibold"
+                  : "text-black hover:text-mygreen font-open-sans font-semibold"
               } min-h-[15px] flex items-center py-3 justify-center w-full border-b border-b-mygreen`}
             >
               Upload Innovation
@@ -185,4 +224,4 @@ const Navbar: React.FC = () => {
   );
 };
 
-export { Navbar };
+export { Navbar2 };
