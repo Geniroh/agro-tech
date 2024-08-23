@@ -21,6 +21,8 @@ export const DiscussionInnovationComment = ({
   const [replies, setReplies] = useState<IInnovationCommentReply[]>([]);
   const [showReplyField, setShowReplyField] = useState<boolean>(false);
 
+  // console.log({ comment });
+
   const [form] = Form.useForm();
 
   const handleCommentReply = async () => {

@@ -18,7 +18,7 @@ export const InnovationSkeleton = () => {
           fromHref="/"
           fromTitle="Back to Home"
           toHref=""
-          toTitle="Upload Invention Page"
+          toTitle="Innovation Page"
         />
 
         <div className="w-full">
@@ -28,22 +28,22 @@ export const InnovationSkeleton = () => {
             </h1>
           </div>
           <div className="flex flex-wrap items-center justify-center max-w-[1200px] mt-7 text-sm tracking-wide mx-auto gap-y-2">
-            <div className="flex">
+            <div className="flex items-center">
               <span className="text-muted-foreground mr-2">Inventor:</span>
               <Skeleton className="w-[20px] h-2 rounded-md" />
             </div>
             <div className="mx-4">|</div>
-            <div className="flex ">
+            <div className="flex items-center">
               <span className="text-muted-foreground mr-2">Year Invented:</span>
               <Skeleton className="w-[20px] h-2 rounded-md" />
             </div>
             <div className="mx-4 hidden md:block">|</div>
-            <div className="flex">
+            <div className="flex items-center">
               <span className="text-muted-foreground mr-2">Country:</span>
               <Skeleton className="w-[20px] h-2 rounded-md" />
             </div>
             <div className="mx-4">|</div>
-            <div className="flex">
+            <div className="flex items-center">
               <span className="text-muted-foreground mr-2">Cost:</span>
               <Skeleton className="w-[20px] h-2 rounded-md" />
             </div>

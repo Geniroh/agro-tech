@@ -63,7 +63,7 @@ const Navbar2: React.FC = () => {
                 <Image
                   src="/images/leaf.png"
                   alt=""
-                  className="h-[30px] hidden"
+                  className="h-[30px]"
                   width={30}
                   height={30}
                 />

@@ -51,7 +51,7 @@ export const DonutChartCard = ({
   );
 
   return (
-    <div className="bg-[#fafafa] rounded-lg h-full max-h-[523px]  flex flex-col gap-y-4 p-5">
+    <div className="bg-[#fafafa] rounded-lg h-full  flex flex-col gap-y-4 p-5 ">
       <h1 className="text-[14px]  font-semibold self-start">Value Chain</h1>
       <div
         style={{ width: "100%", height: "100%" }}

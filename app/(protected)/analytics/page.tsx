@@ -179,21 +179,18 @@ export default function AnalyticsPage() {
                 </div>
               </div>
               {/* <div className="w-full h-1" ref={ref4}></div> */}
-              <div className="h-[calc(100%-85px)] hidden md:block" ref={ref4}>
+              <div className="h-[calc(100%-85px)] hidden md:block " ref={ref4}>
                 <DynamicChloropethMap innovations={innovation} />
               </div>
             </div>
           </div>
-          <div className="md:w-[60%] w-full mx-auto h-full">
+          <div className="md:w-[60%] w-full mx-auto h-full flex">
             <div className="flex flex-col gap-4">
               <div ref={ref5} className="w-full">
                 <InnovationBar innovations={innovation} count={count} />
               </div>
               <div className="flex flex-col md:flex-row gap-4 h-full">
-                <div
-                  className="md:w-[40%] max-h-[500px] min-h-[300px] h-full"
-                  ref={ref6}
-                >
+                <div className="md:w-[40%] min-h-[300px] h-full" ref={ref6}>
                   <DonutChartCard innovations={innovation} />
                 </div>
                 <div className="md:hidden h-[400px] max-h-[550px]">
